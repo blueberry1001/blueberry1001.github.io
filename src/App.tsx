@@ -33,7 +33,7 @@ function App() {
           <BrandYoutube size="3rem" />
         </a>
         <a
-          href="https://www.youtube.com/channel/UCOJw7xtcqd3EbO9h-jyWrVg1"
+          href="https://note.com/bluebery1001"
           target="_blank"
           rel="noreferrer"
         >
