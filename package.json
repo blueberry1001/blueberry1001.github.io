@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc && vite build",
     "lint": "run-p lint:*",
     "lint:tsc": "tsc --noEmit",
     "lint:prettier": "prettier . --check",
