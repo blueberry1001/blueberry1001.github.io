@@ -4,8 +4,8 @@ import { BrandGithub, BrandTwitter, BrandYoutube } from "tabler-icons-react";
 
 function App() {
   const games: { name: string; url: string }[] = [
-    { name: "スイカゲーム", url: "blueberry1001.github.io/suica_game" },
-    { name: "ヘビゲーム", url: "blueberry1001.github.io/snake" },
+    { name: "スイカゲーム", url: "suica_game" },
+    { name: "ヘビゲーム", url: "snake" },
   ];
   return (
     <>
