@@ -1,20 +1,24 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import HomePage from "./Home";
-import PrimePage from "./Prime";
+import HomePage from "./routes/Home";
+import PrimePage from "./routes/Prime";
+import Sidebar from "./Sidebar";
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/prime" element={<PrimePage />} />
-      </Routes>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/prime" element={<PrimePage />} />
-      </Routes>
-    </BrowserRouter>
+    <div>
+      <BrowserRouter>
+        <div className="wrapper">
+          <Sidebar />
+          <div className="mainelement">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/prime" element={<PrimePage />} />
+            </Routes>
+          </div>
+        </div>
+      </BrowserRouter>
+    </div>
   );
 };
 

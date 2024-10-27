@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import { BrandGithub, BrandTwitter, BrandYoutube } from "tabler-icons-react";
-import "./index.css";
 
 function HomePage() {
   const games: { name: string; url: string }[] = [
@@ -57,9 +55,6 @@ function HomePage() {
             ))}
           </ul>
         </div>
-      </div>
-      <div>
-        <Link to="/prime">prime</Link>
       </div>
     </>
   );

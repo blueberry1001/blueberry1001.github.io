@@ -1,0 +1,38 @@
+/* Sidebarコンテナのスタイル */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: 100vh;
+  background-color: #4caf50;
+  padding: 20px;
+  border-right: 2px solid #ddd;
+  font-family: Arial, sans-serif;
+}
+
+/* テキスト「俺がサイドバーだよ」のスタイル */
+.sidebar > div:first-child {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* リンクのスタイル */
+.links {
+  display: block;
+  padding: 10px 0;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+/* ホバー時にリンクの色を変更 */
+.links:hover {
+  color: #0056b3;
+}
+
+/* リンク間のスペースを調整 */
+.links + .links {
+  margin-top: 10px;
+}
