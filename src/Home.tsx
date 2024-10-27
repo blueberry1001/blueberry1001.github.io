@@ -1,8 +1,8 @@
-import "./App.css";
-
+import { Link } from "react-router-dom";
 import { BrandGithub, BrandTwitter, BrandYoutube } from "tabler-icons-react";
+import "./index.css";
 
-function App() {
+function HomePage() {
   const games: { name: string; url: string }[] = [
     { name: "スイカゲーム", url: "suica_game" },
     { name: "ヘビゲーム", url: "snake" },
@@ -37,7 +37,7 @@ function App() {
           target="_blank"
           rel="noreferrer"
         >
-          note
+          <img src="./note.svg" className="note" />
         </a>
       </div>
       <div>
@@ -58,8 +58,11 @@ function App() {
           </ul>
         </div>
       </div>
+      <div>
+        <Link to="/prime">prime</Link>
+      </div>
     </>
   );
 }
 
-export default App;
+export default HomePage;
