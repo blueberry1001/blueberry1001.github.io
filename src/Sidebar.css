@@ -1,38 +1,47 @@
-/* Sidebarコンテナのスタイル */
 .sidebar {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-  height: 100vh;
-  background-color: #4caf50;
-  padding: 20px;
-  border-right: 2px solid #ddd;
-  font-family: Arial, sans-serif;
+  width: 200px; /* サイドバーの幅 */
+  background-color: #1E1E1E; /* VS Code Dark+風背景色 */
+  padding: 10px;
 }
 
-/* テキスト「俺がサイドバーだよ」のスタイル */
-.sidebar > div:first-child {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #333;
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  width: 100%; /* ul要素の幅をサイドバーの幅に合わせる */
+  box-sizing: border-box; /*パディングを含む幅指定*/
 }
 
-/* リンクのスタイル */
+.sidebar li {
+  margin-bottom: 10px;
+  border: 1px solid #333; /* VS Code Dark+風ボーダー色 */
+  padding: 8px 10px;
+  width: 100%; /* li要素の幅を親要素の幅に合わせる */
+  box-sizing: border-box; /*パディングを含む幅指定*/
+  transition: background-color 0.2s ease; /* ホバー時のスムーズな変化 */
+}
+
+.sidebar li:hover {
+  background-color: #333; /* ホバー時の背景色 */
+  cursor: pointer; /* カーソル変更 */
+}
+
+
+.sidebar li.active {
+  background-color: #5C6370; /* アクティブ時の背景色 (VS Code Dark+風) */
+  border-color: #5C6370; /* アクティブ時のボーダー色 */
+}
+
+.sidebar li.partially-active {
+  background-color: #444; /* 部分一致時の背景色 */
+  border-color: #444; /* 部分一致時のボーダー色 */
+}
+
 .links {
-  display: block;
-  padding: 10px 0;
-  color: #007bff;
   text-decoration: none;
-  transition: color 0.3s;
+  color: #D4D4D4; /* VS Code Dark+風テキスト色 */
+  display: block; /* リンクをブロックレベルにすることで幅全体に広がる */
 }
 
-/* ホバー時にリンクの色を変更 */
 .links:hover {
-  color: #0056b3;
-}
-
-/* リンク間のスペースを調整 */
-.links + .links {
-  margin-top: 10px;
+  text-decoration: none;
 }

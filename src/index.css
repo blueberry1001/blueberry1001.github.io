@@ -15,7 +15,7 @@ a {
   transition: all 0.2s;
 }
 a:hover {
-  scale: 1.1;
+  /* scale: 1.1; */
 }
 
 .Links a:hover {
