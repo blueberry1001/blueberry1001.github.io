@@ -8,7 +8,7 @@ import Page404 from "./routes/Page404";
 const AppRoutes = () => {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div className="wrapper">
           <Sidebar />
           <div className="mainelement">
