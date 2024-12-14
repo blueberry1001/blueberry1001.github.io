@@ -1,26 +1,25 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
-import HomePage from "./routes/Home";
-import PrimePage from "./routes/Prime";
 import Sidebar from "./Sidebar";
+import HomePage from "./routes/Home";
 import Page404 from "./routes/Page404";
+import PrimePage from "./routes/Prime";
 
 const AppRoutes = () => {
   return (
     <div>
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <HashRouter>
         <div className="wrapper">
           <Sidebar />
           <div className="mainelement">
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/prime" element={<PrimePage />} />
-              <Route path="*" element={<Page404 />} />
-              
+              <Route element={<HomePage />} path="/" />
+              <Route element={<PrimePage />} path="/prime" />
+              <Route element={<Page404 />} path="*" />
             </Routes>
           </div>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 };
