@@ -3,12 +3,26 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-inner">
-        <div className="logo-area">
-          <a className="logo-link" href="/">
-            <img alt="サイトロゴ" className="logo-image" src="./icon.png" />
-            <span className="site-title">Blueberry1001</span>
+        <a className="logo-link">
+          <a href="/#/">
+            <div className="site-title">Blueberry1001</div>
           </a>
-        </div>
+          <a href="/#/">
+            <div className="page-link">
+              <div>Home</div>
+            </div>
+          </a>
+          <a href="/#/prime">
+            <div className="page-link">
+              <div>Products</div>
+            </div>
+          </a>
+          <a href="/#/links">
+            <div className="page-link">
+              <div>Links</div>
+            </div>
+          </a>
+        </a>
       </div>
     </header>
   );
