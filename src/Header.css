@@ -1,0 +1,46 @@
+/* ヘッダー全体のスタイル */
+header {
+  background-color: #b2ebf2; /* 背景色 */
+  padding: 15px 0; /* 上下の余白 */
+  width: 100%; /* 幅を100%にする */
+}
+
+/* ヘッダーの中身のスタイル */
+.header-inner {
+  display: flex; /* 横並びにする */
+  justify-content: space-between; /* 要素を左右に配置 */
+  align-items: center; /* 要素を上下中央に配置 */
+  max-width: 1200px; /* 最大幅 */
+  margin: 0 auto; /* 中央寄せ */
+  padding: 0 20px; /* 左右の余白 */
+}
+.site-title {
+  font-size: 24px; /* フォントサイズ */
+  font-weight: bold; /* 太字 */
+  color: #333; /* テキスト色 */
+}
+
+/* ロゴエリアのスタイル */
+.logo-area {
+  display: flex; /* 要素を横並びにする */
+  align-items: center; /* 要素を上下中央に配置 */
+}
+
+/* ロゴ画像のスタイル */
+.logo-image {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px; /* ロゴとサイトタイトルの間の余白 */
+}
+.logo-link {
+  font-size: large; /* フォントサイズ */
+  text-decoration: none; /* リンクの下線を消す */
+  align-items: center; /* 要素を上下中央に配置 */
+  color: #333; /* テキスト色 */
+}
+
+body {
+  display: block; /* flexを解除 */
+  margin: 0; /* デフォルトのマージンをリセット */
+  padding: 0; /* デフォルトのパディングをリセット */
+}

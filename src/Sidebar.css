@@ -1,6 +1,6 @@
 .sidebar {
   width: 200px; /* サイドバーの幅 */
-  background-color: #1E1E1E; /* VS Code Dark+風背景色 */
+  background-color: #4dd0e1; /* VS Code Dark+風背景色 */
   padding: 10px;
 }
 
@@ -25,10 +25,9 @@
   cursor: pointer; /* カーソル変更 */
 }
 
-
 .sidebar li.active {
-  background-color: #5C6370; /* アクティブ時の背景色 (VS Code Dark+風) */
-  border-color: #5C6370; /* アクティブ時のボーダー色 */
+  background-color: #5c6370; /* アクティブ時の背景色 (VS Code Dark+風) */
+  border-color: #5c6370; /* アクティブ時のボーダー色 */
 }
 
 .sidebar li.partially-active {
@@ -38,7 +37,7 @@
 
 .links {
   text-decoration: none;
-  color: #D4D4D4; /* VS Code Dark+風テキスト色 */
+  color: #d4d4d4; /* VS Code Dark+風テキスト色 */
   display: block; /* リンクをブロックレベルにすることで幅全体に広がる */
 }
 

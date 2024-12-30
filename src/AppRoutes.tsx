@@ -1,6 +1,6 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-import Sidebar from "./Sidebar";
+import Header from "./Header";
 import HomePage from "./routes/Home";
 import Page404 from "./routes/Page404";
 import PrimePage from "./routes/Prime";
@@ -8,9 +8,10 @@ import PrimePage from "./routes/Prime";
 const AppRoutes = () => {
   return (
     <div>
+      <Header />
       <HashRouter>
         <div className="wrapper">
-          <Sidebar />
+          {/* <Sidebar /> */}
           <div className="mainelement">
             <Routes>
               <Route element={<HomePage />} path="/" />

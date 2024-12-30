@@ -13,10 +13,10 @@ const Sidebar = () => {
       <ul>
         {menu.map((item) => (
           <li
+            className={`${location.pathname === item.path ? "active" : ""} ${location.pathname.startsWith(item.path) ? "partially-active" : ""}`} // 部分一致対応
             key={item.title}
-            className={`${location.pathname === item.path ? "active" : ""} ${location.pathname.startsWith(item.path) ? 'partially-active' : ''}`} // 部分一致対応
           >
-            <Link to={item.path} className="links">
+            <Link className="links" to={item.path}>
               {item.title}
             </Link>
           </li>
