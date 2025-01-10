@@ -23,9 +23,9 @@ const PrimePage = () => {
         入力された数を素因数分解します。桁数上限は11桁、計算量はO(√N)です。
       </div>
       <input
+        onChange={(e) => setValue(Number(e.target.value))}
         type="number"
         value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
       />
       <p>{prime_factrization(value)}</p>
     </div>
