@@ -9,7 +9,7 @@ const RandomPickerPage = () => {
     }
     let tmpv = [];
     for (let i = 0; i < number; i++) {
-      tmpv.push(i);
+      tmpv.push(i + 1);
     }
     const newArray = [...tmpv];
     for (let i = newArray.length - 1; i > 0; i--) {
