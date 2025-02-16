@@ -1,10 +1,8 @@
-name: Deploy GitHub Pages
+name: deploy
 
 on:
   push:
-    branches: ["master"]
-
-  workflow_dispatch:
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -17,30 +15,23 @@ concurrency:
 
 jobs:
   build:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: pnpm/action-setup@v2.2.2
         with:
-          node-version: 20
-          cache: "npm"
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
+          version: 7.29.3
+      - run: pnpm install
+      - name: pnpm build
+        run: pnpm build
         env:
-          PUBLIC_URL: /blueberry1001.github.io
+          GITHUB_PAGES: true
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: dist
+          path: ./dist
 
   deploy:
     environment:
@@ -51,4 +42,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
