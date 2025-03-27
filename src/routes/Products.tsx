@@ -11,6 +11,9 @@ function ProductsPage() {
         <li>
           <Link to="/randompicker">ランダムピッカー</Link>
         </li>
+        <li>
+          <Link to="/invincibletank">InvincibleTank</Link>
+        </li>
       </ul>
     </div>
   );

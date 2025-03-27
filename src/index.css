@@ -23,7 +23,7 @@ a {
   height: 3rem;
 }
 
-.wrapper {
+.wrapper:not(:has(.unity-container)) {
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem 1rem;
@@ -110,4 +110,228 @@ a {
 .secondary-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Unity WebGL styles */
+#unity-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#unity-container.unity-desktop {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#unity-container.unity-mobile {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#unity-canvas {
+  background: #231f20;
+}
+
+.unity-mobile #unity-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+#unity-loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+#unity-logo {
+  width: 154px;
+  height: 130px;
+  background: url("TemplateData/unity-logo-dark.png") no-repeat center;
+}
+
+#unity-progress-bar-empty {
+  width: 141px;
+  height: 18px;
+  margin-top: 10px;
+  margin-left: 6.5px;
+  background: url("TemplateData/progress-bar-empty-dark.png") no-repeat center;
+}
+
+#unity-progress-bar-full {
+  width: 0%;
+  height: 18px;
+  margin-top: 10px;
+  background: url("TemplateData/progress-bar-full-dark.png") no-repeat center;
+}
+
+#unity-footer {
+  position: relative;
+  margin-top: 5px;
+}
+
+.unity-mobile #unity-footer {
+  display: none;
+}
+
+#unity-webgl-logo {
+  float: left;
+  width: 204px;
+  height: 38px;
+  background: url("TemplateData/webgl-logo.png") no-repeat center;
+}
+
+#unity-build-title {
+  float: right;
+  margin-right: 10px;
+  line-height: 38px;
+  font-family: arial;
+  font-size: 18px;
+}
+
+#unity-fullscreen-button {
+  float: right;
+  width: 38px;
+  height: 38px;
+  background: url("TemplateData/fullscreen-button.png") no-repeat center;
+}
+
+#unity-warning {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%);
+  background: white;
+  padding: 10px;
+  display: none;
+}
+
+.unity-container iframe {
+  width: 100%;
+  max-width: 1920px;
+  height: 100%;
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+}
+
+.fullscreen-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fullscreen-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* 開始画面のスタイル */
+.game-start-overlay {
+  width: 960px;
+  height: 600px;
+  background: #231f20;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.game-start-overlay h2 {
+  font-size: 2rem;
+  margin: 0;
+  color: white;
+}
+
+.game-start-overlay .primary-button {
+  font-size: 1.5rem;
+  padding: 1rem 3rem;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.game-start-overlay .primary-button:hover {
+  transform: scale(1.05);
+}
+
+/* 下部コンテンツ用のスタイル */
+.game-page {
+  min-height: 100vh;
+  padding-top: calc(50vh + 300px); /* ゲーム画面の下に配置 */
+  text-align: center;
+}
+
+.game-page h2 {
+  margin-top: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.release-notes {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.release-notes table {
+  width: 100%;
+  max-width: 1200px;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.release-notes th,
+.release-notes td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.release-notes th {
+  background: #f8f9fa;
+  font-weight: bold;
+}
+
+.release-notes th:first-child,
+.release-notes td:first-child {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.release-notes th:nth-child(2),
+.release-notes td:nth-child(2) {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.release-notes th:last-child,
+.release-notes td:last-child {
+  width: auto;
+  min-width: 600px;
+}
+
+.release-notes ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.release-notes li {
+  margin: 0.25rem 0;
 }
