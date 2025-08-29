@@ -32,9 +32,6 @@ jobs:
         env:
           PUBLIC_URL: /blueberry1001.github.io
           GITHUB_PAGES: true
-      - name: Copy resources to dist
-        run: cp -r ./resources ./dist/
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
