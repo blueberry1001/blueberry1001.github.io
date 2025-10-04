@@ -14,6 +14,9 @@ function ProductsPage() {
         <li>
           <Link to="/invincibletank">InvincibleTank</Link>
         </li>
+        <li>
+          <Link to="/chemistry_ion">イオン化傾向</Link>
+        </li>
       </ul>
     </div>
   );

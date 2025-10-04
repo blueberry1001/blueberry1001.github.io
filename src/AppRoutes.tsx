@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import Header from "./Header";
+import IonPage from "./routes/Chemistry_ion";
 import HomePage from "./routes/Home";
 import InvincibleTank from "./routes/InvincibleTank";
 import LinksPage from "./routes/Links";
@@ -25,6 +26,7 @@ const AppRoutes = () => {
               <Route element={<ProductsPage />} path="/products" />
               <Route element={<LinksPage />} path="/links" />
               <Route element={<InvincibleTank />} path="/invincibletank" />
+              <Route element={<IonPage />} path="/chemistry_ion" />
               <Route element={<Page404 />} path="*" />
             </Routes>
           </div>
