@@ -236,6 +236,557 @@ a {
   background: rgba(0, 0, 0, 0.8);
 }
 
+/* 公共・倫理 思想家用スタイル */
+.thinkers-page,
+.thinkers-quiz-page {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem 3rem;
+}
+
+.thinkers-intro {
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.thinkers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.thinker-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  overflow: hidden;
+}
+
+.thinker-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.thinker-name-button {
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.thinker-name-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: scale(1.01);
+}
+
+.thinker-toggle-mark {
+  font-size: 0.9rem;
+  transition: transform 0.4s ease-out;
+  display: inline-block;
+}
+
+.thinker-toggle-mark.rotated {
+  transform: rotate(180deg);
+}
+
+.thinker-detail {
+  padding: 1.25rem;
+  background: #fafafa;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: max-height 0.4s ease-out, opacity 0.4s ease-out,
+    transform 0.4s ease-out, padding 0.4s ease-out;
+}
+
+.thinker-detail.opening {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-5px);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.thinker-detail.open {
+  max-height: 1000px;
+  opacity: 1;
+  transform: translateY(0);
+  padding: 1.25rem;
+}
+
+.thinker-detail.closing {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-5px);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.thinker-section {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
+}
+
+.thinker-section:last-child {
+  margin-bottom: 0;
+}
+
+.thinker-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.thinker-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #555;
+  line-height: 1.8;
+}
+
+.thinker-section p {
+  margin: 0;
+  color: #555;
+  line-height: 1.8;
+}
+
+.thinker-meta {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.thinkers-quiz-page .quiz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.thinkers-quiz-page .quiz-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.thinkers-quiz-page .quiz-controls select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  background: white;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.thinkers-quiz-page .quiz-controls select:hover {
+  border-color: #764ba2;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.quiz-area {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quiz-area:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #667eea;
+}
+
+.quiz-prompt {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.quiz-label {
+  font-size: 0.9rem;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.retry-badge {
+  background: #ff9800;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.quiz-prompt p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+.quiz-options {
+  margin-bottom: 1.5rem;
+}
+
+.quiz-options ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.quiz-option-button {
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-option-button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: #667eea;
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.quiz-option-button:hover:not(:disabled)::before {
+  transform: scaleY(1);
+}
+
+.quiz-option-button:hover:not(:disabled) {
+  background: #f8f9ff;
+  border-color: #667eea;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.quiz-option-button:disabled {
+  cursor: not-allowed;
+}
+
+.quiz-option-button.selected {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.quiz-option-button.selected::before {
+  transform: scaleY(1);
+}
+
+.quiz-option-button.correct {
+  border-color: #28a745;
+  background: #d4edda;
+  color: #155724;
+  animation: correctPulse 0.5s ease-out;
+}
+
+@keyframes correctPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.quiz-option-button.incorrect {
+  border-color: #dc3545;
+  background: #f8d7da;
+  color: #721c24;
+  animation: incorrectShake 0.5s ease-out;
+}
+
+@keyframes incorrectShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.quiz-result {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  font-weight: 500;
+  color: #333;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quiz-next-button-container {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-next-button {
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.quiz-next-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.quiz-hint {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  color: #856404;
+}
+
+/* 共通テスト対策【公共・倫理】ページ */
+.public-ethics-page {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem 3rem;
+}
+
+.public-ethics-intro {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.public-ethics-intro p {
+  margin: 0.75rem 0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.public-ethics-intro p:first-child {
+  margin-top: 0;
+}
+
+.public-ethics-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.public-ethics-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.public-ethics-card {
+  display: block;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.public-ethics-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.public-ethics-card:hover::before {
+  transform: scaleX(1);
+}
+
+.public-ethics-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.public-ethics-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.public-ethics-card p {
+  margin: 0 0 1.5rem;
+  color: #555;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.card-link {
+  color: #667eea;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.public-ethics-card:hover .card-link {
+  color: #764ba2;
+  transform: translateX(5px);
+  display: inline-block;
+}
+
+.public-ethics-tips {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  border-left: 4px solid #667eea;
+}
+
+.public-ethics-tips h3 {
+  margin: 0 0 1rem;
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.public-ethics-tips ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #555;
+  line-height: 2;
+}
+
+.public-ethics-tips li {
+  margin-bottom: 0.5rem;
+}
+
 /* 開始画面のスタイル */
 .game-start-overlay {
   width: 960px;

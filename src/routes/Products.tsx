@@ -9,6 +9,9 @@ function ProductsPage() {
           <Link to="/prime">素因数分解</Link>
         </li>
         <li>
+          <Link to="/public_ethics">共通テスト対策【公共・倫理】</Link>
+        </li>
+        <li>
           <Link to="/randompicker">ランダムピッカー</Link>
         </li>
         <li>
