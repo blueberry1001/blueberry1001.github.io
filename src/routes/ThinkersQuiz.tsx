@@ -1,5 +1,6 @@
-import thinkersData from "@/assets/thinkers.json";
 import { useMemo, useState } from "react";
+
+import thinkersData from "@/assets/thinkers.json";
 
 type Thinker = {
   id: string;
@@ -11,10 +12,7 @@ type Thinker = {
   region?: string;
 };
 
-type Mode =
-  | "description-to-thinker"
-  | "book-to-thinker"
-  | "thinker-to-book";
+type Mode = "description-to-thinker" | "book-to-thinker" | "thinker-to-book";
 
 const thinkers = thinkersData as Thinker[];
 
@@ -28,6 +26,7 @@ type Question = {
   mode: Mode;
   thinkerId?: string; // 思想家ID（再出題用）
   promptContent?: string; // プロンプトの内容（再出題用）
+  optionThinkerIds?: string[]; // 選択肢として出てきた思想家のID
 };
 
 type PendingRetry = {
@@ -68,7 +67,9 @@ const ThinkersQuizPage = () => {
       }))
       .filter((retry) => retry.remainingQuestions >= 0);
 
-    const readyToRetry = updated.find((retry) => retry.remainingQuestions === 0);
+    const readyToRetry = updated.find(
+      (retry) => retry.remainingQuestions === 0
+    );
     setPendingRetries(updated.filter((retry) => retry.remainingQuestions > 0));
 
     return readyToRetry || null;
@@ -97,6 +98,7 @@ const ThinkersQuizPage = () => {
         mode: retry.mode,
         thinkerId: thinker.id,
         promptContent: desc,
+        optionThinkerIds: [thinker, ...otherThinkers].map((t) => t.id),
       };
     } else if (retry.mode === "book-to-thinker") {
       const book = retry.promptContent;
@@ -116,6 +118,7 @@ const ThinkersQuizPage = () => {
         mode: retry.mode,
         thinkerId: thinker.id,
         promptContent: book,
+        optionThinkerIds: [thinker, ...otherThinkers].map((t) => t.id),
       };
     } else if (retry.mode === "thinker-to-book") {
       const book = retry.promptContent;
@@ -137,6 +140,7 @@ const ThinkersQuizPage = () => {
         mode: retry.mode,
         thinkerId: thinker.id,
         promptContent: book,
+        optionThinkerIds: [thinker.id], // thinker-to-bookモードでは選択肢に思想家名は出てこないが、正解の思想家IDを保存
       };
     }
 
@@ -181,6 +185,7 @@ const ThinkersQuizPage = () => {
         mode: currentMode,
         thinkerId: thinker.id,
         promptContent: desc,
+        optionThinkerIds: [thinker, ...otherThinkers].map((t) => t.id),
       };
     } else if (currentMode === "book-to-thinker") {
       if (thinkersWithBooks.length === 0) {
@@ -192,9 +197,7 @@ const ThinkersQuizPage = () => {
         const otherThinkers = shuffle(
           thinkersWithBooks.filter((t) => t.id !== thinker.id)
         ).slice(0, 3);
-        const options = shuffle([thinker, ...otherThinkers]).map(
-          (t) => t.name
-        );
+        const options = shuffle([thinker, ...otherThinkers]).map((t) => t.name);
         const correctIndex = options.indexOf(thinker.name);
 
         q = {
@@ -207,6 +210,7 @@ const ThinkersQuizPage = () => {
           mode: currentMode,
           thinkerId: thinker.id,
           promptContent: book,
+          optionThinkerIds: [thinker, ...otherThinkers].map((t) => t.id),
         };
       }
     } else if (currentMode === "thinker-to-book") {
@@ -234,6 +238,7 @@ const ThinkersQuizPage = () => {
           mode: currentMode,
           thinkerId: thinker.id,
           promptContent: book,
+          optionThinkerIds: [thinker.id], // thinker-to-bookモードでは選択肢に思想家名は出てこないが、正解の思想家IDを保存
         };
       }
     }
@@ -294,23 +299,19 @@ const ThinkersQuizPage = () => {
       <div className="quiz-controls">
         <label>
           出題モード:
-          <select value={mode} onChange={handleModeChange}>
+          <select onChange={handleModeChange} value={mode}>
             <option value="description-to-thinker">
               説明 → 思想家 を答える
             </option>
-            <option value="book-to-thinker">
-              主著 → 思想家 を答える
-            </option>
-            <option value="thinker-to-book">
-              思想家 → 主著 を答える
-            </option>
+            <option value="book-to-thinker">主著 → 思想家 を答える</option>
+            <option value="thinker-to-book">思想家 → 主著 を答える</option>
           </select>
         </label>
         {!question && (
           <button
-            type="button"
             className="primary-button"
             onClick={() => generateQuestion(mode)}
+            type="button"
           >
             問題を開始
           </button>
@@ -329,9 +330,7 @@ const ThinkersQuizPage = () => {
           <div className="quiz-prompt">
             <div className="quiz-label">
               {question.promptLabel}
-              {isRetryQuestion && (
-                <span className="retry-badge">再出題</span>
-              )}
+              {isRetryQuestion && <span className="retry-badge">再出題</span>}
             </div>
             <p>{question.prompt}</p>
           </div>
@@ -355,13 +354,13 @@ const ThinkersQuizPage = () => {
                 return (
                   <li key={idx}>
                     <button
-                      type="button"
                       className={classNames}
+                      disabled={selected !== null}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOptionClick(idx);
                       }}
-                      disabled={selected !== null}
+                      type="button"
                     >
                       {opt}
                     </button>
@@ -370,17 +369,15 @@ const ThinkersQuizPage = () => {
               })}
             </ul>
           </div>
-          {resultMessage && (
-            <div className="quiz-result">{resultMessage}</div>
-          )}
+          {resultMessage && <div className="quiz-result">{resultMessage}</div>}
           <div className="quiz-next-button-container">
             <button
-              type="button"
               className="primary-button quiz-next-button"
               onClick={(e) => {
                 e.stopPropagation();
                 generateQuestion(mode);
               }}
+              type="button"
             >
               次の問題
             </button>
@@ -392,10 +389,71 @@ const ThinkersQuizPage = () => {
           主著データが少ない場合は、モードによって問題が作れないことがあります。
         </p>
       )}
+
+      {/* 選択肢として出てきた思想家の説明 */}
+      {question && (
+        <div className="quiz-thinkers-explanation">
+          <h2>選択肢の思想家について</h2>
+          {selected !== null && question.optionThinkerIds ? (
+            <ul className="thinkers-list">
+              {question.optionThinkerIds.map((thinkerId) => {
+                const thinker = thinkers.find((t) => t.id === thinkerId);
+                if (!thinker) return null;
+                return (
+                  <li className="thinker-item" key={thinkerId}>
+                    <div
+                      className="thinker-name-button"
+                      style={{ cursor: "default" }}
+                    >
+                      {thinker.name}
+                    </div>
+                    <div className="thinker-detail open">
+                      <div className="thinker-section">
+                        <h3>説明</h3>
+                        <ul>
+                          {thinker.description.map((line, idx) => (
+                            <li key={idx}>{line}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="thinker-section">
+                        <h3>主著</h3>
+                        {thinker.books.length > 0 ? (
+                          <ul>
+                            {thinker.books.map((b) => (
+                              <li key={b}>{b}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p>主著のデータは登録されていません。</p>
+                        )}
+                      </div>
+                      <div className="thinker-section">
+                        <h3>宗教</h3>
+                        <p>{thinker.religion || "特になし"}</p>
+                      </div>
+                      {(thinker.era || thinker.region) && (
+                        <div className="thinker-meta">
+                          {thinker.era && <span>時代: {thinker.era}</span>}
+                          {thinker.region && (
+                            <span> / 地域: {thinker.region}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p style={{ color: "#999", fontStyle: "italic" }}>
+              回答を選択すると、選択肢として出てきた思想家の説明が表示されます。
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
 export default ThinkersQuizPage;
-
-

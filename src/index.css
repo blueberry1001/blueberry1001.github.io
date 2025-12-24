@@ -264,7 +264,9 @@ a {
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
   overflow: hidden;
 }
 
@@ -311,8 +313,11 @@ a {
   max-height: 0;
   opacity: 0;
   transform: translateY(-5px);
-  transition: max-height 0.4s ease-out, opacity 0.4s ease-out,
-    transform 0.4s ease-out, padding 0.4s ease-out;
+  transition:
+    max-height 0.4s ease-out,
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out,
+    padding 0.4s ease-out;
 }
 
 .thinker-detail.opening {
@@ -474,7 +479,8 @@ a {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -581,7 +587,8 @@ a {
 }
 
 @keyframes incorrectShake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
@@ -643,6 +650,23 @@ a {
   border: 1px solid #ffc107;
   border-radius: 8px;
   color: #856404;
+}
+
+.quiz-thinkers-explanation {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.quiz-thinkers-explanation h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.5rem;
 }
 
 /* 共通テスト対策【公共・倫理】ページ */
@@ -726,7 +750,8 @@ a {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

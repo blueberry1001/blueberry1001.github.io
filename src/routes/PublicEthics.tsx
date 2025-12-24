@@ -51,3 +51,4 @@ const PublicEthicsPage = () => {
 
 export default PublicEthicsPage;
 
+
