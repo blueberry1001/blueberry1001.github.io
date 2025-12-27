@@ -11,31 +11,31 @@ function HomePage() {
       <div className="Links">
         <a
           href="https://twitter.com/bluebery1001"
-          target="_blank"
           rel="noreferrer"
+          target="_blank"
         >
           <BrandTwitter size="3rem" />
         </a>
         <a
           href="https://github.com/blueberry1001"
-          target="_blank"
           rel="noreferrer"
+          target="_blank"
         >
           <BrandGithub size="3rem" />
         </a>
         <a
           href="https://www.youtube.com/channel/UCOJw7xtcqd3EbO9h-jyWrVg1"
-          target="_blank"
           rel="noreferrer"
+          target="_blank"
         >
           <BrandYoutube size="3rem" />
         </a>
         <a
           href="https://note.com/bluebery1001"
-          target="_blank"
           rel="noreferrer"
+          target="_blank"
         >
-          <img src="./note.svg" className="note" />
+          <img className="note" src="./note.svg" />
         </a>
       </div>
       <div>

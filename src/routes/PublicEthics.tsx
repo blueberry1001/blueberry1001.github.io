@@ -16,7 +16,7 @@ const PublicEthicsPage = () => {
       </div>
 
       <div className="public-ethics-cards">
-        <Link to="/thinkers" className="public-ethics-card">
+        <Link className="public-ethics-card" to="/thinkers">
           <div className="card-icon">📚</div>
           <h2>思想家一覧</h2>
           <p>
@@ -26,7 +26,7 @@ const PublicEthicsPage = () => {
           <div className="card-link">一覧を見る →</div>
         </Link>
 
-        <Link to="/thinkers_quiz" className="public-ethics-card">
+        <Link className="public-ethics-card" to="/thinkers_quiz">
           <div className="card-icon">✏️</div>
           <h2>一問一答</h2>
           <p>

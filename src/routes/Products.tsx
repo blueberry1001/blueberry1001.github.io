@@ -20,6 +20,9 @@ function ProductsPage() {
         <li>
           <Link to="/chemistry_ion">イオン化傾向</Link>
         </li>
+        <li>
+          <Link to="/timer">過去問タイマー(共テ用)</Link>
+        </li>
       </ul>
     </div>
   );
