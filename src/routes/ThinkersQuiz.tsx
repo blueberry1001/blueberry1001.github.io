@@ -47,31 +47,54 @@ const shuffle = <T,>(items: T[]): T[] => {
 
 const ThinkersQuizPage = () => {
   const [mode, setMode] = useState<Mode>("description-to-thinker");
+  const [selectedEra, setSelectedEra] = useState<string>("すべて");
   const [question, setQuestion] = useState<Question | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [resultMessage, setResultMessage] = useState<string>("");
   const [pendingRetries, setPendingRetries] = useState<PendingRetry[]>([]);
   const [isRetryQuestion, setIsRetryQuestion] = useState(false);
 
-  const thinkersWithBooks = useMemo(
-    () => thinkers.filter((t) => t.books.length > 0),
-    []
+  const currentThinkers = useMemo(() => {
+    if (selectedEra === "すべて") return thinkers;
+    return thinkers.filter((t) => t.era === selectedEra);
+  }, [selectedEra]);
+
+  const currentThinkersWithBooks = useMemo(
+    () => currentThinkers.filter((t) => t.books.length > 0),
+    [currentThinkers]
   );
 
   // 再出題キューを更新（カウントを減らし、0になったものを返す）
   const updatePendingRetries = (): PendingRetry | null => {
-    const updated = pendingRetries
-      .map((retry) => ({
-        ...retry,
-        remainingQuestions: retry.remainingQuestions - 1,
-      }))
-      .filter((retry) => retry.remainingQuestions >= 0);
+    const decremented = pendingRetries.map((retry) => ({
+      ...retry,
+      remainingQuestions: retry.remainingQuestions - 1,
+    }));
 
-    const readyToRetry = updated.find(
-      (retry) => retry.remainingQuestions === 0
-    );
-    setPendingRetries(updated.filter((retry) => retry.remainingQuestions > 0));
+    // 出題待ち（残り0以下）かつ現在の年代設定に合うものを探す
+    const candidates = decremented.filter((retry) => retry.remainingQuestions <= 0);
+    
+    let readyToRetry: PendingRetry | undefined;
 
+    if (selectedEra === "すべて") {
+      readyToRetry = candidates[0];
+    } else {
+      readyToRetry = candidates.find((retry) => {
+        const t = thinkers.find((thinker) => thinker.id === retry.thinkerId);
+        return t?.era === selectedEra;
+      });
+    }
+
+    // 更新後のキューを作成
+    // 1. まだ待ちのもの (remainingQuestions > 0)
+    // 2. 待機中だが今回選ばれなかったもの (picked 以外)
+    const nextPending = decremented.filter((retry) => {
+      if (retry.remainingQuestions > 0) return true;
+      if (readyToRetry && retry.questionId === readyToRetry.questionId) return false;
+      return true;
+    });
+
+    setPendingRetries(nextPending);
     return readyToRetry || null;
   };
 
@@ -80,10 +103,14 @@ const ThinkersQuizPage = () => {
     const thinker = thinkers.find((t) => t.id === retry.thinkerId);
     if (!thinker) return null;
 
+    // 選択肢（ダミー）は現在の年代設定の中から選ぶ
+    const candidateThinkers = currentThinkers.some(t => t.id === thinker.id) ? currentThinkers : thinkers;
+    const candidateThinkersWithBooks = currentThinkersWithBooks.some(t => t.id === thinker.id) ? currentThinkersWithBooks : thinkers.filter(t => t.books.length > 0);
+
     if (retry.mode === "description-to-thinker") {
       const desc = retry.promptContent;
       const otherThinkers = shuffle(
-        thinkers.filter((t) => t.id !== thinker.id)
+        candidateThinkers.filter((t) => t.id !== thinker.id)
       ).slice(0, 3);
       const options = shuffle([thinker, ...otherThinkers]).map((t) => t.name);
       const correctIndex = options.indexOf(thinker.name);
@@ -103,7 +130,7 @@ const ThinkersQuizPage = () => {
     } else if (retry.mode === "book-to-thinker") {
       const book = retry.promptContent;
       const otherThinkers = shuffle(
-        thinkersWithBooks.filter((t) => t.id !== thinker.id)
+        candidateThinkersWithBooks.filter((t) => t.id !== thinker.id)
       ).slice(0, 3);
       const options = shuffle([thinker, ...otherThinkers]).map((t) => t.name);
       const correctIndex = options.indexOf(thinker.name);
@@ -123,7 +150,7 @@ const ThinkersQuizPage = () => {
     } else if (retry.mode === "thinker-to-book") {
       const book = retry.promptContent;
       const otherBooks = shuffle(
-        thinkersWithBooks
+        candidateThinkersWithBooks
           .filter((t) => t.id !== thinker.id)
           .flatMap((t) => t.books)
       ).slice(0, 3);
@@ -140,7 +167,7 @@ const ThinkersQuizPage = () => {
         mode: retry.mode,
         thinkerId: thinker.id,
         promptContent: book,
-        optionThinkerIds: [thinker.id], // thinker-to-bookモードでは選択肢に思想家名は出てこないが、正解の思想家IDを保存
+        optionThinkerIds: [thinker.id],
       };
     }
 
@@ -163,14 +190,20 @@ const ThinkersQuizPage = () => {
     setIsRetryQuestion(false);
 
     // 通常の問題生成
+    if (currentThinkers.length === 0) {
+      alert("選択された年代のデータがありません。");
+      setQuestion(null);
+      return;
+    }
+
     let q: Question | null = null;
 
     if (currentMode === "description-to-thinker") {
-      const thinker = pickRandom(thinkers);
+      const thinker = pickRandom(currentThinkers);
       const desc = pickRandom(thinker.description);
 
       const otherThinkers = shuffle(
-        thinkers.filter((t) => t.id !== thinker.id)
+        currentThinkers.filter((t) => t.id !== thinker.id)
       ).slice(0, 3);
       const options = shuffle([thinker, ...otherThinkers]).map((t) => t.name);
       const correctIndex = options.indexOf(thinker.name);
@@ -188,14 +221,14 @@ const ThinkersQuizPage = () => {
         optionThinkerIds: [thinker, ...otherThinkers].map((t) => t.id),
       };
     } else if (currentMode === "book-to-thinker") {
-      if (thinkersWithBooks.length === 0) {
+      if (currentThinkersWithBooks.length === 0) {
         q = null;
       } else {
-        const thinker = pickRandom(thinkersWithBooks);
+        const thinker = pickRandom(currentThinkersWithBooks);
         const book = pickRandom(thinker.books);
 
         const otherThinkers = shuffle(
-          thinkersWithBooks.filter((t) => t.id !== thinker.id)
+          currentThinkersWithBooks.filter((t) => t.id !== thinker.id)
         ).slice(0, 3);
         const options = shuffle([thinker, ...otherThinkers]).map((t) => t.name);
         const correctIndex = options.indexOf(thinker.name);
@@ -214,14 +247,14 @@ const ThinkersQuizPage = () => {
         };
       }
     } else if (currentMode === "thinker-to-book") {
-      if (thinkersWithBooks.length === 0) {
+      if (currentThinkersWithBooks.length === 0) {
         q = null;
       } else {
-        const thinker = pickRandom(thinkersWithBooks);
+        const thinker = pickRandom(currentThinkersWithBooks);
         const book = pickRandom(thinker.books);
 
         const otherBooks = shuffle(
-          thinkersWithBooks
+          currentThinkersWithBooks
             .filter((t) => t.id !== thinker.id)
             .flatMap((t) => t.books)
         ).slice(0, 3);
@@ -238,7 +271,7 @@ const ThinkersQuizPage = () => {
           mode: currentMode,
           thinkerId: thinker.id,
           promptContent: book,
-          optionThinkerIds: [thinker.id], // thinker-to-bookモードでは選択肢に思想家名は出てこないが、正解の思想家IDを保存
+          optionThinkerIds: [thinker.id],
         };
       }
     }
@@ -252,6 +285,13 @@ const ThinkersQuizPage = () => {
     const newMode = e.target.value as Mode;
     setMode(newMode);
     generateQuestion(newMode);
+  };
+
+  const handleEraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedEra(e.target.value);
+    setQuestion(null);
+    setResultMessage("");
+    setSelected(null);
   };
 
   const handleOptionClick = (index: number) => {
@@ -297,6 +337,16 @@ const ThinkersQuizPage = () => {
       </p>
 
       <div className="quiz-controls">
+        <label>
+          年代:
+          <select onChange={handleEraChange} value={selectedEra}>
+            <option value="すべて">すべて</option>
+            <option value="古代">古代</option>
+            <option value="中世">中世</option>
+            <option value="近代">近代</option>
+            <option value="現代">現代</option>
+          </select>
+        </label>
         <label>
           出題モード:
           <select onChange={handleModeChange} value={mode}>
