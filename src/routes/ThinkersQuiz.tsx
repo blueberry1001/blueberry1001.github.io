@@ -294,37 +294,48 @@ const ThinkersQuizPage = () => {
     setSelected(null);
   };
 
+  const processIncorrectAnswer = () => {
+    if (!question) return;
+    setResultMessage(
+      `不正解…。正しい${question.answerLabel}は「${
+        question.options[question.correctIndex]
+      }」です。`
+    );
+
+    // 誤答した問題を再出題キューに追加（3-7問後に再出題）
+    if (question.thinkerId && question.promptContent) {
+      // 既に同じ問題がキューにないかチェック
+      const alreadyQueued = pendingRetries.some(
+        (retry) => retry.questionId === question.questionId
+      );
+      if (!alreadyQueued) {
+        const retryAfter = Math.floor(Math.random() * 5) + 3; // 3-7問後
+        const newRetry: PendingRetry = {
+          questionId: question.questionId,
+          mode: question.mode,
+          thinkerId: question.thinkerId,
+          promptContent: question.promptContent,
+          remainingQuestions: retryAfter,
+        };
+        setPendingRetries((prev) => [...prev, newRetry]);
+      }
+    }
+  };
+
   const handleOptionClick = (index: number) => {
     if (!question) return;
     setSelected(index);
     if (index === question.correctIndex) {
       setResultMessage("正解！よく覚えていますね。");
     } else {
-      setResultMessage(
-        `不正解…。正しい${question.answerLabel}は「${
-          question.options[question.correctIndex]
-        }」です。`
-      );
-
-      // 誤答した問題を再出題キューに追加（3-7問後に再出題）
-      if (question.thinkerId && question.promptContent) {
-        // 既に同じ問題がキューにないかチェック
-        const alreadyQueued = pendingRetries.some(
-          (retry) => retry.questionId === question.questionId
-        );
-        if (!alreadyQueued) {
-          const retryAfter = Math.floor(Math.random() * 5) + 3; // 3-7問後
-          const newRetry: PendingRetry = {
-            questionId: question.questionId,
-            mode: question.mode,
-            thinkerId: question.thinkerId,
-            promptContent: question.promptContent,
-            remainingQuestions: retryAfter,
-          };
-          setPendingRetries((prev) => [...prev, newRetry]);
-        }
-      }
+      processIncorrectAnswer();
     }
+  };
+
+  const handleDontKnow = () => {
+    if (!question) return;
+    setSelected(-1); // "わからない"を選択した状態（どの選択肢も選択されていないように見えるが、解説は表示される）
+    processIncorrectAnswer();
   };
 
   return (
@@ -419,8 +430,9 @@ const ThinkersQuizPage = () => {
               })}
             </ul>
           </div>
+
           {resultMessage && <div className="quiz-result">{resultMessage}</div>}
-          <div className="quiz-next-button-container">
+          <div className="quiz-next-button-container" style={{ gap: "1rem" }}>
             <button
               className="primary-button quiz-next-button"
               onClick={(e) => {
@@ -431,6 +443,23 @@ const ThinkersQuizPage = () => {
             >
               次の問題
             </button>
+            {selected === null && (
+              <button
+                className="quiz-next-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDontKnow();
+                }}
+                type="button"
+                style={{
+                  backgroundColor: "#6c757d",
+                  color: "white",
+                  borderColor: "#6c757d",
+                }}
+              >
+                わからない
+              </button>
+            )}
           </div>
         </div>
       ) : (
