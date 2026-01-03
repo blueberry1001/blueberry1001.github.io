@@ -17,6 +17,8 @@ const TimerPage = () => {
   const [year, setYear] = useState('2025');
   const [edition, setEdition] = useState('第1回');
   const [showModal, setShowModal] = useState(false);
+  const [timerMode, setTimerMode] = useState<'normal' | 'extended'>('normal');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const timerRef = useRef<number | null>(null);
 
   const SUBJECTS = [
@@ -56,6 +58,18 @@ const TimerPage = () => {
     if (isRunning) {
       timerRef.current = window.setInterval(() => {
         setTime((prev) => prev + 1);
+        if (timerMode === 'extended') {
+          setLaps((prevLaps) => {
+            const newLaps = [...prevLaps];
+            if (newLaps[currentQuestionIndex]) {
+              newLaps[currentQuestionIndex] = {
+                ...newLaps[currentQuestionIndex],
+                duration: newLaps[currentQuestionIndex].duration + 1,
+              };
+            }
+            return newLaps;
+          });
+        }
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -63,7 +77,7 @@ const TimerPage = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning]);
+  }, [isRunning, timerMode, currentQuestionIndex]);
 
   useEffect(() => {
     if (showModal) {
@@ -80,19 +94,36 @@ const TimerPage = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleStart = () => setIsRunning(true);
+  const handleStart = () => {
+    if (timerMode === 'extended' && laps.length === 0) {
+      setLaps([{ questionNumber: 1, duration: 0, score: '' }]);
+      setCurrentQuestionIndex(0);
+    }
+    setIsRunning(true);
+  };
+
   const handleStop = () => setIsRunning(false);
 
   const handleReset = () => {
     setIsRunning(false);
     setTime(0);
     setLaps([]);
+    setCurrentQuestionIndex(0);
   };
 
   const handleLap = () => {
-    const lastLapTime = laps.length > 0 ? laps.reduce((sum, lap) => sum + lap.duration, 0) : 0;
-    const duration = time - lastLapTime;
-    setLaps([...laps, { questionNumber: laps.length + 1, duration, score: '' }]);
+    if (timerMode === 'normal') {
+      const lastLapTime = laps.length > 0 ? laps.reduce((sum, lap) => sum + lap.duration, 0) : 0;
+      const duration = time - lastLapTime;
+      setLaps([...laps, { questionNumber: laps.length + 1, duration, score: '' }]);
+    } else {
+      if (currentQuestionIndex === laps.length - 1) {
+        setLaps([...laps, { questionNumber: laps.length + 1, duration: 0, score: '' }]);
+        setCurrentQuestionIndex(laps.length);
+      } else {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
+    }
   };
 
   const handleScoreChange = (index: number, value: string) => {
@@ -201,7 +232,63 @@ const TimerPage = () => {
         </div>
       </div>
 
-      <div className="timer-display">{formatTime(time)}</div>
+      <div className="mode-selector">
+        <button
+          className={`mode-btn ${timerMode === 'normal' ? 'active' : ''}`}
+          onClick={() => setTimerMode('normal')}
+          disabled={isRunning || time > 0}
+        >
+          通常版
+        </button>
+        <button
+          className={`mode-btn ${timerMode === 'extended' ? 'active' : ''}`}
+          onClick={() => setTimerMode('extended')}
+          disabled={isRunning || time > 0}
+        >
+          拡張版
+        </button>
+      </div>
+
+      {timerMode === 'extended' && laps.length > 0 && (
+        <div className="question-nav">
+          {laps.map((_, i) => (
+            <button
+              key={i}
+              className={`nav-btn ${currentQuestionIndex === i ? 'active' : ''}`}
+              onClick={() => setCurrentQuestionIndex(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          {!isRunning && (
+            <button
+              className="nav-btn"
+              style={{ color: '#764ba2' }}
+              onClick={() => {
+                const nextNum = laps.length + 1;
+                setLaps([...laps, { questionNumber: nextNum, duration: 0, score: '' }]);
+                setCurrentQuestionIndex(laps.length);
+              }}
+            >
+              +
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="timer-display-container">
+        {timerMode === 'extended' && laps.length > 0 && (
+          <div className="current-question-info">大問 {currentQuestionIndex + 1} を解答中</div>
+        )}
+        <div className="timer-display">
+          {timerMode === 'extended' && laps[currentQuestionIndex]
+            ? formatTime(laps[currentQuestionIndex].duration)
+            : formatTime(time)}
+        </div>
+        {timerMode === 'extended' && (
+          <div className="total-time-mini">合計時間: {formatTime(time)}</div>
+        )}
+      </div>
 
       <div className="timer-controls">
         {!isRunning ? (
@@ -211,7 +298,7 @@ const TimerPage = () => {
         ) : (
           <>
             <button className="btn btn-accent" onClick={handleLap}>
-              次の大問
+              {timerMode === 'normal' ? '次の大問' : (currentQuestionIndex === laps.length - 1 ? '次の大問へ' : '次へ進む')}
             </button>
             <button className="btn btn-danger" onClick={handleStop}>
               ストップ
@@ -238,7 +325,12 @@ const TimerPage = () => {
             </thead>
             <tbody>
               {laps.map((lap, index) => (
-                <tr key={index}>
+                <tr 
+                  key={index} 
+                  className={`${timerMode === 'extended' && currentQuestionIndex === index ? 'active-row' : ''} ${timerMode === 'extended' ? 'clickable-row' : ''}`}
+                  onClick={() => timerMode === 'extended' && setCurrentQuestionIndex(index)}
+                  title={timerMode === 'extended' ? `大問 ${lap.questionNumber} に切り替え` : ''}
+                >
                   <td>大問 {lap.questionNumber}</td>
                   <td className="time-cell">{formatTime(lap.duration)}</td>
                   <td>
@@ -247,6 +339,7 @@ const TimerPage = () => {
                       className="score-input"
                       value={lap.score}
                       onChange={(e) => handleScoreChange(index, e.target.value)}
+                      onClick={(e) => e.stopPropagation()} // 文字入力時に行クリックイベントが走らないようにする
                       placeholder="-"
                     />
                   </td>

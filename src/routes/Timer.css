@@ -54,13 +54,61 @@
   background-color: white;
 }
 
+.mode-selector {
+  display: flex;
+  background-color: #f1f2f6;
+  padding: 0.25rem;
+  border-radius: 12px;
+  gap: 0.25rem;
+  width: fit-content;
+  margin-bottom: 2rem;
+}
+
+.mode-btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: #57606f;
+}
+
+.mode-btn.active {
+  background-color: white;
+  color: #764ba2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timer-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem 0;
+}
+
+.current-question-info {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #764ba2;
+  margin-bottom: -1rem;
+}
+
 .timer-display {
   font-size: 6rem;
   font-weight: 700;
   text-align: center;
-  margin: 3rem 0;
   color: #2c3e50;
   font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.total-time-mini {
+  font-size: 1.1rem;
+  color: #747d8c;
+  font-weight: 500;
 }
 
 .timer-controls {
@@ -118,6 +166,41 @@
   width: 100%;
 }
 
+.question-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background: white;
+  color: #2c3e50;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  border-color: #764ba2;
+  color: #764ba2;
+}
+
+.nav-btn.active {
+  background-color: #764ba2;
+  border-color: #764ba2;
+  color: white;
+  box-shadow: 0 2px 8px rgba(118, 75, 162, 0.3);
+}
+
 .laps-section {
   margin-top: 2rem;
 }
@@ -153,6 +236,22 @@
 .laps-table td {
   padding: 1rem;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.laps-table tr.active-row {
+  background-color: #f3e8ff;
+}
+
+.laps-table tr.active-row td {
+  border-bottom-color: #d8b4fe;
+}
+
+.laps-table tr.clickable-row {
+  cursor: pointer;
+}
+
+.laps-table tr.clickable-row:hover:not(.active-row) {
+  background-color: #f8fafc;
 }
 
 .time-cell {
