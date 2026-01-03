@@ -17,7 +17,7 @@ const TimerPage = () => {
   const [year, setYear] = useState('2025');
   const [edition, setEdition] = useState('第1回');
   const [showModal, setShowModal] = useState(false);
-  const [timerMode, setTimerMode] = useState<'normal' | 'extended'>('normal');
+  const [timerMode, setTimerMode] = useState<'normal' | 'extended'>('extended');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const timerRef = useRef<number | null>(null);
 
