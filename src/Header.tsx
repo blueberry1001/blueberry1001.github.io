@@ -3,7 +3,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-inner">
-        <a className="logo-link">
+        <div className="logo-link">
           <a href="/#/">
             <div className="site-title">Blueberry1001</div>
           </a>
@@ -22,7 +22,7 @@ const Header = () => {
               <div>Links</div>
             </div>
           </a>
-        </a>
+        </div>
       </div>
     </header>
   );
