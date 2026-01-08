@@ -165,7 +165,9 @@ const ThinkersQuizPage = () => {
       const otherPairs = shuffle(
         candidateThinkers
           .filter((t) => t.id !== thinker.id)
-          .flatMap((t) => t.description.map((d) => ({ desc: d, thinkerId: t.id })))
+          .flatMap((t) =>
+            t.description.map((d) => ({ desc: d, thinkerId: t.id }))
+          )
       ).slice(0, 3);
       const paired = shuffle([{ desc, thinkerId: thinker.id }, ...otherPairs]);
       const options = paired.map((p) => p.desc);
@@ -290,7 +292,9 @@ const ThinkersQuizPage = () => {
       const otherPairs = shuffle(
         currentThinkers
           .filter((t) => t.id !== thinker.id)
-          .flatMap((t) => t.description.map((d) => ({ desc: d, thinkerId: t.id })))
+          .flatMap((t) =>
+            t.description.map((d) => ({ desc: d, thinkerId: t.id }))
+          )
       ).slice(0, 3);
       const paired = shuffle([{ desc, thinkerId: thinker.id }, ...otherPairs]);
       const options = paired.map((p) => p.desc);
