@@ -9,9 +9,12 @@ import Page404 from "./routes/Page404";
 import PrimePage from "./routes/Prime";
 import ProductsPage from "./routes/Products";
 import PublicEthicsPage from "./routes/PublicEthics";
+import PublicEthicsPage_final from "./routes/PublicEthics_final";
 import RandomPickerPage from "./routes/RandomPicker";
 import ThinkersListPage from "./routes/ThinkersList";
-import ThinkersQuizPage from "./routes/ThinkersQuiz";
+import ThinkersListPage_final from "./routes/ThinkersList_final";
+import ThinkersQuizPage from "./routes/ThinkersQuiz.tsx";
+import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
 import TimerPage from "./routes/Timer";
 
 const AppRoutes = () => {
@@ -32,6 +35,18 @@ const AppRoutes = () => {
               <Route element={<PublicEthicsPage />} path="/public_ethics" />
               <Route element={<ThinkersListPage />} path="/thinkers" />
               <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
+              <Route
+                element={<ThinkersListPage_final />}
+                path="/thinkers_final"
+              />
+              <Route
+                element={<ThinkersQuizPage_final />}
+                path="/thinkers_quiz_final"
+              />
+              <Route
+                element={<PublicEthicsPage_final />}
+                path="/public_ethics_final"
+              />
               <Route element={<LinksPage />} path="/links" />
               <Route element={<InvincibleTank />} path="/invincibletank" />
               <Route element={<IonPage />} path="/chemistry_ion" />

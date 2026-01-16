@@ -12,6 +12,11 @@ function ProductsPage() {
           <Link to="/public_ethics">共通テスト対策【公共・倫理】</Link>
         </li>
         <li>
+          <Link to="/public_ethics_final">
+            共通テスト対策【公共・倫理】【最終版】
+          </Link>
+        </li>
+        <li>
           <Link to="/randompicker">ランダムピッカー</Link>
         </li>
         <li>
