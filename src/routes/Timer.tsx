@@ -12,7 +12,9 @@ const TimerPage = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState<LapData[]>([]);
   const [subject, setSubject] = useState("数学 I・A");
-  const [examType, setExamType] = useState<"past" | "workbook">("past");
+  const [examType, setExamType] = useState<"past" | "past_second" | "workbook">(
+    "past_second"
+  );
   const [source, setSource] = useState("本試験");
   const [year, setYear] = useState("2025");
   const [edition, setEdition] = useState("第1回");
@@ -161,7 +163,7 @@ const TimerPage = () => {
   const handleExport = () => {
     // タイトル生成
     let title = "";
-    if (examType === "past") {
+    if (examType === "past" || examType === "past_second") {
       title = `${year}年 ${source}`;
     } else {
       title = `${source} ${edition}`;
@@ -209,31 +211,44 @@ const TimerPage = () => {
             <label>種類</label>
             <select
               onChange={(e) => {
-                const newType = e.target.value as "past" | "workbook";
+                const newType = e.target.value as
+                  | "past"
+                  | "past_second"
+                  | "workbook";
                 setExamType(newType);
                 setSource(newType === "past" ? "本試験" : "実戦問題集（駿台）");
               }}
               value={examType}
             >
-              <option value="past">過去問</option>
+              <option value="past">過去問(共通テスト)</option>
+              <option value="past_second">過去問(二次試験)</option>
               <option value="workbook">問題集</option>
             </select>
           </div>
           <div className="setting-group">
-            <label>{examType === "past" ? "試験" : "問題集"}</label>
+            <label>
+              {examType === "past" || examType === "past_second"
+                ? "試験"
+                : "問題集"}
+            </label>
             <select onChange={(e) => setSource(e.target.value)} value={source}>
-              {(examType === "past" ? PAST_EXAM_SOURCES : WORKBOOK_SOURCES).map(
-                (s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                )
-              )}
+              {(examType === "past" || examType === "past_second"
+                ? PAST_EXAM_SOURCES
+                : WORKBOOK_SOURCES
+              ).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
           </div>
           <div className="setting-group">
-            <label>{examType === "past" ? "年度" : "回"}</label>
-            {examType === "past" ? (
+            <label>
+              {examType === "past" || examType === "past_second"
+                ? "年度"
+                : "回"}
+            </label>
+            {examType === "past" || examType === "past_second" ? (
               <select onChange={(e) => setYear(e.target.value)} value={year}>
                 {YEARS.map((y) => (
                   <option key={y} value={y}>
