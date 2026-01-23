@@ -28,8 +28,10 @@ const TimerPage = () => {
   const timerRef = useRef<number | null>(null);
 
   const SUBJECTS = [
+    "数学",
     "数学 I・A",
     "数学 II・B・C",
+    "英語",
     "英語 (Reading)",
     "英語 (Listening)",
     "国語",
@@ -39,10 +41,10 @@ const TimerPage = () => {
     "地学",
     "公共・倫理",
     "公共・政治経済",
+    "倫理・政治経済",
     "日本史",
     "世界史",
     "地理",
-    "倫理・政治経済",
     "公共",
     "情報",
   ];
