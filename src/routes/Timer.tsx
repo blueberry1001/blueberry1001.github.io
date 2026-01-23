@@ -21,6 +21,10 @@ const TimerPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [timerMode, setTimerMode] = useState<"normal" | "extended">("extended");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [customExamOptions, setCustomExamOptions] = useState<string[]>([]);
+  const [newExamOption, setNewExamOption] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false); // Add a flag to prevent saving immediately after loading
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Add state to track if the dropdown is open
   const timerRef = useRef<number | null>(null);
 
   const SUBJECTS = [
@@ -99,6 +103,58 @@ const TimerPage = () => {
       return () => clearTimeout(timer);
     }
   }, [showModal]);
+
+  // Ensure localStorage data is loaded on component mount
+  useEffect(() => {
+    const savedOptions = localStorage.getItem("customExamOptions");
+    console.log("Loading customExamOptions from localStorage:", savedOptions);
+    if (savedOptions) {
+      try {
+        const parsedOptions = JSON.parse(savedOptions);
+        if (parsedOptions.length === 0) {
+          setCustomExamOptions(["本試験"]);
+        } else {
+          setCustomExamOptions(parsedOptions);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to parse custom exam options from localStorage:",
+          error
+        );
+        setCustomExamOptions(["本試験"]); // Default to "本試験" if parsing fails
+      }
+    } else {
+      setCustomExamOptions(["本試験"]); // Default to "本試験" if no options exist
+    }
+    setIsLoaded(true); // Mark as loaded after initialization
+  }, []);
+
+  // Save custom exam options to localStorage whenever they change, but only after loading is complete
+  useEffect(() => {
+    if (isLoaded) {
+      try {
+        console.log(
+          "Saving customExamOptions to localStorage:",
+          customExamOptions
+        );
+        localStorage.setItem(
+          "customExamOptions",
+          JSON.stringify(customExamOptions)
+        );
+      } catch (error) {
+        console.error(
+          "Failed to save custom exam options to localStorage:",
+          error
+        );
+      }
+    }
+  }, [customExamOptions, isLoaded]);
+
+  useEffect(() => {
+    if (examType === "past_second" && customExamOptions.length > 0) {
+      setSource(customExamOptions[0]);
+    }
+  }, [examType, customExamOptions]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -189,6 +245,19 @@ const TimerPage = () => {
     });
   };
 
+  // Function to add a new exam option
+  const handleAddExamOption = () => {
+    if (newExamOption.trim() && !customExamOptions.includes(newExamOption)) {
+      setCustomExamOptions([...customExamOptions, newExamOption.trim()]);
+      setNewExamOption("");
+    }
+  };
+
+  // Function to remove an exam option
+  const handleRemoveExamOption = (option: string) => {
+    setCustomExamOptions(customExamOptions.filter((opt) => opt !== option));
+  };
+
   return (
     <div className="timer-container">
       <div className="timer-header">
@@ -226,21 +295,161 @@ const TimerPage = () => {
             </select>
           </div>
           <div className="setting-group">
-            <label>
-              {examType === "past" || examType === "past_second"
-                ? "試験"
-                : "問題集"}
-            </label>
-            <select onChange={(e) => setSource(e.target.value)} value={source}>
-              {(examType === "past" || examType === "past_second"
-                ? PAST_EXAM_SOURCES
-                : WORKBOOK_SOURCES
-              ).map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
+            <label>試験</label>
+            {examType === "past_second" ? (
+              <div className="custom-dropdown-container">
+                <div
+                  className="custom-dropdown-wrapper"
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  style={{ position: "relative", cursor: "pointer" }}
+                >
+                  <div
+                    className="custom-dropdown-selected"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      backgroundColor: "#fff",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>{source}</span>
+                    <span
+                      style={{
+                        transform: isDropdownOpen
+                          ? "rotate(180deg)"
+                          : "rotate(0)",
+                        transition: "transform 0.2s",
+                      }}
+                    >
+                      ▼
+                    </span>
+                  </div>
+                  {isDropdownOpen && (
+                    <div
+                      className="custom-dropdown-menu"
+                      onClick={(e) => e.stopPropagation()} // Prevent closing when interacting inside the dropdown
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                        zIndex: 10,
+                        marginTop: "5px",
+                      }}
+                    >
+                      {customExamOptions.map((s) => (
+                        <div
+                          key={s}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "10px",
+                            cursor: "pointer",
+                            borderBottom: "1px solid #eee",
+                            backgroundColor: source === s ? "#f3f4f6" : "#fff",
+                          }}
+                        >
+                          <span
+                            onClick={() => {
+                              setSource(s);
+                              setIsDropdownOpen(false);
+                            }}
+                            style={{ flex: 1 }}
+                          >
+                            {s}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveExamOption(s)}
+                            style={{
+                              padding: "5px 10px",
+                              backgroundColor: "#f44336",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            削除
+                          </button>
+                        </div>
+                      ))}
+                      <div
+                        style={{
+                          padding: "10px 0px 10px 3px",
+                          borderTop: "1px solid #eee",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "relative",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <input
+                            onChange={(e) => setNewExamOption(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleAddExamOption();
+                                e.preventDefault(); // Prevent unintended form submission
+                              }
+                            }}
+                            placeholder=" 新しい試験を追加"
+                            style={{
+                              flex: 1,
+                              padding: "8px 5px 8px 0px", // Add space for the button inside the input
+                              border: "1px solid #ddd",
+                              borderRadius: "4px",
+                              backgroundColor: "#fafafa",
+                              color: "black", // Change text color to black
+                            }}
+                            type="text"
+                            value={newExamOption}
+                          />
+                          <button
+                            onClick={handleAddExamOption}
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              padding: "5px 10px",
+                              backgroundColor: "#4CAF50",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            追加
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <select
+                onChange={(e) => setSource(e.target.value)}
+                value={source}
+              >
+                {(examType === "past"
+                  ? PAST_EXAM_SOURCES
+                  : WORKBOOK_SOURCES
+                ).map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="setting-group">
             <label>
