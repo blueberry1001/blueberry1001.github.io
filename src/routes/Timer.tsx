@@ -261,7 +261,7 @@ const TimerPage = () => {
   return (
     <div className="timer-container">
       <div className="timer-header">
-        <h1>過去問タイマー(共テ用)</h1>
+        <h1>過去問タイマー</h1>
         <div className="timer-settings">
           <div className="setting-group">
             <label>科目</label>
