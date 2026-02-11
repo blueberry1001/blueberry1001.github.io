@@ -123,7 +123,10 @@ function HomePage() {
           <h2>大会・実績</h2>
           <ul className="achievements-list">
             {achievements.map((achievement) => (
-              <li className="achievement-item" key={achievement.year + achievement.title}>
+              <li
+                className="achievement-item"
+                key={achievement.year + achievement.title}
+              >
                 <div className="achievement-year">{achievement.year}</div>
                 <div className="achievement-body">
                   <div className="achievement-title">{achievement.title}</div>
@@ -136,7 +139,22 @@ function HomePage() {
           </ul>
         </section>
 
-        
+        <section className="works-section">
+          <h2>作ったゲーム</h2>
+          <div className="works-card">
+            <p className="works-intro">
+              Unity などを使って、遊んでいて気持ちいい挙動やゲーム性を意識しながら
+              小さなゲームを作っています。
+            </p>
+            <ul className="works-list">
+              {games.map((game) => (
+                <li className="works-item" key={game.name}>
+                  <a href={game.url}>{game.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
       </main>
     </>
   );
