@@ -7,14 +7,9 @@ type Achievement = {
 };
 
 function HomePage() {
-  const games: { name: string; url: string }[] = [
-    { name: "スイカゲーム", url: "suica_game" },
-    { name: "ヘビゲーム", url: "snake" },
-  ];
-
   const achievements: Achievement[] = [
     {
-      year:"2023-25",
+      year: "2023-25",
       title: "SuperCon 2位/本戦出場",
       meta: "Supercomputing Contest '23 本戦出場, '24 2位, '25 本戦出場",
     },
@@ -89,9 +84,12 @@ function HomePage() {
         <section className="profile-section">
           <h2>自己紹介</h2>
           <div className="profile-main-card">
-            <p className="profile-tag">高3 / 筑波大学附属高校 134回生・TCA責任者</p>
+            <p className="profile-tag">
+              高3 / 筑波大学附属高校 134回生・TCA責任者
+            </p>
             <p className="profile-text">
-              競技プログラミングなどをしているBlueberry です。競技プログラミングのほか、ゲーム製作や動画編集などいろいろやっています。
+              競技プログラミングなどをしているBlueberry
+              です。競技プログラミングのほか、ゲーム製作や動画編集などいろいろやっています。
             </p>
             <dl className="profile-meta">
               <div>
@@ -137,23 +135,6 @@ function HomePage() {
               </li>
             ))}
           </ul>
-        </section>
-
-        <section className="works-section">
-          <h2>作ったゲーム</h2>
-          <div className="works-card">
-            <p className="works-intro">
-              Unity などを使って、遊んでいて気持ちいい挙動やゲーム性を意識しながら
-              小さなゲームを作っています。
-            </p>
-            <ul className="works-list">
-              {games.map((game) => (
-                <li className="works-item" key={game.name}>
-                  <a href={game.url}>{game.name}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </section>
       </main>
     </>
