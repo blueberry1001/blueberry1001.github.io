@@ -22,11 +22,13 @@ import ThinkersListPage_final from "./routes/ThinkersList_final";
 import ThinkersQuizPage from "./routes/ThinkersQuiz.tsx";
 import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
 import TimerPage from "./routes/Timer";
-import PortfolioAbout from "./routes/portfolio/PortfolioAbout";
-import PortfolioContact from "./routes/portfolio/PortfolioContact";
+import PortfolioArticleDetail from "./routes/portfolio/PortfolioArticleDetail";
+import PortfolioArticles from "./routes/portfolio/PortfolioArticles";
 import PortfolioHome from "./routes/portfolio/PortfolioHome";
 import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
-import PortfolioProjects from "./routes/portfolio/PortfolioProjects";
+import PortfolioLinks from "./routes/portfolio/PortfolioLinks";
+import PortfolioTimeline from "./routes/portfolio/PortfolioTimeline";
+import PortfolioWorks from "./routes/portfolio/PortfolioWorks";
 
 const LegacyLayout = () => {
   return (
@@ -50,9 +52,14 @@ const AppRoutes = () => {
 
         <Route element={<PortfolioLayout />}>
           <Route element={<PortfolioHome />} path="/home" />
-          <Route element={<PortfolioAbout />} path="/about" />
-          <Route element={<PortfolioProjects />} path="/projects" />
-          <Route element={<PortfolioContact />} path="/contact" />
+          <Route element={<PortfolioWorks />} path="/works" />
+          <Route element={<PortfolioTimeline />} path="/timeline" />
+          <Route element={<PortfolioArticles />} path="/articles" />
+          <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
+          <Route element={<PortfolioLinks />} path="/links" />
+          <Route element={<Navigate replace to="/works" />} path="/about" />
+          <Route element={<Navigate replace to="/works" />} path="/projects" />
+          <Route element={<Navigate replace to="/links" />} path="/contact" />
         </Route>
 
         <Route element={<LegacyLayout />}>
