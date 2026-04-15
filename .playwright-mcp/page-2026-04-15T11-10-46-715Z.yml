@@ -1,0 +1,32 @@
+- generic [ref=e5]:
+  - img [ref=e13]
+  - status
+  - group [ref=e17]:
+    - alert [ref=e19]: Improve performance by enabling hardware acceleration
+    - alert [ref=e21]
+    - button "Learn more" [ref=e23]:
+      - generic:
+        - generic:
+          - generic: Learn more
+    - button "Dismiss" [ref=e25]:
+      - generic:
+        - img
+  - toolbar "Help/zoom toolbar" [ref=e29]:
+    - button "Help" [ref=e31]:
+      - img
+  - region "Consent Manager" [ref=e32]:
+    - generic [ref=e33]:
+      - text: This website uses cookies, pixel tags, and local storage for performance, personalization, and marketing purposes. We use our own cookies and some from third parties. Only essential cookies are turned on by default.
+      - link "Cookies settings" [ref=e34]:
+        - /url: /consent-preferences/
+    - generic [ref=e35]:
+      - button "Do not allow cookies" [ref=e36]:
+        - generic:
+          - generic:
+            - generic: Do not allow cookies
+      - button "Allow all cookies" [ref=e37]:
+        - generic:
+          - generic:
+            - generic: Allow all cookies
+    - button [ref=e39]:
+      - img [ref=e41]

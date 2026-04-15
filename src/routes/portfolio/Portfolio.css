@@ -1,0 +1,279 @@
+.pf-shell {
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0b1630 0%, #17305a 55%, #132645 100%);
+  color: #e7f4ff;
+  display: flex;
+  flex-direction: column;
+}
+
+.pf-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(6, 17, 37, 0.78);
+  border-bottom: 1px solid rgba(117, 183, 255, 0.24);
+  backdrop-filter: blur(8px);
+}
+
+.pf-header-inner {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pf-logo {
+  color: #39b8ff;
+  font-size: 2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pf-nav-desktop {
+  display: none;
+  gap: 1rem;
+}
+
+.pf-nav-link {
+  color: #b3cef0;
+  text-decoration: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pf-nav-link:hover,
+.pf-nav-link.is-active {
+  color: #eff8ff;
+  background: rgba(117, 183, 255, 0.2);
+}
+
+.pf-menu-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(117, 183, 255, 0.4);
+  border-radius: 0.6rem;
+  background: transparent;
+  display: grid;
+  gap: 0.22rem;
+  place-content: center;
+  cursor: pointer;
+}
+
+.pf-menu-button span {
+  width: 1rem;
+  height: 2px;
+  background: #c8e2fb;
+}
+
+.pf-mobile-nav {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: min(260px, 75vw);
+  background: #0f1f3f;
+  border-left: 1px solid rgba(117, 183, 255, 0.28);
+  padding: 5.5rem 1rem 1rem;
+  display: grid;
+  gap: 0.75rem;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  z-index: 30;
+}
+
+.pf-mobile-nav.is-open {
+  transform: translateX(0);
+}
+
+.pf-mobile-link {
+  color: #d8ebff;
+  text-decoration: none;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.6rem;
+}
+
+.pf-mobile-link.is-active {
+  background: rgba(117, 183, 255, 0.22);
+}
+
+.pf-mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 25;
+}
+
+.pf-mobile-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pf-content {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 3.5rem;
+  animation: pf-fade-in 0.35s ease;
+}
+
+@keyframes pf-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pf-hero {
+  min-height: calc(100vh - 14rem);
+  display: grid;
+  align-content: center;
+  gap: 1rem;
+}
+
+.pf-badge {
+  width: fit-content;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(58, 153, 255, 0.18);
+  border: 1px solid rgba(112, 189, 255, 0.35);
+  color: #95ceff;
+  font-size: 0.95rem;
+}
+
+.pf-hero h1 {
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 6rem);
+  line-height: 1;
+  color: #73ceff;
+}
+
+.pf-hero-subtitle {
+  max-width: 38rem;
+  color: #bfdaf3;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  margin: 0.2rem 0 0;
+}
+
+.pf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.pf-primary-action,
+.pf-secondary-action {
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 0.65rem;
+}
+
+.pf-primary-action {
+  background: #39b8ff;
+  color: #08254a;
+  font-weight: 700;
+}
+
+.pf-secondary-action {
+  color: #cde6fb;
+  border: 1px solid rgba(117, 183, 255, 0.45);
+}
+
+.pf-stats {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.pf-stats article,
+.pf-card-grid article {
+  background: rgba(11, 31, 66, 0.72);
+  border: 1px solid rgba(117, 183, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.pf-stats h2,
+.pf-card-grid h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  color: #95ceff;
+}
+
+.pf-stats p,
+.pf-card-grid p {
+  margin: 0;
+  color: #c8ddf1;
+  line-height: 1.7;
+}
+
+.pf-page {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.pf-page h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #79d2ff;
+}
+
+.pf-page > p {
+  margin: 0;
+  color: #bfdaf3;
+}
+
+.pf-card-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.pf-card-grid a {
+  color: #86d7ff;
+}
+
+.pf-inline-link {
+  display: inline-block;
+  margin-top: 0.7rem;
+}
+
+.pf-footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(117, 183, 255, 0.2);
+  padding: 1rem;
+  text-align: center;
+  color: #99c6e9;
+}
+
+.pf-footer p {
+  margin: 0;
+}
+
+.pf-legacy-link {
+  color: #7ecfff;
+  text-decoration: none;
+}
+
+@media (min-width: 840px) {
+  .pf-nav-desktop {
+    display: flex;
+  }
+
+  .pf-menu-button,
+  .pf-mobile-nav,
+  .pf-mobile-backdrop {
+    display: none;
+  }
+}
