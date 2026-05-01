@@ -14,14 +14,9 @@ const PortfolioWorks = () => {
           style={{ animationDelay: "1s" }}
         />
         <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <h1 className="mb-6 bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-6xl font-black tracking-tight text-transparent">
+          <h1 className="bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-6xl font-black tracking-tight text-transparent">
             Works
           </h1>
-          <p className="text-xl font-light leading-relaxed text-slate-300">
-            これまでに制作した作品の一覧です。
-            <br />
-            競技プログラミング、ゲーム開発、ツール制作などに取り組んでいます。
-          </p>
         </div>
       </section>
 
@@ -49,8 +44,12 @@ const PortfolioWorks = () => {
                 </div>
 
                 <div className="p-6 pb-4">
-                  <h2 className="mb-2 text-2xl font-bold text-slate-900">{work.title}</h2>
-                  <p className="text-base leading-relaxed text-slate-600">{work.fullDescription}</p>
+                  <h2 className="mb-2 text-2xl font-bold text-slate-900">
+                    {work.title}
+                  </h2>
+                  <p className="text-base leading-relaxed text-slate-600">
+                    {work.fullDescription}
+                  </p>
                   <div className="mt-4 flex items-center gap-2 text-sm text-slate-500">
                     <Calendar size={16} />
                     <span>{work.date}</span>
@@ -65,7 +64,10 @@ const PortfolioWorks = () => {
                     </div>
                     <ul className="space-y-2">
                       {work.features.map((feature) => (
-                        <li className="flex items-start gap-2 text-sm text-slate-600" key={feature}>
+                        <li
+                          className="flex items-start gap-2 text-sm text-slate-600"
+                          key={feature}
+                        >
                           <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
                           <span>{feature}</span>
                         </li>

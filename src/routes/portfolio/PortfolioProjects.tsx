@@ -9,8 +9,8 @@ const PortfolioProjects = () => {
         <article>
           <h2>Products</h2>
           <p>制作物一覧ページへ移動します。</p>
-          <NavLink className="pf-inline-link" to="/products">
-            Open /products
+          <NavLink className="pf-inline-link" to="/works">
+            Open /works
           </NavLink>
         </article>
         <article>

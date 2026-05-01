@@ -95,29 +95,25 @@ const PortfolioArticleDetail = () => {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-slate-200 pt-8">
-          <h3 className="mb-4 text-xl font-bold text-slate-900">関連リンク</h3>
-          <div className="space-y-3">
-            <a
-              className="group flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-700"
-              href="https://atcoder.jp/users/blueberry1001"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <ExternalLink className="transition-transform group-hover:translate-x-1" size={18} />
-              <span>AtCoderプロフィール</span>
-            </a>
-            <a
-              className="group flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-700"
-              href="https://github.com/blueberry1001"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <ExternalLink className="transition-transform group-hover:translate-x-1" size={18} />
-              <span>GitHubリポジトリ</span>
-            </a>
+        {article.relatedLinks?.length ? (
+          <div className="mt-12 border-t border-slate-200 pt-8">
+            <h3 className="mb-4 text-xl font-bold text-slate-900">関連リンク</h3>
+            <div className="space-y-3">
+              {article.relatedLinks.map((relatedLink) => (
+                <a
+                  className="group flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-700"
+                  href={relatedLink.url}
+                  key={relatedLink.url}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <ExternalLink className="transition-transform group-hover:translate-x-1" size={18} />
+                  <span>{relatedLink.label}</span>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
       </article>
     </div>
   );

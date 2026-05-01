@@ -101,7 +101,7 @@ const PortfolioLayout = () => {
 
       <footer className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-300">
         <div className="mx-auto max-w-6xl px-6 py-12">
-          <div className="mb-8 grid gap-8 md:grid-cols-3">
+          <div className="mb-8 grid gap-8 md:grid-cols-2">
             <div>
               <h3 className="mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-xl font-bold text-transparent">
                 Blueberry
@@ -134,17 +134,6 @@ const PortfolioLayout = () => {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-200">
-                Legacy
-              </h4>
-              <a
-                className="inline-flex rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 transition-all hover:bg-slate-700"
-                href="#/legacy/home"
-              >
-                Legacy Siteを開く
-              </a>
             </div>
           </div>
           <div className="border-t border-slate-700/50 pt-8">

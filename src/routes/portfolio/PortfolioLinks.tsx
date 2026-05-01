@@ -13,9 +13,7 @@ const PortfolioLinks = () => {
           <h1 className="mb-6 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-6xl font-black tracking-tight text-transparent">
             Links
           </h1>
-          <p className="text-xl font-light leading-relaxed text-slate-300">
-            SNS、開発アカウント、外部サービスへのリンク一覧です。
-          </p>
+          <p className="text-xl font-light leading-relaxed text-slate-300"></p>
         </div>
       </section>
 
@@ -30,8 +28,13 @@ const PortfolioLinks = () => {
                 rel="noreferrer"
                 target="_blank"
               >
-                <div className="relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-3xl transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
-                  {link.icon}
+                <div className="relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 p-3 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
+                  <img
+                    alt={`${link.name} icon`}
+                    className="h-full w-full object-contain"
+                    loading="lazy"
+                    src={link.iconUrl}
+                  />
                 </div>
                 <span className="relative text-sm font-semibold text-slate-700 group-hover:text-slate-900">
                   {link.name}

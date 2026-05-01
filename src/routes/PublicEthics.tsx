@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BookOpen, PenSquare } from "lucide-react";
 
 const PublicEthicsPage = () => {
   return (
@@ -15,7 +16,9 @@ const PublicEthicsPage = () => {
 
       <div className="public-ethics-cards">
         <Link className="public-ethics-card" to="/thinkers">
-          <div className="card-icon">📚</div>
+          <div className="card-icon">
+            <BookOpen aria-hidden="true" size={28} />
+          </div>
           <h2>思想家一覧</h2>
           <p>
             共通テストでよく出題される思想家の情報を一覧で確認できます。
@@ -25,7 +28,9 @@ const PublicEthicsPage = () => {
         </Link>
 
         <Link className="public-ethics-card" to="/thinkers_quiz">
-          <div className="card-icon">✏️</div>
+          <div className="card-icon">
+            <PenSquare aria-hidden="true" size={28} />
+          </div>
           <h2>一問一答</h2>
           <p>
             ランダムに出題される問題に答えて、知識を定着させましょう。

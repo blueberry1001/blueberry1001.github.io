@@ -144,64 +144,80 @@ const InvincibleTank = () => {
   }, [location]);
 
   return (
-    <div className="game-page">
-      <div id="unity-container">
-        {!isGameStarted ? (
-          <div className="game-start-overlay">
-            <button className="primary-button" onClick={startGame}>
-              ゲーム開始
-            </button>
+    <section className="min-h-screen bg-slate-50 px-6 py-12">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h1 className="mb-2 text-4xl font-black text-slate-900">Invincible Tank</h1>
+          <p className="text-slate-600">最強の戦車を作ろう！</p>
+        </div>
+
+        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
+          <div className="aspect-video w-full">
+            {!isGameStarted ? (
+              <div className="flex h-full items-center justify-center">
+                <button
+                  className="rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
+                  onClick={startGame}
+                  type="button"
+                >
+                  ゲーム開始
+                </button>
+              </div>
+            ) : (
+              <div className="relative h-full">
+                <canvas
+                  height={1080}
+                  id="unity-canvas"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    background: "#231F20",
+                  }}
+                  width={1920}
+                />
+                <button
+                  className="absolute right-4 top-4 rounded-lg bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 backdrop-blur transition hover:bg-white"
+                  onClick={toggleFullscreen}
+                  type="button"
+                >
+                  全画面表示
+                </button>
+              </div>
+            )}
           </div>
-        ) : (
-          <>
-            <canvas
-              height={1080}
-              id="unity-canvas"
-              style={{
-                width: "100%",
-                height: "100%",
-                background: "#231F20",
-              }}
-              width={1920}
-            />
-            <button className="fullscreen-button" onClick={toggleFullscreen}>
-              全画面表示
-            </button>
-          </>
-        )}
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h2 className="mb-4 text-2xl font-bold text-slate-900">更新履歴</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 text-left text-sm text-slate-600">
+                  <th className="px-3 py-2 font-semibold">バージョン</th>
+                  <th className="px-3 py-2 font-semibold">日付</th>
+                  <th className="px-3 py-2 font-semibold">更新内容</th>
+                </tr>
+              </thead>
+              <tbody>
+                {releaseNotes.map((note) => (
+                  <tr className="border-b border-slate-100 align-top" key={note.version}>
+                    <td className="px-3 py-3 text-sm font-semibold text-slate-900">{note.version}</td>
+                    <td className="px-3 py-3 text-sm text-slate-600">{note.date}</td>
+                    <td className="px-3 py-3">
+                      <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
+                        {note.updates.map((update, index) => (
+                          <li key={index}>{update}</li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div>
-        <h1>Invincible Tank</h1>
-        <p>最強の戦車を作ろう！</p>
-      </div>
-      <div className="release-notes">
-        <h2>更新履歴</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>バージョン</th>
-              <th>日付</th>
-              <th>更新内容</th>
-            </tr>
-          </thead>
-          <tbody>
-            {releaseNotes.map((note) => (
-              <tr key={note.version}>
-                <td>{note.version}</td>
-                <td>{note.date}</td>
-                <td>
-                  <ul>
-                    {note.updates.map((update, index) => (
-                      <li key={index}>{update}</li>
-                    ))}
-                  </ul>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </section>
   );
 };
 

@@ -1,16 +1,37 @@
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { ArrowRight, Calendar, Clock, ExternalLink } from "lucide-react";
 
-import { articles, profileLinks, techStack, timelineEvents, works } from "./portfolioData";
+import {
+  articleSourceMeta,
+  articles,
+  getArticles,
+  profileLinks,
+  techStack,
+  timelineEvents,
+  works,
+  type ArticleItem,
+} from "./portfolioData";
 
-const PortfolioHome = () => {
+export default function PortfolioHome() {
   const navigate = useNavigate();
+  const [articleItems, setArticleItems] = useState<ArticleItem[]>(articles);
+
+  useEffect(() => {
+    let active = true;
+    void getArticles().then((items) => {
+      if (active) setArticleItems(items);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <>
       <section
-        className="relative mt-16 w-full overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-32"
+        className="relative w-full overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-32"
         id="hero"
       >
         <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-blue-500/20 blur-3xl" />
@@ -65,8 +86,13 @@ const PortfolioHome = () => {
                 target="_blank"
               >
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-3xl transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
-                  {link.icon}
+                <div className="relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 p-3 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
+                  <img
+                    alt={`${link.name} icon`}
+                    className="h-full w-full object-contain"
+                    loading="lazy"
+                    src={link.iconUrl}
+                  />
                 </div>
                 <span className="relative text-sm font-semibold text-slate-700 group-hover:text-slate-900">
                   {link.name}
@@ -93,7 +119,7 @@ const PortfolioHome = () => {
           <div className="grid gap-6 md:grid-cols-3">
             {works.map((work) => (
               <NavLink
-                className="group relative z-0 block overflow-hidden rounded-2xl border-2 border-slate-200 transition-all duration-500 hover:z-10 hover:scale-105 hover:border-slate-300 hover:shadow-2xl"
+                className="group relative z-0 flex h-full flex-col overflow-hidden rounded-2xl border-2 border-slate-200 transition-all duration-500 hover:z-10 hover:scale-105 hover:border-slate-300 hover:shadow-2xl"
                 key={work.id}
                 style={{
                   background: `linear-gradient(135deg, ${work.color}18, ${work.color}0D)`,
@@ -101,7 +127,7 @@ const PortfolioHome = () => {
                 to={work.url}
               >
                 <div className="absolute left-0 right-0 top-0 h-1" style={{ backgroundColor: work.color }} />
-                <div className="p-6 pb-4">
+                <div className="flex-1 p-6 pb-4">
                   <div className="mb-3 flex items-start justify-between">
                     <h3 className="text-2xl font-bold text-slate-900">{work.title}</h3>
                     <span className="rounded-lg bg-slate-100 p-2 text-slate-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-slate-200 group-hover:text-slate-700">
@@ -110,10 +136,9 @@ const PortfolioHome = () => {
                   </div>
                   <p className="text-base leading-relaxed text-slate-600">{work.shortDescription}</p>
                 </div>
-                <div className="p-6 pt-0">
-                  <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                    <span className="mt-0.5 text-lg">💬</span>
-                    <p className="text-sm leading-relaxed text-slate-600">{work.fullDescription}</p>
+                <div className="mt-auto p-6 pt-0">
+                  <div className="h-28 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+                    <p className="line-clamp-3 text-sm leading-relaxed text-slate-600">{work.fullDescription}</p>
                   </div>
                 </div>
               </NavLink>
@@ -206,51 +231,83 @@ const PortfolioHome = () => {
             </button>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {articles.slice(0, 3).map((article) => (
-              <NavLink
-                className="group relative z-0 block h-full overflow-hidden rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500 hover:z-10 hover:scale-105 hover:border-slate-300 hover:shadow-2xl"
-                key={article.id}
-                to={`/articles/${article.id}`}
-              >
-                <div className="h-2 w-full" style={{ backgroundColor: article.color }} />
-                <div className="p-6 pb-4">
-                  <h3 className="mb-3 text-xl font-bold text-slate-900 transition-colors group-hover:text-purple-600">
-                    {article.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-600">{article.description}</p>
-                </div>
-                <div className="space-y-4 p-6 pt-0">
-                  <div className="flex items-center gap-4 text-xs text-slate-500">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar size={14} />
-                      <span>{article.date}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock size={14} />
-                      <span>{article.readTime}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {article.tags.slice(0, 2).map((tag) => (
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-600" key={tag}>
-                        {tag}
+            {articleItems.slice(0, 3).map((article) => {
+              const articleUrl = article.url ?? `/articles/${article.id}`;
+              const isExternal = /^https?:\/\//.test(articleUrl);
+              const sourceMeta = articleSourceMeta[article.source];
+              const cardClasses =
+                "group relative z-0 block h-full overflow-hidden rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500 hover:z-10 hover:scale-105 hover:border-slate-300 hover:shadow-2xl";
+              const cardContent = (
+                <>
+                  <div className="h-2 w-full" style={{ backgroundColor: sourceMeta.color }} />
+                  <div className="p-6 pb-4">
+                    <div className="mb-2">
+                      <span
+                        className="rounded-lg px-3 py-1 text-xs font-semibold"
+                        style={{
+                          backgroundColor: `${sourceMeta.color}20`,
+                          color: sourceMeta.color,
+                          border: `1px solid ${sourceMeta.color}40`,
+                        }}
+                      >
+                        {sourceMeta.label}
                       </span>
-                    ))}
+                    </div>
+                    <h3 className="mb-3 text-xl font-bold text-slate-900 transition-colors group-hover:text-purple-600">
+                      {article.title}
+                    </h3>
                   </div>
-                  <div className="border-t border-slate-200 pt-3">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-purple-600 transition-all group-hover:gap-3">
-                      <span>続きを読む</span>
-                      <ArrowRight size={16} />
+                  <div className="space-y-4 p-6 pt-0">
+                    <div className="flex items-center gap-4 text-xs text-slate-500">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar size={14} />
+                        <span>{article.date}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock size={14} />
+                        <span>{article.readTime}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {article.tags.slice(0, 2).map((tag) => (
+                        <span className="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-600" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="border-t border-slate-200 pt-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-purple-600 transition-all group-hover:gap-3">
+                        <span>続きを読む</span>
+                        <ArrowRight size={16} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </NavLink>
-            ))}
+                </>
+              );
+
+              if (isExternal) {
+                return (
+                  <a
+                    className={cardClasses}
+                    href={articleUrl}
+                    key={article.id}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {cardContent}
+                  </a>
+                );
+              }
+
+              return (
+                <NavLink className={cardClasses} key={article.id} to={articleUrl}>
+                  {cardContent}
+                </NavLink>
+              );
+            })}
           </div>
         </div>
       </section>
     </>
   );
-};
-
-export default PortfolioHome;
+}

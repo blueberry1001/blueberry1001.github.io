@@ -13,7 +13,6 @@ import InvincibleTank from "./routes/InvincibleTank";
 import LinksPage from "./routes/Links";
 import Page404 from "./routes/Page404";
 import PrimePage from "./routes/Prime";
-import ProductsPage from "./routes/Products";
 import PublicEthicsPage from "./routes/PublicEthics";
 import PublicEthicsPage_final from "./routes/PublicEthics_final";
 import RandomPickerPage from "./routes/RandomPicker";
@@ -53,6 +52,18 @@ const AppRoutes = () => {
         <Route element={<PortfolioLayout />}>
           <Route element={<PortfolioHome />} path="/home" />
           <Route element={<PortfolioWorks />} path="/works" />
+          <Route element={<Navigate replace to="/works" />} path="/products" />
+          <Route element={<PrimePage />} path="/prime" />
+          <Route element={<TimerPage />} path="/timer" />
+          <Route element={<RandomPickerPage />} path="/randompicker" />
+          <Route element={<PublicEthicsPage />} path="/public_ethics" />
+          <Route element={<PublicEthicsPage_final />} path="/public_ethics_final" />
+          <Route element={<ThinkersListPage />} path="/thinkers" />
+          <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
+          <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
+          <Route element={<ThinkersQuizPage_final />} path="/thinkers_quiz_final" />
+          <Route element={<InvincibleTank />} path="/invincibletank" />
+          <Route element={<IonPage />} path="/chemistry_ion" />
           <Route element={<PortfolioTimeline />} path="/timeline" />
           <Route element={<PortfolioArticles />} path="/articles" />
           <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
@@ -64,22 +75,8 @@ const AppRoutes = () => {
 
         <Route element={<LegacyLayout />}>
           <Route element={<HomePage />} path="/legacy/home" />
-          <Route element={<PrimePage />} path="/prime" />
-          <Route element={<TimerPage />} path="/timer" />
-          <Route element={<RandomPickerPage />} path="/randompicker" />
-          <Route element={<ProductsPage />} path="/products" />
-          <Route element={<PublicEthicsPage />} path="/public_ethics" />
-          <Route element={<ThinkersListPage />} path="/thinkers" />
-          <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
-          <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
-          <Route
-            element={<ThinkersQuizPage_final />}
-            path="/thinkers_quiz_final"
-          />
-          <Route element={<PublicEthicsPage_final />} path="/public_ethics_final" />
-          <Route element={<LinksPage />} path="/links" />
-          <Route element={<InvincibleTank />} path="/invincibletank" />
-          <Route element={<IonPage />} path="/chemistry_ion" />
+          <Route element={<Navigate replace to="/works" />} path="/legacy/products" />
+          <Route element={<LinksPage />} path="/legacy/links" />
           <Route element={<Page404 />} path="*" />
         </Route>
       </Routes>
