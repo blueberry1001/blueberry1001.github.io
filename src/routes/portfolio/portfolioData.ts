@@ -396,13 +396,19 @@ type Rss2JsonItem = {
 const RSS2JSON_ENDPOINT = "https://api.rss2json.com/v1/api.json?rss_url=";
 const HATENA_FEED_URL = "https://blueberry1001.hatenablog.com/feed";
 const NOTE_FEED_URL = "https://note.com/bluebery1001/rss";
-const QIITA_ITEMS_URL = "https://qiita.com/api/v2/users/bluebery1001/items?per_page=100&page=1";
+const QIITA_ITEMS_URL =
+  "https://qiita.com/api/v2/users/bluebery1001/items?per_page=100&page=1";
 const NOTE_DIARY_KEYWORDS = ["日記", "diary", "週報", "雑記"];
-const NOTE_DATE_ONLY_TITLE_REGEX = /^\s*(\d{1,4}\s*[\/／]\s*)?\d{1,2}\s*[\/／]\s*\d{1,2}(?:\s*\([^)]*\))?\s*$/;
+const NOTE_DATE_ONLY_TITLE_REGEX =
+  /^\s*(\d{1,4}\s*[\/／]\s*)?\d{1,2}\s*[\/／]\s*\d{1,2}(?:\s*\([^)]*\))?\s*$/;
 
 let articlesCache: ArticleItem[] | null = null;
 
-const stripHtml = (text: string) => text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+const stripHtml = (text: string) =>
+  text
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const formatDateJa = (iso: string) => {
   const date = new Date(iso);
@@ -412,13 +418,21 @@ const formatDateJa = (iso: string) => {
 
 const toExternalArticle = (
   source: "hatena" | "qiita" | "note",
-  item: { id?: string; title: string; url: string; publishedAt: string; description?: string; tags?: string[] },
+  item: {
+    id?: string;
+    title: string;
+    url: string;
+    publishedAt: string;
+    description?: string;
+    tags?: string[];
+  }
 ): ArticleItem => {
   const fallbackId = encodeURIComponent(item.url).replace(/%/g, "");
   return {
     id: `${source}-${item.id ?? fallbackId}`,
     title: item.title,
-    description: item.description?.trim() || `${articleSourceMeta[source].label}の記事`,
+    description:
+      item.description?.trim() || `${articleSourceMeta[source].label}の記事`,
     publishedAt: item.publishedAt,
     date: formatDateJa(item.publishedAt),
     readTime: "外部",
@@ -430,7 +444,9 @@ const toExternalArticle = (
 };
 
 const fetchRssItems = async (feedUrl: string): Promise<Rss2JsonItem[]> => {
-  const response = await fetch(`${RSS2JSON_ENDPOINT}${encodeURIComponent(feedUrl)}`);
+  const response = await fetch(
+    `${RSS2JSON_ENDPOINT}${encodeURIComponent(feedUrl)}`
+  );
   if (!response.ok) return [];
   const json = (await response.json()) as { items?: Rss2JsonItem[] };
   return json.items ?? [];
@@ -445,7 +461,7 @@ const fetchHatenaArticles = async (): Promise<ArticleItem[]> => {
       publishedAt: item.pubDate,
       description: stripHtml(item.description ?? ""),
       tags: item.categories ?? [],
-    }),
+    })
   );
 };
 
@@ -469,7 +485,7 @@ const fetchQiitaArticles = async (): Promise<ArticleItem[]> => {
       publishedAt: item.created_at,
       description: stripHtml(item.body).slice(0, 120),
       tags: item.tags.map((tag) => tag.name),
-    }),
+    })
   );
 };
 
@@ -478,11 +494,13 @@ const isNoteDiary = (item: Rss2JsonItem) => {
   if (NOTE_DATE_ONLY_TITLE_REGEX.test(normalizedTitle)) return true;
 
   const title = normalizedTitle.toLowerCase();
-  const categories = (item.categories ?? []).map((category) => category.toLowerCase());
+  const categories = (item.categories ?? []).map((category) =>
+    category.toLowerCase()
+  );
   return NOTE_DIARY_KEYWORDS.some(
     (keyword) =>
       title.includes(keyword.toLowerCase()) ||
-      categories.some((category) => category.includes(keyword.toLowerCase())),
+      categories.some((category) => category.includes(keyword.toLowerCase()))
   );
 };
 
@@ -497,7 +515,7 @@ const fetchNoteArticles = async (): Promise<ArticleItem[]> => {
         publishedAt: item.pubDate,
         description: stripHtml(item.description ?? ""),
         tags: item.categories ?? [],
-      }),
+      })
     );
 };
 
@@ -517,9 +535,14 @@ export const getArticles = async (): Promise<ArticleItem[]> => {
   ];
 
   const merged = [...articles, ...externalArticles];
-  const deduped = Array.from(new Map(merged.map((article) => [article.url ?? article.id, article])).values());
+  const deduped = Array.from(
+    new Map(
+      merged.map((article) => [article.url ?? article.id, article])
+    ).values()
+  );
   deduped.sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
 
   articlesCache = deduped;
@@ -539,16 +562,17 @@ export const articleDetailMap: Record<string, ArticleDetail> = {
       {
         heading: "用途",
         content: "表示確認のためのダミー記事です。",
-        points: ["個人サイト種別の色分け確認", "記事詳細ページのレイアウト確認"],
+        points: [
+          "個人サイト種別の色分け確認",
+          "記事詳細ページのレイアウト確認",
+        ],
       },
       {
         heading: "運用メモ",
         content: "不要になったらこのエントリを削除してください。",
       },
     ],
-    relatedLinks: [
-      { label: "Homeへ戻る", url: "/#/home" },
-    ],
+    relatedLinks: [{ label: "Homeへ戻る", url: "/#/home" }],
   },
 };
 
@@ -571,17 +595,17 @@ export const profileLinks = [
   {
     name: "YouTube",
     iconUrl: "https://cdn.simpleicons.org/youtube/FF0000",
-    url: "https://www.youtube.com/channel/UCOJw7xtcqd3EbO9h-jyWrVg1",
+    url: "https://www.youtube.com/@blueberry-1001",
   },
   {
     name: "Note",
     iconUrl: "https://cdn.simpleicons.org/note/111827",
-    url: "https://note.com/",
+    url: "https://note.com/bluebery1001",
   },
   {
     name: "Zenn",
     iconUrl: "https://cdn.simpleicons.org/zenn/3EA8FF",
-    url: "https://zenn.dev/",
+    url: "https://zenn.dev/blueberry1001",
   },
   {
     name: "Qiita",
@@ -591,6 +615,6 @@ export const profileLinks = [
   {
     name: "BlueSky",
     iconUrl: "https://cdn.simpleicons.org/bluesky/0285FF",
-    url: "https://bsky.app/",
+    url: "https://bsky.app/profile/blueberry1001.bsky.social",
   },
 ];
