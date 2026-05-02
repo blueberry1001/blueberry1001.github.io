@@ -1,4 +1,10 @@
-import { useMemo, useRef, useState, type FormEvent, type RefObject } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type RefObject,
+} from "react";
 
 import {
   getUserRatingHistory,
@@ -89,10 +95,7 @@ const makeDiffSeries = (
   };
 
   const eventMap = new Map<string, DiffEvent>();
-  const upsertEvent = (
-    point: RatingHistoryPoint,
-    side: "a" | "b"
-  ) => {
+  const upsertEvent = (point: RatingHistoryPoint, side: "a" | "b") => {
     const key = `${point.timestamp}-${point.contestId}`;
     const existing = eventMap.get(key);
     const event: DiffEvent = existing ?? {
@@ -109,7 +112,8 @@ const makeDiffSeries = (
   bHistory.forEach((point) => upsertEvent(point, "b"));
 
   const events = Array.from(eventMap.values()).sort((left, right) => {
-    if (left.timestamp !== right.timestamp) return left.timestamp - right.timestamp;
+    if (left.timestamp !== right.timestamp)
+      return left.timestamp - right.timestamp;
     return left.contestId.localeCompare(right.contestId);
   });
 
@@ -571,7 +575,12 @@ const AtCoderRatingVisualizer = () => {
         context.lineTo(x + width - r, y);
         context.quadraticCurveTo(x + width, y, x + width, y + r);
         context.lineTo(x + width, y + height - r);
-        context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        context.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - r,
+          y + height
+        );
         context.lineTo(x + r, y + height);
         context.quadraticCurveTo(x, y + height, x, y + height - r);
         context.lineTo(x, y + r);
@@ -586,18 +595,28 @@ const AtCoderRatingVisualizer = () => {
       const dotRadius = 5;
       const canvasLogicalWidth = CHART_WIDTH;
       const legendRows = (() => {
-        const rows: { x: number; y: number; text: string; color: string; width: number }[] = [];
+        const rows: {
+          x: number;
+          y: number;
+          text: string;
+          color: string;
+          width: number;
+        }[] = [];
         const measureCanvas = document.createElement("canvas");
         const measureContext = measureCanvas.getContext("2d");
         if (!measureContext) return rows;
-        measureContext.font = "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
+        measureContext.font =
+          "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
         let x = legendPaddingX;
         let y = legendTop;
         for (const series of activeSeries) {
           const text = series.name;
           const textWidth = measureContext.measureText(text).width;
           const pillWidth = Math.ceil(24 + textWidth + 20);
-          if (x + pillWidth > canvasLogicalWidth - legendPaddingX && x > legendPaddingX) {
+          if (
+            x + pillWidth > canvasLogicalWidth - legendPaddingX &&
+            x > legendPaddingX
+          ) {
             x = legendPaddingX;
             y += pillHeight + pillGap;
           }
@@ -609,7 +628,10 @@ const AtCoderRatingVisualizer = () => {
       const legendHeight =
         legendRows.length === 0
           ? 0
-          : legendRows[legendRows.length - 1].y - legendTop + pillHeight + legendTop;
+          : legendRows[legendRows.length - 1].y -
+            legendTop +
+            pillHeight +
+            legendTop;
 
       const scale = 2;
       const canvas = document.createElement("canvas");
@@ -617,14 +639,17 @@ const AtCoderRatingVisualizer = () => {
       canvas.height = (CHART_HEIGHT + legendHeight) * scale;
       const context = canvas.getContext("2d");
       if (!context) {
-        throw new Error("画像変換に必要な描画コンテキストを取得できませんでした。");
+        throw new Error(
+          "画像変換に必要な描画コンテキストを取得できませんでした..."
+        );
       }
 
       context.setTransform(scale, 0, 0, scale, 0, 0);
       context.fillStyle = "#FFFFFF";
       context.fillRect(0, 0, CHART_WIDTH, CHART_HEIGHT + legendHeight);
       if (legendRows.length > 0) {
-        context.font = "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
+        context.font =
+          "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
         context.textBaseline = "middle";
         for (const row of legendRows) {
           drawRoundedRect(context, row.x, row.y, row.width, pillHeight, 999);
@@ -636,7 +661,13 @@ const AtCoderRatingVisualizer = () => {
 
           context.beginPath();
           context.fillStyle = row.color;
-          context.arc(row.x + 13, row.y + pillHeight / 2, dotRadius, 0, Math.PI * 2);
+          context.arc(
+            row.x + 13,
+            row.y + pillHeight / 2,
+            dotRadius,
+            0,
+            Math.PI * 2
+          );
           context.fill();
 
           context.fillStyle = "#334155";
@@ -696,7 +727,9 @@ const AtCoderRatingVisualizer = () => {
       !navigator.clipboard ||
       typeof ClipboardItem === "undefined"
     ) {
-      setExportError("この環境ではクリップボード画像コピーに対応していません。");
+      setExportError(
+        "この環境ではクリップボード画像コピーに対応していません。"
+      );
       return;
     }
 

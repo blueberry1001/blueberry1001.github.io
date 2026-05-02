@@ -44,7 +44,9 @@ const inFlight = new Map<string, Promise<UserRatingHistoryResult>>();
 
 const normalizeUserName = (user: string) => user.trim().toLowerCase();
 
-const parseHistoryItem = (item: AtCoderApiHistoryItem): RatingHistoryPoint | null => {
+const parseHistoryItem = (
+  item: AtCoderApiHistoryItem
+): RatingHistoryPoint | null => {
   if (item.IsRated === false) return null;
 
   const contestId = item.contestScreenName ?? item.ContestScreenName;
@@ -54,7 +56,8 @@ const parseHistoryItem = (item: AtCoderApiHistoryItem): RatingHistoryPoint | nul
   const newRating = item.newRating ?? item.NewRating;
 
   if (!contestId || !contestName || !endTime) return null;
-  if (typeof oldRating !== "number" || typeof newRating !== "number") return null;
+  if (typeof oldRating !== "number" || typeof newRating !== "number")
+    return null;
 
   const timestamp = new Date(endTime).getTime();
   if (Number.isNaN(timestamp)) return null;
@@ -104,20 +107,30 @@ const extractJsonArrayFromText = (text: string): AtCoderApiHistoryItem[] => {
 
   const firstBracket = text.indexOf("[");
   const lastBracket = text.lastIndexOf("]");
-  if (firstBracket === -1 || lastBracket === -1 || lastBracket <= firstBracket) {
-    throw new Error("Rating history JSON could not be found in proxy response.");
+  if (
+    firstBracket === -1 ||
+    lastBracket === -1 ||
+    lastBracket <= firstBracket
+  ) {
+    throw new Error(
+      "Rating history JSON could not be found in proxy response."
+    );
   }
 
   const jsonText = text.slice(firstBracket, lastBracket + 1);
   const parsed = JSON.parse(jsonText) as AtCoderApiHistoryItem[];
   if (!Array.isArray(parsed)) {
-    throw new Error("Proxy response did not contain a valid rating history array.");
+    throw new Error(
+      "Proxy response did not contain a valid rating history array."
+    );
   }
 
   return parsed;
 };
 
-const fetchHistoryFromNetwork = async (user: string): Promise<RatingHistoryPoint[]> => {
+const fetchHistoryFromNetwork = async (
+  user: string
+): Promise<RatingHistoryPoint[]> => {
   const url = `${JINA_PROXY_BASE}/${encodeURIComponent(user)}/history/json`;
   let response: Response;
   try {
@@ -151,7 +164,9 @@ const fetchHistoryFromNetwork = async (user: string): Promise<RatingHistoryPoint
   return history;
 };
 
-export const getUserRatingHistory = async (userName: string): Promise<UserRatingHistoryResult> => {
+export const getUserRatingHistory = async (
+  userName: string
+): Promise<UserRatingHistoryResult> => {
   const normalized = normalizeUserName(userName);
   if (!normalized) throw new Error("ユーザー名を入力してください。");
 
@@ -202,4 +217,3 @@ export const getUserRatingHistory = async (userName: string): Promise<UserRating
     inFlight.delete(normalized);
   }
 };
-
