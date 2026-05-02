@@ -305,12 +305,12 @@ const Chart = ({
               <polyline
                 fill="none"
                 points={polyline}
-                strokeLn}capun"
-                strokeOpacjoin={
-                  poinOpacCty={prMotColorMode ==d e ating" && !isDiffM= e ? 0.72 : 1}rating" && !isDiffMode ? 0.72 : 1
-                }
+                stroke={line.color}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeOpacity={
+                  pointColorMode === "rating" && !isDiffMode ? 0.72 : 1
+                }
                 strokeWidth={
                   pointColorMode === "rating" && !isDiffMode ? 2.3 : 3
                 }
