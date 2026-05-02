@@ -8,6 +8,7 @@ import {
 
 type ChartMode = "overlay" | "diff";
 type YAxisRangeMode = "auto" | "manual";
+type PointColorMode = "series" | "rating";
 
 type PlotPoint = {
   x: number;
@@ -36,6 +37,17 @@ const RATING_BANDS = [
   { min: 2800, max: 5000, color: "#FF00001A", label: "赤" },
 ];
 
+const getRatingColor = (rating: number) => {
+  if (rating < 400) return "#808080";
+  if (rating < 800) return "#8B4513";
+  if (rating < 1200) return "#008000";
+  if (rating < 1600) return "#00C0C0";
+  if (rating < 2000) return "#0000FF";
+  if (rating < 2400) return "#C0C000";
+  if (rating < 2800) return "#FF8000";
+  return "#FF0000";
+};
+
 const dateInputToTimestamp = (value: string, isEndOfDay = false) => {
   if (!value) return null;
   const timestamp = new Date(
@@ -50,6 +62,14 @@ const timestampToDateInput = (timestamp: number) => {
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
   const day = `${date.getDate()}`.padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+const formatDateLabel = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}/${month}/${day}`;
 };
 
 const makeDiffSeries = (
@@ -75,7 +95,7 @@ const makeDiffSeries = (
 
   return {
     name: `${aName} - ${bName}`,
-    color: "#8B5CF6",
+    color: "#7C83A3",
     points,
   };
 };
@@ -106,10 +126,14 @@ const Chart = ({
   series,
   isDiffMode,
   manualYRange,
+  pointColorMode,
+  xLabelCount,
 }: {
   series: ChartSeries[];
   isDiffMode: boolean;
   manualYRange: { min: number; max: number } | null;
+  pointColorMode: PointColorMode;
+  xLabelCount: number;
 }) => {
   const allPoints = useMemo(
     () => series.flatMap((item) => item.points),
@@ -153,10 +177,23 @@ const Chart = ({
       return MARGIN.left + (index / Math.max(1, pointLength - 1)) * plotWidth;
     return MARGIN.left + ((value - xMin) / (xMax - xMin)) * plotWidth;
   };
+  const xScaleByValue = (value: number) => {
+    if (xMax === xMin) return MARGIN.left + plotWidth / 2;
+    return MARGIN.left + ((value - xMin) / (xMax - xMin)) * plotWidth;
+  };
 
   const yGuideValues = Array.from({ length: 6 }, (_, index) =>
     Math.round(yMin + ((yMax - yMin) * index) / 5)
   );
+  const safeXLabelCount = Math.max(2, Math.min(12, xLabelCount));
+  const xGuideValues =
+    xMax === xMin
+      ? [xMin]
+      : Array.from(
+          { length: safeXLabelCount },
+          (_, index) => xMin + ((xMax - xMin) * index) / (safeXLabelCount - 1)
+        );
+  const plotBottomY = MARGIN.top + plotHeight;
 
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -213,6 +250,36 @@ const Chart = ({
           </g>
         ))}
 
+        <line
+          stroke="#CBD5E1"
+          strokeWidth={1}
+          x1={MARGIN.left}
+          x2={CHART_WIDTH - MARGIN.right}
+          y1={plotBottomY}
+          y2={plotBottomY}
+        />
+        {xGuideValues.map((value, index) => (
+          <g key={`${value}-${index}`}>
+            <line
+              stroke="#94A3B8"
+              strokeWidth={1}
+              x1={xScaleByValue(value)}
+              x2={xScaleByValue(value)}
+              y1={plotBottomY}
+              y2={plotBottomY + 6}
+            />
+            <text
+              fill="#64748B"
+              fontSize={11}
+              textAnchor="middle"
+              x={xScaleByValue(value)}
+              y={CHART_HEIGHT - 10}
+            >
+              {formatDateLabel(value)}
+            </text>
+          </g>
+        ))}
+
         {isDiffMode && yMin <= 0 && yMax >= 0 && (
           <line
             stroke="#0F172A"
@@ -238,16 +305,25 @@ const Chart = ({
               <polyline
                 fill="none"
                 points={polyline}
-                stroke={line.color}
+                strokeLn}capun"
+                strokeOpacjoin={
+                  poinOpacCty={prMotColorMode ==d e ating" && !isDiffM= e ? 0.72 : 1}rating" && !isDiffMode ? 0.72 : 1
+                }
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={3}
+                strokeWidth={
+                  pointColorMode === "rating" && !isDiffMode ? 2.3 : 3
+                }
               />
               {line.points.map((point, index) => (
                 <circle
                   cx={xScale(point.x, index, line.points.length)}
                   cy={yScale(point.y)}
-                  fill={line.color}
+                  fill={
+                    pointColorMode === "rating" && !isDiffMode
+                      ? getRatingColor(point.y)
+                      : line.color
+                  }
                   key={`${line.name}-${point.label}-${point.x}`}
                   r={3.8}
                 >
@@ -275,6 +351,9 @@ const AtCoderRatingVisualizer = () => {
   const [rangeStart, setRangeStart] = useState("");
   const [rangeEnd, setRangeEnd] = useState("");
   const [yAxisRangeMode, setYAxisRangeMode] = useState<YAxisRangeMode>("auto");
+  const [pointColorMode, setPointColorMode] =
+    useState<PointColorMode>("series");
+  const [xLabelCount, setXLabelCount] = useState(5);
   const [manualYMinInput, setManualYMinInput] = useState("");
   const [manualYMaxInput, setManualYMaxInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -395,10 +474,10 @@ const AtCoderRatingVisualizer = () => {
     !isManualYRangeValid;
 
   const latestLeft = hasLeftLoaded
-    ? leftHistory[leftHistory.length - 1]?.newRating ?? null
+    ? (leftHistory[leftHistory.length - 1]?.newRating ?? null)
     : null;
   const latestRight = hasRightLoaded
-    ? rightHistory[rightHistory.length - 1]?.newRating ?? null
+    ? (rightHistory[rightHistory.length - 1]?.newRating ?? null)
     : null;
   const latestDiff =
     diffSeries[0]?.points[diffSeries[0]?.points.length - 1]?.y ?? null;
@@ -449,15 +528,21 @@ const AtCoderRatingVisualizer = () => {
         setMode("overlay");
       }
 
-      const loadedHistories = [leftResult?.history, rightResult?.history].filter(
-        (history): history is RatingHistoryPoint[] => history !== undefined && history !== null
+      const loadedHistories = [
+        leftResult?.history,
+        rightResult?.history,
+      ].filter(
+        (history): history is RatingHistoryPoint[] =>
+          history !== undefined && history !== null
       );
       if (loadedHistories.length > 0) {
         const minTimestamp = Math.min(
           ...loadedHistories.map((history) => history[0].timestamp)
         );
         const maxTimestamp = Math.max(
-          ...loadedHistories.map((history) => history[history.length - 1].timestamp)
+          ...loadedHistories.map(
+            (history) => history[history.length - 1].timestamp
+          )
         );
         setRangeStart(timestampToDateInput(minTimestamp));
         setRangeEnd(timestampToDateInput(maxTimestamp));
@@ -502,7 +587,10 @@ const AtCoderRatingVisualizer = () => {
         <h1 className="mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
           AtCoder Rating Visualizer
         </h1>
-        <p className="mb-8 text-slate-600">レーティング差分いろいろ</p>
+        <p className="mb-8 text-slate-600">
+          2人のAtCoder
+          IDを入れるとレーティング差分などを見れます。1人だけ入力すれば1人のグラフも見れます。期間の指定なども可能
+        </p>
 
         <form
           className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
@@ -676,8 +764,11 @@ const AtCoderRatingVisualizer = () => {
                 </div>
               </div>
 
-              <div className="mt-5 border-t border-slate-200 pt-4">
-                <div className="grid gap-4 md:grid-cols-3">
+              <details className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <summary className="cursor-pointer select-none text-sm font-semibold text-slate-700">
+                  詳細設定
+                </summary>
+                <div className="mt-3 grid gap-4 md:grid-cols-5">
                   <label className="block text-sm font-semibold text-slate-700">
                     縦軸範囲
                     <select
@@ -721,6 +812,36 @@ const AtCoderRatingVisualizer = () => {
                       value={manualYMaxInput}
                     />
                   </label>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    点の色
+                    <select
+                      className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      onChange={(event) =>
+                        setPointColorMode(event.target.value as PointColorMode)
+                      }
+                      style={{ colorScheme: "light" }}
+                      value={pointColorMode}
+                    >
+                      <option value="series">ライン色に合わせる</option>
+                      <option value="rating">レート色に合わせる</option>
+                    </select>
+                  </label>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    日付ラベル数
+                    <select
+                      className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      onChange={(event) =>
+                        setXLabelCount(Number(event.target.value))
+                      }
+                      style={{ colorScheme: "light" }}
+                      value={xLabelCount}
+                    >
+                      <option value={3}>少なめ</option>
+                      <option value={5}>標準</option>
+                      <option value={8}>多め</option>
+                      <option value={12}>かなり多め</option>
+                    </select>
+                  </label>
                 </div>
                 {showManualYRangeError && (
                   <p className="mt-2 text-sm text-rose-600">
@@ -728,7 +849,12 @@ const AtCoderRatingVisualizer = () => {
                     Y最小」で指定してください。通常表示ではY最小は0以上です。
                   </p>
                 )}
-              </div>
+                {mode === "diff" && pointColorMode === "rating" && (
+                  <p className="mt-2 text-sm text-slate-500">
+                    差分モードでは点のレート色は使えないため、ライン色で表示します。
+                  </p>
+                )}
+              </details>
             </div>
 
             <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -749,7 +875,9 @@ const AtCoderRatingVisualizer = () => {
             <Chart
               isDiffMode={mode === "diff"}
               manualYRange={manualYRange}
+              pointColorMode={pointColorMode}
               series={activeSeries}
+              xLabelCount={xLabelCount}
             />
           </>
         )}
