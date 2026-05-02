@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent, type RefObject } from "react";
 
 import {
   getUserRatingHistory,
@@ -174,12 +174,14 @@ const Chart = ({
   manualYRange,
   pointColorMode,
   xLabelCount,
+  svgRef,
 }: {
   series: ChartSeries[];
   isDiffMode: boolean;
   manualYRange: { min: number; max: number } | null;
   pointColorMode: PointColorMode;
   xLabelCount: number;
+  svgRef: RefObject<SVGSVGElement | null>;
 }) => {
   const allPoints = useMemo(
     () => series.flatMap((item) => item.points),
@@ -245,6 +247,7 @@ const Chart = ({
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
       <svg
         className="w-full min-w-[760px]"
+        ref={svgRef}
         viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
       >
         <rect
@@ -403,7 +406,11 @@ const AtCoderRatingVisualizer = () => {
   const [manualYMinInput, setManualYMinInput] = useState("");
   const [manualYMaxInput, setManualYMaxInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
   const [error, setError] = useState("");
+  const [exportError, setExportError] = useState("");
+  const chartSvgRef = useRef<SVGSVGElement | null>(null);
 
   const rangeStartTimestamp = dateInputToTimestamp(rangeStart);
   const rangeEndTimestamp = dateInputToTimestamp(rangeEnd, true);
@@ -525,6 +532,192 @@ const AtCoderRatingVisualizer = () => {
         rightHistory
       ).points.at(-1)?.y ?? null)
     : null;
+
+  const buildChartPngBlob = async () => {
+    const svgElement = chartSvgRef.current;
+    if (!svgElement) {
+      throw new Error("グラフが見つからないため、画像を生成できません。");
+    }
+    let svgObjectUrl: string | null = null;
+    const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
+    clonedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clonedSvg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+    const serialized = new XMLSerializer().serializeToString(clonedSvg);
+    const svgBlob = new Blob([serialized], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+    svgObjectUrl = URL.createObjectURL(svgBlob);
+
+    try {
+      const image = new Image();
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () =>
+          reject(new Error("グラフ画像の生成に失敗しました。"));
+        image.src = svgObjectUrl as string;
+      });
+
+      const drawRoundedRect = (
+        context: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        radius: number
+      ) => {
+        const r = Math.min(radius, width / 2, height / 2);
+        context.beginPath();
+        context.moveTo(x + r, y);
+        context.lineTo(x + width - r, y);
+        context.quadraticCurveTo(x + width, y, x + width, y + r);
+        context.lineTo(x + width, y + height - r);
+        context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        context.lineTo(x + r, y + height);
+        context.quadraticCurveTo(x, y + height, x, y + height - r);
+        context.lineTo(x, y + r);
+        context.quadraticCurveTo(x, y, x + r, y);
+        context.closePath();
+      };
+
+      const legendPaddingX = 16;
+      const legendTop = 14;
+      const pillHeight = 30;
+      const pillGap = 10;
+      const dotRadius = 5;
+      const canvasLogicalWidth = CHART_WIDTH;
+      const legendRows = (() => {
+        const rows: { x: number; y: number; text: string; color: string; width: number }[] = [];
+        const measureCanvas = document.createElement("canvas");
+        const measureContext = measureCanvas.getContext("2d");
+        if (!measureContext) return rows;
+        measureContext.font = "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
+        let x = legendPaddingX;
+        let y = legendTop;
+        for (const series of activeSeries) {
+          const text = series.name;
+          const textWidth = measureContext.measureText(text).width;
+          const pillWidth = Math.ceil(24 + textWidth + 20);
+          if (x + pillWidth > canvasLogicalWidth - legendPaddingX && x > legendPaddingX) {
+            x = legendPaddingX;
+            y += pillHeight + pillGap;
+          }
+          rows.push({ x, y, text, color: series.color, width: pillWidth });
+          x += pillWidth + pillGap;
+        }
+        return rows;
+      })();
+      const legendHeight =
+        legendRows.length === 0
+          ? 0
+          : legendRows[legendRows.length - 1].y - legendTop + pillHeight + legendTop;
+
+      const scale = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = CHART_WIDTH * scale;
+      canvas.height = (CHART_HEIGHT + legendHeight) * scale;
+      const context = canvas.getContext("2d");
+      if (!context) {
+        throw new Error("画像変換に必要な描画コンテキストを取得できませんでした。");
+      }
+
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      context.fillStyle = "#FFFFFF";
+      context.fillRect(0, 0, CHART_WIDTH, CHART_HEIGHT + legendHeight);
+      if (legendRows.length > 0) {
+        context.font = "600 14px system-ui, -apple-system, Segoe UI, sans-serif";
+        context.textBaseline = "middle";
+        for (const row of legendRows) {
+          drawRoundedRect(context, row.x, row.y, row.width, pillHeight, 999);
+          context.fillStyle = "#FFFFFF";
+          context.fill();
+          context.strokeStyle = "#E2E8F0";
+          context.lineWidth = 1;
+          context.stroke();
+
+          context.beginPath();
+          context.fillStyle = row.color;
+          context.arc(row.x + 13, row.y + pillHeight / 2, dotRadius, 0, Math.PI * 2);
+          context.fill();
+
+          context.fillStyle = "#334155";
+          context.fillText(row.text, row.x + 24, row.y + pillHeight / 2);
+        }
+      }
+      context.drawImage(image, 0, legendHeight, CHART_WIDTH, CHART_HEIGHT);
+
+      const usersToken = [leftUserLoaded, rightUserLoaded]
+        .filter((name) => name.trim().length > 0)
+        .join("-vs-")
+        .replace(/[^a-zA-Z0-9_-]/g, "_")
+        .slice(0, 80);
+      const pngBlob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error("PNG画像の生成に失敗しました。"));
+            return;
+          }
+          resolve(blob);
+        }, "image/png");
+      });
+
+      return { pngBlob, usersToken };
+    } finally {
+      if (svgObjectUrl) URL.revokeObjectURL(svgObjectUrl);
+    }
+  };
+
+  const saveChartAsImage = async () => {
+    setExportError("");
+    setIsExporting(true);
+    try {
+      const { pngBlob, usersToken } = await buildChartPngBlob();
+      const link = document.createElement("a");
+      const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
+      const pngObjectUrl = URL.createObjectURL(pngBlob);
+      link.href = pngObjectUrl;
+      link.download = `atcoder-rating-${usersToken || "users"}-${mode}-${stamp}.png`;
+      link.click();
+      URL.revokeObjectURL(pngObjectUrl);
+    } catch (unknownError) {
+      setExportError(
+        unknownError instanceof Error
+          ? unknownError.message
+          : "画像保存に失敗しました。"
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const copyChartImageToClipboard = async () => {
+    setExportError("");
+    if (
+      !window.isSecureContext ||
+      !navigator.clipboard ||
+      typeof ClipboardItem === "undefined"
+    ) {
+      setExportError("この環境ではクリップボード画像コピーに対応していません。");
+      return;
+    }
+
+    setIsCopying(true);
+    try {
+      const { pngBlob } = await buildChartPngBlob();
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "image/png": pngBlob,
+        }),
+      ]);
+    } catch (unknownError) {
+      setExportError(
+        unknownError instanceof Error
+          ? unknownError.message
+          : "クリップボードへのコピーに失敗しました。"
+      );
+    } finally {
+      setIsCopying(false);
+    }
+  };
 
   const loadHistories = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -911,13 +1104,35 @@ const AtCoderRatingVisualizer = () => {
                   {series.name}
                 </span>
               ))}
+              <button
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                disabled={isExporting || isCopying}
+                onClick={saveChartAsImage}
+                type="button"
+              >
+                {isExporting ? "画像生成中..." : "グラフを画像保存"}
+              </button>
+              <button
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                disabled={isExporting || isCopying}
+                onClick={copyChartImageToClipboard}
+                type="button"
+              >
+                {isCopying ? "コピー中..." : "画像をクリップボードにコピー"}
+              </button>
             </div>
+            {exportError && (
+              <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                {exportError}
+              </div>
+            )}
 
             <Chart
               isDiffMode={mode === "diff"}
               manualYRange={manualYRange}
               pointColorMode={pointColorMode}
               series={activeSeries}
+              svgRef={chartSvgRef}
               xLabelCount={xLabelCount}
             />
           </>
