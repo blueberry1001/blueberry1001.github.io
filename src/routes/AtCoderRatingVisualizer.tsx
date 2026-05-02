@@ -31,6 +31,7 @@ type ChartSeries = {
 const CHART_WIDTH = 980;
 const CHART_HEIGHT = 420;
 const MARGIN = { top: 28, right: 24, bottom: 38, left: 58 };
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 const RATING_BANDS = [
   { min: 0, max: 400, color: "#8080801A", label: "灰" },
@@ -54,28 +55,70 @@ const getRatingColor = (rating: number) => {
   return "#FF0000";
 };
 
+const parseDateInput = (value: string) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day) ||
+    month < 1 ||
+    month > 12
+  ) {
+    return null;
+  }
+
+  const maxDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  if (day < 1 || day > maxDay) return null;
+  return { year, month, day };
+};
+
+const toJstDateParts = (timestamp: number) => {
+  if (!Number.isFinite(timestamp)) return null;
+  const date = new Date(timestamp + JST_OFFSET_MS);
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    day: date.getUTCDate(),
+  };
+};
+
 const dateInputToTimestamp = (value: string, isEndOfDay = false) => {
   if (!value) return null;
-  const timestamp = new Date(
-    `${value}${isEndOfDay ? "T23:59:59.999+09:00" : "T00:00:00+09:00"}`
-  ).getTime();
-  return Number.isNaN(timestamp) ? null : timestamp;
+  const parsed = parseDateInput(value);
+  if (!parsed) return null;
+
+  return (
+    Date.UTC(
+      parsed.year,
+      parsed.month - 1,
+      parsed.day,
+      isEndOfDay ? 23 : 0,
+      isEndOfDay ? 59 : 0,
+      isEndOfDay ? 59 : 0,
+      isEndOfDay ? 999 : 0
+    ) - JST_OFFSET_MS
+  );
 };
 
 const timestampToDateInput = (timestamp: number) => {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const parts = toJstDateParts(timestamp);
+  if (!parts) return "";
+  const month = `${parts.month}`.padStart(2, "0");
+  const day = `${parts.day}`.padStart(2, "0");
+  return `${parts.year}-${month}-${day}`;
 };
 
 const formatDateLabel = (timestamp: number) => {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}/${month}/${day}`;
+  const parts = toJstDateParts(timestamp);
+  if (!parts) return "-";
+  const month = `${parts.month}`.padStart(2, "0");
+  const day = `${parts.day}`.padStart(2, "0");
+  return `${parts.year}/${month}/${day}`;
 };
 
 const makeDiffSeries = (
@@ -185,7 +228,7 @@ const Chart = ({
   manualYRange: { min: number; max: number } | null;
   pointColorMode: PointColorMode;
   xLabelCount: number;
-  svgRef: RefObject<SVGSVGElement | null>;
+  svgRef: RefObject<SVGSVGElement>;
 }) => {
   const allPoints = useMemo(
     () => series.flatMap((item) => item.points),
@@ -414,10 +457,18 @@ const AtCoderRatingVisualizer = () => {
   const [isCopying, setIsCopying] = useState(false);
   const [error, setError] = useState("");
   const [exportError, setExportError] = useState("");
-  const chartSvgRef = useRef<SVGSVGElement | null>(null);
+  const chartSvgRef = useRef<SVGSVGElement>(null);
 
   const rangeStartTimestamp = dateInputToTimestamp(rangeStart);
   const rangeEndTimestamp = dateInputToTimestamp(rangeEnd, true);
+  const isRangeStartValid =
+    rangeStart === "" || parseDateInput(rangeStart) !== null;
+  const isRangeEndValid = rangeEnd === "" || parseDateInput(rangeEnd) !== null;
+  const hasInvalidRangeInput = !isRangeStartValid || !isRangeEndValid;
+  const isRangeOrderInvalid =
+    rangeStartTimestamp !== null &&
+    rangeEndTimestamp !== null &&
+    rangeStartTimestamp > rangeEndTimestamp;
   const normalizedLeftInput = leftUserInput.trim().toLowerCase();
   const normalizedRightInput = rightUserInput.trim().toLowerCase();
 
@@ -1030,6 +1081,16 @@ const AtCoderRatingVisualizer = () => {
                   </div>
                 </div>
               </div>
+              {hasInvalidRangeInput && (
+                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                  日付の形式が不正です。存在しない日付（例: 2026-04-31）は指定できません。
+                </p>
+              )}
+              {!hasInvalidRangeInput && isRangeOrderInvalid && (
+                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                  範囲開始は範囲終了以前の日付を指定してください。
+                </p>
+              )}
 
               <details className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <summary className="cursor-pointer select-none text-sm font-semibold text-slate-700">
