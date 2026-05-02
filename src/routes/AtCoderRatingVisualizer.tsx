@@ -76,22 +76,68 @@ const makeDiffSeries = (
   aName: string,
   bName: string,
   aHistory: RatingHistoryPoint[],
-  bHistory: RatingHistoryPoint[]
+  bHistory: RatingHistoryPoint[],
+  minTimestamp: number | null = null,
+  maxTimestamp: number | null = null
 ): ChartSeries => {
-  const bByContest = new Map(bHistory.map((point) => [point.contestId, point]));
-  const points = aHistory
-    .filter((point) => bByContest.has(point.contestId))
-    .map((aPoint) => {
-      const bPoint = bByContest.get(aPoint.contestId);
-      if (!bPoint) return null;
-      return {
-        x: aPoint.timestamp,
-        y: aPoint.newRating - bPoint.newRating,
-        label: aPoint.contestName,
-      };
-    })
-    .filter((point): point is PlotPoint => point !== null)
-    .sort((left, right) => left.x - right.x);
+  type DiffEvent = {
+    timestamp: number;
+    contestId: string;
+    contestName: string;
+    aNewRating?: number;
+    bNewRating?: number;
+  };
+
+  const eventMap = new Map<string, DiffEvent>();
+  const upsertEvent = (
+    point: RatingHistoryPoint,
+    side: "a" | "b"
+  ) => {
+    const key = `${point.timestamp}-${point.contestId}`;
+    const existing = eventMap.get(key);
+    const event: DiffEvent = existing ?? {
+      timestamp: point.timestamp,
+      contestId: point.contestId,
+      contestName: point.contestName,
+    };
+    if (side === "a") event.aNewRating = point.newRating;
+    else event.bNewRating = point.newRating;
+    eventMap.set(key, event);
+  };
+
+  aHistory.forEach((point) => upsertEvent(point, "a"));
+  bHistory.forEach((point) => upsertEvent(point, "b"));
+
+  const events = Array.from(eventMap.values()).sort((left, right) => {
+    if (left.timestamp !== right.timestamp) return left.timestamp - right.timestamp;
+    return left.contestId.localeCompare(right.contestId);
+  });
+
+  let currentARating: number | null = aHistory[0]?.oldRating ?? null;
+  let currentBRating: number | null = bHistory[0]?.oldRating ?? null;
+  const points: PlotPoint[] = [];
+
+  for (const event of events) {
+    if (maxTimestamp !== null && event.timestamp > maxTimestamp) break;
+
+    if (event.aNewRating !== undefined) currentARating = event.aNewRating;
+    if (event.bNewRating !== undefined) currentBRating = event.bNewRating;
+
+    if (minTimestamp !== null && event.timestamp < minTimestamp) continue;
+    if (currentARating === null || currentBRating === null) continue;
+
+    const participant =
+      event.aNewRating !== undefined && event.bNewRating !== undefined
+        ? "両者"
+        : event.aNewRating !== undefined
+          ? aName
+          : bName;
+    points.push({
+      x: event.timestamp,
+      y: currentARating - currentBRating,
+      label: `${event.contestName} (${participant})`,
+    });
+  }
 
   return {
     name: `${aName} - ${bName}`,
@@ -426,22 +472,14 @@ const AtCoderRatingVisualizer = () => {
 
   const diffSeries = useMemo<ChartSeries[]>(() => {
     if (!hasBothLoaded) return [];
-    const rangeFilteredLeft = filterByRange(
-      leftHistory,
-      rangeStartTimestamp,
-      rangeEndTimestamp
-    );
-    const rangeFilteredRight = filterByRange(
-      rightHistory,
-      rangeStartTimestamp,
-      rangeEndTimestamp
-    );
     return [
       makeDiffSeries(
         leftUserLoaded,
         rightUserLoaded,
-        rangeFilteredLeft,
-        rangeFilteredRight
+        leftHistory,
+        rightHistory,
+        rangeStartTimestamp,
+        rangeEndTimestamp
       ),
     ];
   }, [
@@ -479,8 +517,14 @@ const AtCoderRatingVisualizer = () => {
   const latestRight = hasRightLoaded
     ? (rightHistory[rightHistory.length - 1]?.newRating ?? null)
     : null;
-  const latestDiff =
-    diffSeries[0]?.points[diffSeries[0]?.points.length - 1]?.y ?? null;
+  const latestDiff = hasBothLoaded
+    ? (makeDiffSeries(
+        leftUserLoaded,
+        rightUserLoaded,
+        leftHistory,
+        rightHistory
+      ).points.at(-1)?.y ?? null)
+    : null;
 
   const loadHistories = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -688,9 +732,6 @@ const AtCoderRatingVisualizer = () => {
                   <p className="text-xs text-violet-700">最新差分 (A - B)</p>
                   <p className="text-3xl font-bold text-violet-900">
                     {latestDiff ?? "-"}
-                  </p>
-                  <p className="text-xs text-violet-700">
-                    差分モードでは同一コンテストのみ比較します
                   </p>
                 </div>
               )}
