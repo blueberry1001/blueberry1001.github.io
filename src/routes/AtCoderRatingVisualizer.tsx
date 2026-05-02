@@ -294,9 +294,15 @@ const AtCoderRatingVisualizer = () => {
     };
   }, [leftHistory, rightHistory]);
 
-  const overlaySeries = useMemo<ChartSeries[]>(
-    () => [
-      {
+  const hasLeftLoaded = leftHistory.length > 0 && leftUserLoaded !== "";
+  const hasRightLoaded = rightHistory.length > 0 && rightUserLoaded !== "";
+  const hasBothLoaded = hasLeftLoaded && hasRightLoaded;
+
+  const overlaySeries = useMemo<ChartSeries[]>(() => {
+    const series: ChartSeries[] = [];
+
+    if (hasLeftLoaded) {
+      series.push({
         name: leftUserLoaded,
         color: "#2563EB",
         points: filterByRange(
@@ -308,8 +314,11 @@ const AtCoderRatingVisualizer = () => {
           y: point.newRating,
           label: point.contestName,
         })),
-      },
-      {
+      });
+    }
+
+    if (hasRightLoaded) {
+      series.push({
         name: rightUserLoaded,
         color: "#EF4444",
         points: filterByRange(
@@ -321,19 +330,23 @@ const AtCoderRatingVisualizer = () => {
           y: point.newRating,
           label: point.contestName,
         })),
-      },
-    ],
-    [
-      leftHistory,
-      leftUserLoaded,
-      rangeEndTimestamp,
-      rangeStartTimestamp,
-      rightHistory,
-      rightUserLoaded,
-    ]
-  );
+      });
+    }
+
+    return series;
+  }, [
+    hasLeftLoaded,
+    hasRightLoaded,
+    leftHistory,
+    leftUserLoaded,
+    rangeEndTimestamp,
+    rangeStartTimestamp,
+    rightHistory,
+    rightUserLoaded,
+  ]);
 
   const diffSeries = useMemo<ChartSeries[]>(() => {
+    if (!hasBothLoaded) return [];
     const rangeFilteredLeft = filterByRange(
       leftHistory,
       rangeStartTimestamp,
@@ -355,6 +368,7 @@ const AtCoderRatingVisualizer = () => {
   }, [
     leftHistory,
     leftUserLoaded,
+    hasBothLoaded,
     rangeEndTimestamp,
     rangeStartTimestamp,
     rightHistory,
@@ -380,8 +394,12 @@ const AtCoderRatingVisualizer = () => {
     (manualYMinInput !== "" || manualYMaxInput !== "") &&
     !isManualYRangeValid;
 
-  const latestLeft = leftHistory[leftHistory.length - 1]?.newRating ?? null;
-  const latestRight = rightHistory[rightHistory.length - 1]?.newRating ?? null;
+  const latestLeft = hasLeftLoaded
+    ? leftHistory[leftHistory.length - 1]?.newRating ?? null
+    : null;
+  const latestRight = hasRightLoaded
+    ? rightHistory[rightHistory.length - 1]?.newRating ?? null
+    : null;
   const latestDiff =
     diffSeries[0]?.points[diffSeries[0]?.points.length - 1]?.y ?? null;
 
@@ -393,42 +411,53 @@ const AtCoderRatingVisualizer = () => {
     try {
       const left = normalizedLeftInput;
       const right = normalizedRightInput;
-      if (!left || !right) throw new Error("ユーザー名を2つ入力してください。");
+      if (!left && !right) {
+        throw new Error("ユーザー名を少なくとも1つ入力してください。");
+      }
 
-      if (left === right) {
-        const result = await getUserRatingHistory(left);
-        setLeftHistory(result.history);
-        setRightHistory(result.history);
-        setLeftUserLoaded(left);
-        setRightUserLoaded(right);
-        setLeftSource(result.source);
-        setRightSource(result.source);
-        setRangeStart(timestampToDateInput(result.history[0].timestamp));
-        setRangeEnd(
-          timestampToDateInput(
-            result.history[result.history.length - 1].timestamp
-          )
-        );
-      } else {
-        const [leftResult, rightResult] = await Promise.all([
-          getUserRatingHistory(left),
-          getUserRatingHistory(right),
-        ]);
+      const leftPromise = left ? getUserRatingHistory(left) : null;
+      const rightPromise =
+        right && right !== left ? getUserRatingHistory(right) : null;
 
+      const [leftResultRaw, rightResultRaw] = await Promise.all([
+        leftPromise ?? Promise.resolve(null),
+        rightPromise ?? Promise.resolve(null),
+      ]);
+      const leftResult = leftResultRaw;
+      const rightResult =
+        right && right === left && leftResult ? leftResult : rightResultRaw;
+
+      if (leftResult) {
         setLeftHistory(leftResult.history);
-        setRightHistory(rightResult.history);
         setLeftUserLoaded(leftResult.user);
-        setRightUserLoaded(rightResult.user);
         setLeftSource(leftResult.source);
-        setRightSource(rightResult.source);
+      } else {
+        setLeftHistory([]);
+        setLeftUserLoaded("");
+      }
 
+      if (rightResult) {
+        setRightHistory(rightResult.history);
+        setRightUserLoaded(rightResult.user);
+        setRightSource(rightResult.source);
+      } else {
+        setRightHistory([]);
+        setRightUserLoaded("");
+      }
+
+      if (!(leftResult && rightResult) && mode === "diff") {
+        setMode("overlay");
+      }
+
+      const loadedHistories = [leftResult?.history, rightResult?.history].filter(
+        (history): history is RatingHistoryPoint[] => history !== undefined && history !== null
+      );
+      if (loadedHistories.length > 0) {
         const minTimestamp = Math.min(
-          leftResult.history[0].timestamp,
-          rightResult.history[0].timestamp
+          ...loadedHistories.map((history) => history[0].timestamp)
         );
         const maxTimestamp = Math.max(
-          leftResult.history[leftResult.history.length - 1].timestamp,
-          rightResult.history[rightResult.history.length - 1].timestamp
+          ...loadedHistories.map((history) => history[history.length - 1].timestamp)
         );
         setRangeStart(timestampToDateInput(minTimestamp));
         setRangeEnd(timestampToDateInput(maxTimestamp));
@@ -465,7 +494,7 @@ const AtCoderRatingVisualizer = () => {
     setRangeEnd(timestampToDateInput(endTimestamp));
   };
 
-  const hasLoaded = leftHistory.length > 0 && rightHistory.length > 0;
+  const hasLoaded = hasLeftLoaded || hasRightLoaded;
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-10">
@@ -544,33 +573,39 @@ const AtCoderRatingVisualizer = () => {
         {hasLoaded && (
           <>
             <div className="mb-6 grid gap-4 md:grid-cols-3">
-              <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-                <p className="text-xs text-blue-700">最新レート (A)</p>
-                <p className="text-3xl font-bold text-blue-900">
-                  {latestLeft ?? "-"}
-                </p>
-                <p className="text-xs text-blue-700">
-                  {leftUserLoaded} / source: {leftSource}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
-                <p className="text-xs text-red-700">最新レート (B)</p>
-                <p className="text-3xl font-bold text-red-900">
-                  {latestRight ?? "-"}
-                </p>
-                <p className="text-xs text-red-700">
-                  {rightUserLoaded} / source: {rightSource}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
-                <p className="text-xs text-violet-700">最新差分 (A - B)</p>
-                <p className="text-3xl font-bold text-violet-900">
-                  {latestDiff ?? "-"}
-                </p>
-                <p className="text-xs text-violet-700">
-                  差分モードでは同一コンテストのみ比較します
-                </p>
-              </div>
+              {hasLeftLoaded && (
+                <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                  <p className="text-xs text-blue-700">最新レート (A)</p>
+                  <p className="text-3xl font-bold text-blue-900">
+                    {latestLeft ?? "-"}
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    {leftUserLoaded} / source: {leftSource}
+                  </p>
+                </div>
+              )}
+              {hasRightLoaded && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
+                  <p className="text-xs text-red-700">最新レート (B)</p>
+                  <p className="text-3xl font-bold text-red-900">
+                    {latestRight ?? "-"}
+                  </p>
+                  <p className="text-xs text-red-700">
+                    {rightUserLoaded} / source: {rightSource}
+                  </p>
+                </div>
+              )}
+              {hasBothLoaded && (
+                <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
+                  <p className="text-xs text-violet-700">最新差分 (A - B)</p>
+                  <p className="text-3xl font-bold text-violet-900">
+                    {latestDiff ?? "-"}
+                  </p>
+                  <p className="text-xs text-violet-700">
+                    差分モードでは同一コンテストのみ比較します
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
