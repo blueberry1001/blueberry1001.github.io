@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Header from "./Header";
+import AtCoderRatingVisualizer from "./routes/AtCoderRatingVisualizer";
 import IonPage from "./routes/Chemistry_ion";
 import HomePage from "./routes/Home";
 import InvincibleTank from "./routes/InvincibleTank";
@@ -56,6 +57,7 @@ const AppRoutes = () => {
           <Route element={<PrimePage />} path="/prime" />
           <Route element={<TimerPage />} path="/timer" />
           <Route element={<RandomPickerPage />} path="/randompicker" />
+          <Route element={<AtCoderRatingVisualizer />} path="/atcoder-rating-visualizer" />
           <Route element={<PublicEthicsPage />} path="/public_ethics" />
           <Route element={<PublicEthicsPage_final />} path="/public_ethics_final" />
           <Route element={<ThinkersListPage />} path="/thinkers" />

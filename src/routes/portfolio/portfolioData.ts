@@ -72,6 +72,24 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "atcoder-rating-visualizer",
+    title: "AtCoder Rating Visualizer",
+    shortDescription: "2人のレーティング推移を比較できる高機能ビジュアライザ",
+    fullDescription:
+      "AtCoderのレーティング遷移を可視化し、重ね描画・差分描画・範囲指定に対応した比較ツールです。ユーザー履歴はキャッシュしてAPIリクエストを削減しています。",
+    features: [
+      "2人のレーティング推移を重ねて表示",
+      "2人のレーティング差分のみを表示",
+      "期間指定・直近N件での範囲絞り込み",
+      "localStorage + メモリキャッシュによるリクエスト最適化",
+    ],
+    technologies: ["React", "TypeScript", "SVG", "AtCoder API"],
+    date: "2026年5月",
+    url: "/atcoder-rating-visualizer",
+    color: "#7C3AED",
+    gradient: "from-violet-500 to-purple-600",
+  },
+  {
     id: "invincible-tank",
     title: "InvincibleTank",
     shortDescription: "戦車を操作して敵を倒すシューティングゲーム",
@@ -354,19 +372,19 @@ export const timelineYearStyles: Record<string, TimelineYearStyle> = {
   },
 };
 
-export const articles: ArticleItem[] = [
-  {
-    id: "debug-sample-personal",
-    title: "デバッグ用サンプル記事（個人サイト）",
-    description: "外部記事読み込み時の表示確認用に残しているサンプル記事です。",
-    publishedAt: "2000-01-01T00:00:00+09:00",
-    date: "2000年1月1日",
-    readTime: "1分",
-    tags: ["debug", "sample"],
-    category: "educational",
-    source: "personal",
-  },
-];
+const debugSampleArticle: ArticleItem = {
+  id: "debug-sample-personal",
+  title: "デバッグ用サンプル記事（個人サイト）",
+  description: "外部記事読み込み時の表示確認用に残しているサンプル記事です。",
+  publishedAt: "2000-01-01T00:00:00+09:00",
+  date: "2000年1月1日",
+  readTime: "1分",
+  tags: ["debug", "sample"],
+  category: "educational",
+  source: "personal",
+};
+
+export const articles: ArticleItem[] = import.meta.env.DEV ? [debugSampleArticle] : [];
 
 export const articleCategoryLabels: Record<ArticleItem["category"], string> = {
   achievement: "達成",
@@ -549,32 +567,34 @@ export const getArticles = async (): Promise<ArticleItem[]> => {
   return deduped;
 };
 
-export const articleDetailMap: Record<string, ArticleDetail> = {
-  "debug-sample-personal": {
-    title: "デバッグ用サンプル記事（個人サイト）",
-    date: "2000年1月1日",
-    readTime: "1分",
-    tags: ["debug", "sample"],
-    thumbnail: "#6366F1",
-    intro:
-      "このサンプル記事は、外部サイトの記事を自動取り込みした際にUI表示を確認するために残しています。",
-    sections: [
-      {
-        heading: "用途",
-        content: "表示確認のためのダミー記事です。",
-        points: [
-          "個人サイト種別の色分け確認",
-          "記事詳細ページのレイアウト確認",
-        ],
-      },
-      {
-        heading: "運用メモ",
-        content: "不要になったらこのエントリを削除してください。",
-      },
-    ],
-    relatedLinks: [{ label: "Homeへ戻る", url: "/#/home" }],
-  },
+const debugSampleArticleDetail: ArticleDetail = {
+  title: "デバッグ用サンプル記事（個人サイト）",
+  date: "2000年1月1日",
+  readTime: "1分",
+  tags: ["debug", "sample"],
+  thumbnail: "#6366F1",
+  intro:
+    "このサンプル記事は、外部サイトの記事を自動取り込みした際にUI表示を確認するために残しています。",
+  sections: [
+    {
+      heading: "用途",
+      content: "表示確認のためのダミー記事です。",
+      points: [
+        "個人サイト種別の色分け確認",
+        "記事詳細ページのレイアウト確認",
+      ],
+    },
+    {
+      heading: "運用メモ",
+      content: "不要になったらこのエントリを削除してください。",
+    },
+  ],
+  relatedLinks: [{ label: "Homeへ戻る", url: "/#/home" }],
 };
+
+export const articleDetailMap: Record<string, ArticleDetail> = import.meta.env.DEV
+  ? { "debug-sample-personal": debugSampleArticleDetail }
+  : {};
 
 export const profileLinks = [
   {
