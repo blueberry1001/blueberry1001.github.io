@@ -22,6 +22,7 @@ type CacheEntry = {
 };
 
 type AtCoderApiHistoryItem = {
+  IsRated?: boolean;
   contestName?: string;
   contestScreenName?: string;
   endTime?: string;
@@ -36,6 +37,7 @@ type AtCoderApiHistoryItem = {
 
 const CACHE_TTL_MS = 1000 * 60 * 60 * 6;
 const STORAGE_KEY = "atcoder-rating-history-cache-v1";
+const JINA_PROXY_BASE = "https://r.jina.ai/http://atcoder.jp/users";
 
 const memoryCache = new Map<string, CacheEntry>();
 const inFlight = new Map<string, Promise<UserRatingHistoryResult>>();
@@ -43,6 +45,8 @@ const inFlight = new Map<string, Promise<UserRatingHistoryResult>>();
 const normalizeUserName = (user: string) => user.trim().toLowerCase();
 
 const parseHistoryItem = (item: AtCoderApiHistoryItem): RatingHistoryPoint | null => {
+  if (item.IsRated === false) return null;
+
   const contestId = item.contestScreenName ?? item.ContestScreenName;
   const contestName = item.contestName ?? item.ContestName;
   const endTime = item.endTime ?? item.EndTime;
@@ -90,21 +94,48 @@ const writeLocalStorageCache = (cache: Record<string, CacheEntry>) => {
   }
 };
 
+const extractJsonArrayFromText = (text: string): AtCoderApiHistoryItem[] => {
+  try {
+    const parsed = JSON.parse(text) as AtCoderApiHistoryItem[];
+    if (Array.isArray(parsed)) return parsed;
+  } catch {
+    // ignore and fallback to wrapped text parsing
+  }
+
+  const firstBracket = text.indexOf("[");
+  const lastBracket = text.lastIndexOf("]");
+  if (firstBracket === -1 || lastBracket === -1 || lastBracket <= firstBracket) {
+    throw new Error("Rating history JSON could not be found in proxy response.");
+  }
+
+  const jsonText = text.slice(firstBracket, lastBracket + 1);
+  const parsed = JSON.parse(jsonText) as AtCoderApiHistoryItem[];
+  if (!Array.isArray(parsed)) {
+    throw new Error("Proxy response did not contain a valid rating history array.");
+  }
+
+  return parsed;
+};
+
 const fetchHistoryFromNetwork = async (user: string): Promise<RatingHistoryPoint[]> => {
-  const url = `https://atcoder-api.kenkoooo.com/atcoder-api/v3/user/rating?user=${encodeURIComponent(
-    user
-  )}`;
-  const response = await fetch(url);
-  if (!response.ok) {
+  const url = `${JINA_PROXY_BASE}/${encodeURIComponent(user)}/history/json`;
+  let response: Response;
+  try {
+    response = await fetch(url);
+  } catch (error) {
     throw new Error(
-      `AtCoder API request failed (status: ${response.status}) for user "${user}".`
+      `AtCoder履歴の取得に失敗しました（ネットワークまたはCORS由来の可能性）。(${String(error)})`
     );
   }
 
-  const json = (await response.json()) as AtCoderApiHistoryItem[];
-  if (!Array.isArray(json)) {
-    throw new Error(`Unexpected AtCoder API response for user "${user}".`);
+  if (!response.ok) {
+    throw new Error(
+      `AtCoder履歴の取得に失敗しました (status: ${response.status}) for user "${user}".`
+    );
   }
+
+  const responseText = await response.text();
+  const json = extractJsonArrayFromText(responseText);
 
   const history = json
     .map((item) => parseHistoryItem(item))

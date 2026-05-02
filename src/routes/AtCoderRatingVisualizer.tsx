@@ -1,8 +1,13 @@
-import { type FormEvent, useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
-import { getUserRatingHistory, type CacheSource, type RatingHistoryPoint } from "./atcoderRatingApi";
+import {
+  getUserRatingHistory,
+  type CacheSource,
+  type RatingHistoryPoint,
+} from "./atcoderRatingApi";
 
 type ChartMode = "overlay" | "diff";
+type YAxisRangeMode = "auto" | "manual";
 
 type PlotPoint = {
   x: number;
@@ -91,10 +96,25 @@ const buildPolyline = (
   xValueToSvg: (value: number, index: number) => number,
   yValueToSvg: (value: number) => number
 ) =>
-  points.map((point, index) => `${xValueToSvg(point.x, index)},${yValueToSvg(point.y)}`).join(" ");
+  points
+    .map(
+      (point, index) => `${xValueToSvg(point.x, index)},${yValueToSvg(point.y)}`
+    )
+    .join(" ");
 
-const Chart = ({ series, isDiffMode }: { series: ChartSeries[]; isDiffMode: boolean }) => {
-  const allPoints = useMemo(() => series.flatMap((item) => item.points), [series]);
+const Chart = ({
+  series,
+  isDiffMode,
+  manualYRange,
+}: {
+  series: ChartSeries[];
+  isDiffMode: boolean;
+  manualYRange: { min: number; max: number } | null;
+}) => {
+  const allPoints = useMemo(
+    () => series.flatMap((item) => item.points),
+    [series]
+  );
   if (allPoints.length === 0) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-slate-500">
@@ -110,8 +130,17 @@ const Chart = ({ series, isDiffMode }: { series: ChartSeries[]; isDiffMode: bool
   const yMinRaw = Math.min(...yValues);
   const yMaxRaw = Math.max(...yValues);
   const yPadding = Math.max(80, Math.ceil((yMaxRaw - yMinRaw) * 0.15));
-  const yMin = Math.floor((yMinRaw - yPadding) / 100) * 100;
-  const yMax = Math.ceil((yMaxRaw + yPadding) / 100) * 100;
+  const yMinWithPadding = Math.floor((yMinRaw - yPadding) / 100) * 100;
+  const autoYMin = isDiffMode ? yMinWithPadding : Math.max(0, yMinWithPadding);
+  const autoYMax = Math.ceil((yMaxRaw + yPadding) / 100) * 100;
+  const hasManualRange =
+    manualYRange !== null && manualYRange.max > manualYRange.min;
+  const yMin = hasManualRange
+    ? isDiffMode
+      ? manualYRange.min
+      : Math.max(0, manualYRange.min)
+    : autoYMin;
+  const yMax = hasManualRange ? manualYRange.max : autoYMax;
 
   const plotWidth = CHART_WIDTH - MARGIN.left - MARGIN.right;
   const plotHeight = CHART_HEIGHT - MARGIN.top - MARGIN.bottom;
@@ -120,7 +149,8 @@ const Chart = ({ series, isDiffMode }: { series: ChartSeries[]; isDiffMode: bool
 
   const xScale = (value: number, index: number, pointLength: number) => {
     if (pointLength === 1) return MARGIN.left + plotWidth / 2;
-    if (xMax === xMin) return MARGIN.left + (index / Math.max(1, pointLength - 1)) * plotWidth;
+    if (xMax === xMin)
+      return MARGIN.left + (index / Math.max(1, pointLength - 1)) * plotWidth;
     return MARGIN.left + ((value - xMin) / (xMax - xMin)) * plotWidth;
   };
 
@@ -130,8 +160,18 @@ const Chart = ({ series, isDiffMode }: { series: ChartSeries[]; isDiffMode: bool
 
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-      <svg className="w-full min-w-[760px]" viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
-        <rect fill="#FFFFFF" height={CHART_HEIGHT} rx={16} width={CHART_WIDTH} x={0} y={0} />
+      <svg
+        className="w-full min-w-[760px]"
+        viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
+      >
+        <rect
+          fill="#FFFFFF"
+          height={CHART_HEIGHT}
+          rx={16}
+          width={CHART_WIDTH}
+          x={0}
+          y={0}
+        />
 
         {!isDiffMode &&
           RATING_BANDS.map((band) => {
@@ -234,6 +274,9 @@ const AtCoderRatingVisualizer = () => {
   const [mode, setMode] = useState<ChartMode>("overlay");
   const [rangeStart, setRangeStart] = useState("");
   const [rangeEnd, setRangeEnd] = useState("");
+  const [yAxisRangeMode, setYAxisRangeMode] = useState<YAxisRangeMode>("auto");
+  const [manualYMinInput, setManualYMinInput] = useState("");
+  const [manualYMaxInput, setManualYMaxInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -256,7 +299,11 @@ const AtCoderRatingVisualizer = () => {
       {
         name: leftUserLoaded,
         color: "#2563EB",
-        points: filterByRange(leftHistory, rangeStartTimestamp, rangeEndTimestamp).map((point) => ({
+        points: filterByRange(
+          leftHistory,
+          rangeStartTimestamp,
+          rangeEndTimestamp
+        ).map((point) => ({
           x: point.timestamp,
           y: point.newRating,
           label: point.contestName,
@@ -265,7 +312,11 @@ const AtCoderRatingVisualizer = () => {
       {
         name: rightUserLoaded,
         color: "#EF4444",
-        points: filterByRange(rightHistory, rangeStartTimestamp, rangeEndTimestamp).map((point) => ({
+        points: filterByRange(
+          rightHistory,
+          rangeStartTimestamp,
+          rangeEndTimestamp
+        ).map((point) => ({
           x: point.timestamp,
           y: point.newRating,
           label: point.contestName,
@@ -283,10 +334,23 @@ const AtCoderRatingVisualizer = () => {
   );
 
   const diffSeries = useMemo<ChartSeries[]>(() => {
-    const rangeFilteredLeft = filterByRange(leftHistory, rangeStartTimestamp, rangeEndTimestamp);
-    const rangeFilteredRight = filterByRange(rightHistory, rangeStartTimestamp, rangeEndTimestamp);
+    const rangeFilteredLeft = filterByRange(
+      leftHistory,
+      rangeStartTimestamp,
+      rangeEndTimestamp
+    );
+    const rangeFilteredRight = filterByRange(
+      rightHistory,
+      rangeStartTimestamp,
+      rangeEndTimestamp
+    );
     return [
-      makeDiffSeries(leftUserLoaded, rightUserLoaded, rangeFilteredLeft, rangeFilteredRight),
+      makeDiffSeries(
+        leftUserLoaded,
+        rightUserLoaded,
+        rangeFilteredLeft,
+        rangeFilteredRight
+      ),
     ];
   }, [
     leftHistory,
@@ -298,10 +362,28 @@ const AtCoderRatingVisualizer = () => {
   ]);
 
   const activeSeries = mode === "overlay" ? overlaySeries : diffSeries;
+  const manualYMin = manualYMinInput === "" ? null : Number(manualYMinInput);
+  const manualYMax = manualYMaxInput === "" ? null : Number(manualYMaxInput);
+  const isManualYRangeValid =
+    manualYMin !== null &&
+    manualYMax !== null &&
+    Number.isFinite(manualYMin) &&
+    Number.isFinite(manualYMax) &&
+    manualYMax > manualYMin &&
+    (mode === "diff" || manualYMin >= 0);
+  const manualYRange =
+    yAxisRangeMode === "manual" && isManualYRangeValid
+      ? { min: manualYMin, max: manualYMax }
+      : null;
+  const showManualYRangeError =
+    yAxisRangeMode === "manual" &&
+    (manualYMinInput !== "" || manualYMaxInput !== "") &&
+    !isManualYRangeValid;
 
   const latestLeft = leftHistory[leftHistory.length - 1]?.newRating ?? null;
   const latestRight = rightHistory[rightHistory.length - 1]?.newRating ?? null;
-  const latestDiff = diffSeries[0]?.points[diffSeries[0]?.points.length - 1]?.y ?? null;
+  const latestDiff =
+    diffSeries[0]?.points[diffSeries[0]?.points.length - 1]?.y ?? null;
 
   const loadHistories = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -322,7 +404,11 @@ const AtCoderRatingVisualizer = () => {
         setLeftSource(result.source);
         setRightSource(result.source);
         setRangeStart(timestampToDateInput(result.history[0].timestamp));
-        setRangeEnd(timestampToDateInput(result.history[result.history.length - 1].timestamp));
+        setRangeEnd(
+          timestampToDateInput(
+            result.history[result.history.length - 1].timestamp
+          )
+        );
       } else {
         const [leftResult, rightResult] = await Promise.all([
           getUserRatingHistory(left),
@@ -361,8 +447,15 @@ const AtCoderRatingVisualizer = () => {
   const applyQuickRange = (contestCount: number) => {
     const source =
       mode === "diff"
-        ? diffSeries[0]?.points
-        : overlaySeries.flatMap((series) => series.points).sort((a, b) => a.x - b.x);
+        ? makeDiffSeries(
+            leftUserLoaded,
+            rightUserLoaded,
+            leftHistory,
+            rightHistory
+          ).points
+        : [...leftHistory, ...rightHistory]
+            .map((point) => ({ x: point.timestamp }))
+            .sort((a, b) => a.x - b.x);
     if (!source || source.length === 0) return;
 
     const startIndex = Math.max(0, source.length - contestCount);
@@ -380,10 +473,7 @@ const AtCoderRatingVisualizer = () => {
         <h1 className="mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-black text-transparent md:text-5xl">
           AtCoder Rating Visualizer
         </h1>
-        <p className="mb-8 text-slate-600">
-          2人のレーティング遷移の重ね描画・差分描画・範囲指定に対応。履歴はキャッシュしてAtCoder API
-          へのリクエストを最小化しています。
-        </p>
+        <p className="mb-8 text-slate-600">レーティング差分いろいろ</p>
 
         <form
           className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
@@ -456,21 +546,27 @@ const AtCoderRatingVisualizer = () => {
             <div className="mb-6 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
                 <p className="text-xs text-blue-700">最新レート (A)</p>
-                <p className="text-3xl font-bold text-blue-900">{latestLeft ?? "-"}</p>
+                <p className="text-3xl font-bold text-blue-900">
+                  {latestLeft ?? "-"}
+                </p>
                 <p className="text-xs text-blue-700">
                   {leftUserLoaded} / source: {leftSource}
                 </p>
               </div>
               <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
                 <p className="text-xs text-red-700">最新レート (B)</p>
-                <p className="text-3xl font-bold text-red-900">{latestRight ?? "-"}</p>
+                <p className="text-3xl font-bold text-red-900">
+                  {latestRight ?? "-"}
+                </p>
                 <p className="text-xs text-red-700">
                   {rightUserLoaded} / source: {rightSource}
                 </p>
               </div>
               <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
                 <p className="text-xs text-violet-700">最新差分 (A - B)</p>
-                <p className="text-3xl font-bold text-violet-900">{latestDiff ?? "-"}</p>
+                <p className="text-3xl font-bold text-violet-900">
+                  {latestDiff ?? "-"}
+                </p>
                 <p className="text-xs text-violet-700">
                   差分モードでは同一コンテストのみ比較します
                 </p>
@@ -484,7 +580,11 @@ const AtCoderRatingVisualizer = () => {
                   <input
                     className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     max={rangeEnd || undefined}
-                    min={minMaxTimestamp ? timestampToDateInput(minMaxTimestamp.min) : undefined}
+                    min={
+                      minMaxTimestamp
+                        ? timestampToDateInput(minMaxTimestamp.min)
+                        : undefined
+                    }
                     onChange={(event) => setRangeStart(event.target.value)}
                     style={{ colorScheme: "light" }}
                     type="date"
@@ -495,7 +595,11 @@ const AtCoderRatingVisualizer = () => {
                   範囲終了
                   <input
                     className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                    max={minMaxTimestamp ? timestampToDateInput(minMaxTimestamp.max) : undefined}
+                    max={
+                      minMaxTimestamp
+                        ? timestampToDateInput(minMaxTimestamp.max)
+                        : undefined
+                    }
                     min={rangeStart || undefined}
                     onChange={(event) => setRangeEnd(event.target.value)}
                     style={{ colorScheme: "light" }}
@@ -524,7 +628,9 @@ const AtCoderRatingVisualizer = () => {
                       className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
                       onClick={() => {
                         if (!minMaxTimestamp) return;
-                        setRangeStart(timestampToDateInput(minMaxTimestamp.min));
+                        setRangeStart(
+                          timestampToDateInput(minMaxTimestamp.min)
+                        );
                         setRangeEnd(timestampToDateInput(minMaxTimestamp.max));
                       }}
                       type="button"
@@ -533,6 +639,60 @@ const AtCoderRatingVisualizer = () => {
                     </button>
                   </div>
                 </div>
+              </div>
+
+              <div className="mt-5 border-t border-slate-200 pt-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <label className="block text-sm font-semibold text-slate-700">
+                    縦軸範囲
+                    <select
+                      className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      onChange={(event) =>
+                        setYAxisRangeMode(event.target.value as YAxisRangeMode)
+                      }
+                      style={{ colorScheme: "light" }}
+                      value={yAxisRangeMode}
+                    >
+                      <option value="auto">自動調整</option>
+                      <option value="manual">手動調整</option>
+                    </select>
+                  </label>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Y最小
+                    <input
+                      className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 disabled:bg-slate-100 disabled:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      disabled={yAxisRangeMode === "auto"}
+                      min={mode === "diff" ? undefined : 0}
+                      onChange={(event) =>
+                        setManualYMinInput(event.target.value)
+                      }
+                      placeholder={mode === "diff" ? "-400" : "0"}
+                      style={{ colorScheme: "light" }}
+                      type="number"
+                      value={manualYMinInput}
+                    />
+                  </label>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Y最大
+                    <input
+                      className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 disabled:bg-slate-100 disabled:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      disabled={yAxisRangeMode === "auto"}
+                      onChange={(event) =>
+                        setManualYMaxInput(event.target.value)
+                      }
+                      placeholder={mode === "diff" ? "400" : "2600"}
+                      style={{ colorScheme: "light" }}
+                      type="number"
+                      value={manualYMaxInput}
+                    />
+                  </label>
+                </div>
+                {showManualYRangeError && (
+                  <p className="mt-2 text-sm text-rose-600">
+                    手動範囲は「Y最大 &gt;
+                    Y最小」で指定してください。通常表示ではY最小は0以上です。
+                  </p>
+                )}
               </div>
             </div>
 
@@ -551,7 +711,11 @@ const AtCoderRatingVisualizer = () => {
               ))}
             </div>
 
-            <Chart isDiffMode={mode === "diff"} series={activeSeries} />
+            <Chart
+              isDiffMode={mode === "diff"}
+              manualYRange={manualYRange}
+              series={activeSeries}
+            />
           </>
         )}
       </div>
@@ -560,4 +724,3 @@ const AtCoderRatingVisualizer = () => {
 };
 
 export default AtCoderRatingVisualizer;
-
