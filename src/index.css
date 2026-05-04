@@ -4,9 +4,21 @@
   font-style: normal;
   line-height: 1.5;
   font-size: 16px;
-  color-scheme: dark;
+  color-scheme: light;
   color: black;
   background-color: #f6f4eb;
+}
+
+input,
+textarea,
+select {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b;
 }
 
 a {
