@@ -9,6 +9,7 @@ import {
 import Header from "./Header";
 import AtCoderRatingVisualizer from "./routes/AtCoderRatingVisualizer";
 import IonPage from "./routes/Chemistry_ion";
+import DistanceFromPointPage from "./routes/DistanceFromPoint";
 import HomePage from "./routes/Home";
 import InvincibleTank from "./routes/InvincibleTank";
 import LinksPage from "./routes/Links";
@@ -58,6 +59,7 @@ const AppRoutes = () => {
           <Route element={<TimerPage />} path="/timer" />
           <Route element={<RandomPickerPage />} path="/randompicker" />
           <Route element={<AtCoderRatingVisualizer />} path="/atcoder-rating-visualizer" />
+          <Route element={<DistanceFromPointPage />} path="/distance-from-point" />
           <Route element={<PublicEthicsPage />} path="/public_ethics" />
           <Route element={<PublicEthicsPage_final />} path="/public_ethics_final" />
           <Route element={<ThinkersListPage />} path="/thinkers" />

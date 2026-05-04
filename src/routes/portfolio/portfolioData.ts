@@ -72,6 +72,24 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "distance-from-point",
+    title: "地点までの距離メーター",
+    shortDescription: "現在地から目標地点までの距離を計測するツール",
+    fullDescription:
+      "現在地と目標地点の緯度経度から、ハーサイン公式で直線距離を算出するシンプルな距離計測アプリです。Google MapsのURL貼り付けにも対応しています。",
+    features: [
+      "現在地を手動で1回取得",
+      "1分ごとの自動更新モード",
+      "Google Maps URLや緯度経度テキストの入力に対応",
+      "距離をメートル単位で表示",
+    ],
+    technologies: ["React", "TypeScript", "Geolocation API"],
+    date: "2026年5月",
+    url: "/distance-from-point",
+    color: "#0EA5E9",
+    gradient: "from-sky-500 to-cyan-600",
+  },
+  {
     id: "atcoder-rating-visualizer",
     title: "AtCoder Rating Visualizer",
     shortDescription: "2人のレーティング推移を比較できる高機能ビジュアライザ",
