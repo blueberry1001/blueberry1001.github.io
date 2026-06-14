@@ -22,6 +22,7 @@ import ThinkersListPage from "./routes/ThinkersList";
 import ThinkersListPage_final from "./routes/ThinkersList_final";
 import ThinkersQuizPage from "./routes/ThinkersQuiz.tsx";
 import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
+import ThreeDRougeAction from "./routes/ThreeDRougeAction";
 import TimerPage from "./routes/Timer";
 import PortfolioArticleDetail from "./routes/portfolio/PortfolioArticleDetail";
 import PortfolioArticles from "./routes/portfolio/PortfolioArticles";
@@ -67,6 +68,7 @@ const AppRoutes = () => {
           <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
           <Route element={<ThinkersQuizPage_final />} path="/thinkers_quiz_final" />
           <Route element={<InvincibleTank />} path="/invincibletank" />
+          <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
           <Route element={<IonPage />} path="/chemistry_ion" />
           <Route element={<PortfolioTimeline />} path="/timeline" />
           <Route element={<PortfolioArticles />} path="/articles" />

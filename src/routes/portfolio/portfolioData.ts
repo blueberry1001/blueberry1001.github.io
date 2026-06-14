@@ -72,6 +72,23 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "3d-rogue-action",
+    title: "3DRougeAction",
+    shortDescription: "Unityで制作した3Dローグライクアクションゲーム",
+    fullDescription:
+      "Unityで制作した3Dアクションゲームです。ランダム要素のあるステージを攻略していきましょう。",
+    features: [
+      "3Dアクション",
+      "ローグライク要素",
+      "WebGLブラウザプレイ",
+    ],
+    technologies: ["Unity", "C#", "3D Physics"],
+    date: "2026年6月",
+    url: "/3d-rogue-action",
+    color: "#F97316",
+    gradient: "from-orange-500 to-amber-600",
+  },
+  {
     id: "distance-from-point",
     title: "地点までの距離メーター",
     shortDescription: "現在地から目標地点までの距離を計測するツール",
