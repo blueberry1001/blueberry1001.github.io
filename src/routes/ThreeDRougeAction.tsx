@@ -64,9 +64,9 @@ const ThreeDRougeAction = () => {
         document.querySelector("#unity-canvas"),
         {
           arguments: [],
-          dataUrl: `${gamedataPath}/Build/Build.data.br`,
-          frameworkUrl: `${gamedataPath}/Build/Build.framework.js.br`,
-          codeUrl: `${gamedataPath}/Build/Build.wasm.br`,
+          dataUrl: `${gamedataPath}/Build/Build.data`,
+          frameworkUrl: `${gamedataPath}/Build/Build.framework.js`,
+          codeUrl: `${gamedataPath}/Build/Build.wasm`,
           streamingAssetsUrl: "StreamingAssets",
           companyName: "DefaultCompany",
           productName: "3DRougeAction",
