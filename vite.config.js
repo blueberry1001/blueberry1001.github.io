@@ -11,8 +11,13 @@ function gamedataPlugin() {
                 if (req.url && req.url.startsWith("/Gamedata/")) {
                     var cleanUrl = req.url.split("?")[0];
                     var decodedUrl = decodeURIComponent(cleanUrl);
-                    var filePath = path.join(__dirname, decodedUrl);
-                    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                    var relativePath = decodedUrl.startsWith("/") ? decodedUrl.slice(1) : decodedUrl;
+                    var filePath = path.resolve(__dirname, relativePath);
+                    console.log("[gamedata-plugin] Request URL: ".concat(req.url));
+                    console.log("[gamedata-plugin] Resolved Path: ".concat(filePath));
+                    var exists = fs.existsSync(filePath) && fs.statSync(filePath).isFile();
+                    console.log("[gamedata-plugin] File Exists: ".concat(exists));
+                    if (exists) {
                         var contentType = "application/octet-stream";
                         if (filePath.endsWith(".js") || filePath.endsWith(".js.br")) {
                             contentType = "application/javascript";
@@ -36,6 +41,9 @@ function gamedataPlugin() {
                             contentType = "image/jpeg";
                         }
                         res.setHeader("Content-Type", contentType);
+                        if (filePath.endsWith(".br")) {
+                            res.setHeader("Content-Encoding", "br");
+                        }
                         fs.createReadStream(filePath).pipe(res);
                         return;
                     }

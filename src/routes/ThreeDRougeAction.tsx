@@ -31,7 +31,7 @@ const ThreeDRougeAction = () => {
     }
     // 既存のスクリプトを削除
     const existingScript = document.querySelector(
-      'script[src*="Gamedata/3DRougeAction/Build/Build.loader.js"]'
+      'script[src*="Build.loader.js"]'
     );
     if (existingScript) {
       document.body.removeChild(existingScript);
@@ -47,22 +47,41 @@ const ThreeDRougeAction = () => {
 
   const startGame = () => {
     setIsGameStarted(true);
+
+    const baseUrl = import.meta.env.BASE_URL.endsWith("/")
+      ? import.meta.env.BASE_URL
+      : `${import.meta.env.BASE_URL}/`;
+
+    const gamedataPath = `${window.location.origin}${baseUrl}Gamedata/3DRougeAction`;
+
     const script = document.createElement("script");
-    script.src = "/Gamedata/3DRougeAction/Build/Build.loader.js";
+    script.src = `${gamedataPath}/Build/Build.loader.js`;
     script.async = true;
 
     script.onload = () => {
       // @ts-ignore
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "/Gamedata/3DRougeAction/Build/Build.data.br",
-        frameworkUrl: "/Gamedata/3DRougeAction/Build/Build.framework.js.br",
-        codeUrl: "/Gamedata/3DRougeAction/Build/Build.wasm.br",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "3DRougeAction",
-        productVersion: "0.1.0",
-      }).then((unityInstance: any) => {
+      createUnityInstance(
+        document.querySelector("#unity-canvas"),
+        {
+          arguments: [],
+          dataUrl: `${gamedataPath}/Build/Build.data.br`,
+          frameworkUrl: `${gamedataPath}/Build/Build.framework.js.br`,
+          codeUrl: `${gamedataPath}/Build/Build.wasm.br`,
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "3DRougeAction",
+          productVersion: "0.1.0",
+          showBanner: (msg: string, type: string) => {
+            console.warn(`Unity Banner (${type}): ${msg}`);
+          },
+        },
+        (progress: number) => {
+          console.log(`Unity Loading: ${100 * progress}%`);
+        }
+      ).then((unityInstance: any) => {
         unityInstanceRef.current = unityInstance;
+      }).catch((err: any) => {
+        console.error("Unity Instance Error:", err);
       });
     };
 
