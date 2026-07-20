@@ -1,10 +1,4 @@
-import {
-  HashRouter,
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { HashRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 
 import Header from "./Header";
 import AtCoderRatingVisualizer from "./routes/AtCoderRatingVisualizer";
@@ -24,12 +18,13 @@ import ThinkersQuizPage from "./routes/ThinkersQuiz.tsx";
 import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
 import ThreeDRougeAction from "./routes/ThreeDRougeAction";
 import TimerPage from "./routes/Timer";
+import WasmTest from "./routes/WasmTest.tsx";
 import PortfolioArticleDetail from "./routes/portfolio/PortfolioArticleDetail";
 import PortfolioArticles from "./routes/portfolio/PortfolioArticles";
 import PortfolioHome from "./routes/portfolio/PortfolioHome";
 import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
 import PortfolioLinks from "./routes/portfolio/PortfolioLinks";
-import PortfolioTimeline from "./routes/portfolio/PortfolioTimeline";
+import PortfolioTimeline from "./routes/portfolio/PortfolioTimeline.tsx";
 import PortfolioWorks from "./routes/portfolio/PortfolioWorks";
 
 const LegacyLayout = () => {
@@ -50,23 +45,39 @@ const AppRoutes = () => {
     <HashRouter>
       <Routes>
         <Route element={<Navigate replace to="/home" />} path="/" />
-        <Route element={<Navigate replace to="/legacy/home" />} path="/legacy" />
+        <Route
+          element={<Navigate replace to="/legacy/home" />}
+          path="/legacy"
+        />
 
         <Route element={<PortfolioLayout />}>
           <Route element={<PortfolioHome />} path="/home" />
           <Route element={<PortfolioWorks />} path="/works" />
           <Route element={<Navigate replace to="/works" />} path="/products" />
           <Route element={<PrimePage />} path="/prime" />
+          <Route element={<WasmTest />} path="wasmtest" />
           <Route element={<TimerPage />} path="/timer" />
           <Route element={<RandomPickerPage />} path="/randompicker" />
-          <Route element={<AtCoderRatingVisualizer />} path="/atcoder-rating-visualizer" />
-          <Route element={<DistanceFromPointPage />} path="/distance-from-point" />
+          <Route
+            element={<AtCoderRatingVisualizer />}
+            path="/atcoder-rating-visualizer"
+          />
+          <Route
+            element={<DistanceFromPointPage />}
+            path="/distance-from-point"
+          />
           <Route element={<PublicEthicsPage />} path="/public_ethics" />
-          <Route element={<PublicEthicsPage_final />} path="/public_ethics_final" />
+          <Route
+            element={<PublicEthicsPage_final />}
+            path="/public_ethics_final"
+          />
           <Route element={<ThinkersListPage />} path="/thinkers" />
           <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
           <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
-          <Route element={<ThinkersQuizPage_final />} path="/thinkers_quiz_final" />
+          <Route
+            element={<ThinkersQuizPage_final />}
+            path="/thinkers_quiz_final"
+          />
           <Route element={<InvincibleTank />} path="/invincibletank" />
           <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
           <Route element={<IonPage />} path="/chemistry_ion" />
@@ -81,7 +92,10 @@ const AppRoutes = () => {
 
         <Route element={<LegacyLayout />}>
           <Route element={<HomePage />} path="/legacy/home" />
-          <Route element={<Navigate replace to="/works" />} path="/legacy/products" />
+          <Route
+            element={<Navigate replace to="/works" />}
+            path="/legacy/products"
+          />
           <Route element={<LinksPage />} path="/legacy/links" />
           <Route element={<Page404 />} path="*" />
         </Route>
