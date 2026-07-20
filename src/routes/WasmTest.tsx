@@ -34,7 +34,10 @@ export default function WasmTest() {
         <h1 className="text-3xl font-bold">WebAssembly 動作確認</h1>
 
         <p className="text-slate-600">
-          下の入力をC++(WebAssembly)へ渡して実行します。
+          WebAssemblyの実行テストです。セグ木で一点更新・区間取得するC++コードをJavaScriptから動かしています。
+          <br></br>
+          1行目に配列の長さN、2行目には配列の初期値、3行目にはクエリの数Q、4行目以降にはクエリをQ行書いてください。
+          <br></br>1 l rで[l,r]の区間和を出力、<br></br>2 i xでA[i]=xです。
         </p>
 
         <div>
