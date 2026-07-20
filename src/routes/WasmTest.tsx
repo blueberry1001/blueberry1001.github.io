@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import ModuleFactory from "../wasm/module.js";
+import ModuleFactory from "../wasm/module";
 
 const sample = `5
 1 2 3 4 5
