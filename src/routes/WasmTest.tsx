@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 
 import ModuleFactory from "../wasm/module";
 
-const sample = `5
-1 2 3 4 5
-5
-1 1 5
-2 2 100
-1 1 5
-2 4 1000
-1 3 5`;
+const sample = `a={1,2,3}
+contains(a,1)
+contains(a,4)
+b={x%3==1}
+c=a&b
+contains(c,1)
+d=a|b
+e=(a|b)&d
+f=!a
+`;
 
 export default function WasmTest() {
   const [module, setModule] = useState<any>();
@@ -31,13 +33,11 @@ export default function WasmTest() {
   return (
     <section className="min-h-screen bg-slate-50 px-6 py-12">
       <div className="mx-auto max-w-5xl space-y-6">
-        <h1 className="text-3xl font-bold">WebAssembly 動作確認</h1>
+        <h1 className="text-3xl font-bold">関数による集合表現</h1>
 
         <p className="text-slate-600">
-          WebAssemblyの実行テストです。セグ木で一点更新・区間取得するC++コードをJavaScriptから動かしています。
-          <br></br>
-          1行目に配列の長さN、2行目には配列の初期値、3行目にはクエリの数Q、4行目以降にはクエリをQ行書いてください。
-          <br></br>1 l rで[l,r]の区間和を出力、<br></br>2 i xでA[i]=xです。
+          情報理工学基礎レポート「C++
+          における内包的定義に基づいた柔軟な集合データ構造の設計と実装」のデモページです。
         </p>
 
         <div>
