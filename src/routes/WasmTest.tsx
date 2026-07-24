@@ -78,8 +78,7 @@ export default function WasmTest() {
               集合演算:{" "}
               <code className="bg-slate-100 px-1 py-0.5 rounded">&</code> (積),{" "}
               <code className="bg-slate-100 px-1 py-0.5 rounded">|</code> (和),{" "}
-              <code className="bg-slate-100 px-1 py-0.5 rounded">!</code> (補),{" "}
-              <code className="bg-slate-100 px-1 py-0.5 rounded">-</code> (差)
+              <code className="bg-slate-100 px-1 py-0.5 rounded">!</code> (補)
             </li>
             <li>
               判定コマンド:{" "}
