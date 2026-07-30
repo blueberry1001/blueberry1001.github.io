@@ -90,6 +90,7 @@ const AppRoutes = () => {
           <Route element={<Navigate replace to="/works" />} path="/about" />
           <Route element={<Navigate replace to="/works" />} path="/projects" />
           <Route element={<Navigate replace to="/links" />} path="/contact" />
+          <Route element={<Page404 />} path="*" />
         </Route>
 
         <Route element={<LegacyLayout />}>

@@ -79,16 +79,16 @@ const PointSystem = () => {
     setHistory((h) => h.slice(1));
   };
 
-  const clear = () => {
-    if (!window.confirm("すべてのデータを削除しますか？")) return;
+  //   const clear = () => {
+  //     if (!window.confirm("すべてのデータを削除しますか？")) return;
 
-    const init = Array.from({ length: TEAM_COUNT }, () =>
-      Array(PROBLEM_COUNT).fill(false)
-    );
+  //     const init = Array.from({ length: TEAM_COUNT }, () =>
+  //       Array(PROBLEM_COUNT).fill(false)
+  //     );
 
-    setAnswers(init);
-    setHistory([]);
-  };
+  //     setAnswers(init);
+  //     setHistory([]);
+  //   };
 
   return (
     <div
