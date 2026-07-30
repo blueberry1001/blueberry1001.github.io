@@ -19,6 +19,7 @@ import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
 import ThreeDRougeAction from "./routes/ThreeDRougeAction";
 import TimerPage from "./routes/Timer";
 import WasmTest from "./routes/WasmTest.tsx";
+import PointSystem from "./routes/pointsystem.tsx";
 import PortfolioArticleDetail from "./routes/portfolio/PortfolioArticleDetail";
 import PortfolioArticles from "./routes/portfolio/PortfolioArticles";
 import PortfolioHome from "./routes/portfolio/PortfolioHome";
@@ -56,6 +57,7 @@ const AppRoutes = () => {
           <Route element={<Navigate replace to="/works" />} path="/products" />
           <Route element={<PrimePage />} path="/prime" />
           <Route element={<WasmTest />} path="wasmtest" />
+          <Route element={<PointSystem />} path="pointsystem" />
           <Route element={<TimerPage />} path="/timer" />
           <Route element={<RandomPickerPage />} path="/randompicker" />
           <Route
