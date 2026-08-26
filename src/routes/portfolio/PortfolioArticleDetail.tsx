@@ -95,6 +95,29 @@ const PortfolioArticleDetail = () => {
           ))}
         </div>
 
+        {article.pdfUrl ? (
+          <div className="mb-10 flex flex-col gap-4">
+            <div className="flex justify-end">
+              <a
+                className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-100"
+                href={article.pdfUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <ExternalLink size={16} />
+                新しいタブで全画面で開く
+              </a>
+            </div>
+            <div className="w-full overflow-hidden rounded-xl border border-slate-200 shadow-sm" style={{ height: "800px" }}>
+              <iframe 
+                className="h-full w-full border-none"
+                src={article.pdfUrl}
+                title="PDF Viewer"
+              />
+            </div>
+          </div>
+        ) : null}
+
         {article.relatedLinks?.length ? (
           <div className="mt-12 border-t border-slate-200 pt-8">
             <h3 className="mb-4 text-xl font-bold text-slate-900">関連リンク</h3>

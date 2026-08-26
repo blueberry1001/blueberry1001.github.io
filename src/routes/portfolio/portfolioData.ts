@@ -7,6 +7,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import pdfJorikiso from "../../assets/26jorikiso_blueberry.pdf";
+
 export type WorkItem = {
   id: string;
   title: string;
@@ -65,6 +67,7 @@ export type ArticleDetail = {
   thumbnail: string;
   intro: string;
   sections: { heading: string; content: string; points?: string[] }[];
+  pdfUrl?: string;
   relatedLinks?: { label: string; url: string }[];
 };
 
@@ -77,11 +80,7 @@ export const works: WorkItem[] = [
     shortDescription: "Unityで制作した3Dローグライクアクションゲーム",
     fullDescription:
       "Unityで制作した3Dアクションゲームです。ランダム要素のあるステージを攻略していきましょう。",
-    features: [
-      "3Dアクション",
-      "ローグライク要素",
-      "WebGLブラウザプレイ",
-    ],
+    features: ["3Dアクション", "ローグライク要素", "WebGLブラウザプレイ"],
     technologies: ["Unity", "C#", "3D Physics"],
     date: "2026年6月",
     url: "/3d-rogue-action",
@@ -419,7 +418,21 @@ const debugSampleArticle: ArticleItem = {
   source: "personal",
 };
 
-export const articles: ArticleItem[] = import.meta.env.DEV ? [debugSampleArticle] : [];
+const jorikisoArticle: ArticleItem = {
+  id: "b1-1q-jorikiso",
+  title: "B1-1Q 情報理工学基礎",
+  description: "B1-1Q 情報理工学基礎の課題や資料についてのページです。",
+  publishedAt: new Date().toISOString(),
+  date: `${new Date().getFullYear()}年${new Date().getMonth() + 1}月${new Date().getDate()}日`,
+  readTime: "3分",
+  tags: ["情報理工学基礎", "大学課題", "pdf"],
+  category: "educational",
+  source: "personal",
+};
+
+export const articles: ArticleItem[] = import.meta.env.DEV
+  ? [jorikisoArticle, debugSampleArticle]
+  : [jorikisoArticle];
 
 export const articleCategoryLabels: Record<ArticleItem["category"], string> = {
   achievement: "達成",
@@ -614,10 +627,7 @@ const debugSampleArticleDetail: ArticleDetail = {
     {
       heading: "用途",
       content: "表示確認のためのダミー記事です。",
-      points: [
-        "個人サイト種別の色分け確認",
-        "記事詳細ページのレイアウト確認",
-      ],
+      points: ["個人サイト種別の色分け確認", "記事詳細ページのレイアウト確認"],
     },
     {
       heading: "運用メモ",
@@ -627,9 +637,32 @@ const debugSampleArticleDetail: ArticleDetail = {
   relatedLinks: [{ label: "Homeへ戻る", url: "/#/home" }],
 };
 
-export const articleDetailMap: Record<string, ArticleDetail> = import.meta.env.DEV
-  ? { "debug-sample-personal": debugSampleArticleDetail }
-  : {};
+const jorikisoArticleDetail: ArticleDetail = {
+  title: "B1-1Q 情報理工学基礎",
+  date: `${new Date().getFullYear()}年${new Date().getMonth() + 1}月${new Date().getDate()}日`,
+  readTime: "10分",
+  tags: ["情報理工学基礎", "大学", "レポート"],
+  thumbnail: "#156fd6",
+  intro: "記事書く環境が全然整備できてないぜ！",
+  sections: [
+    {
+      heading: "このページは何",
+      content:
+        "情報理工学基礎で提出したレポートを貼るページです。わざわざ個人サイトに載せているのは趣味です。結構ページ数はありますが、コードがページ数を食ってる影響が大きそうです。書いてて楽しいレポートではあったので、読んで楽しいレポートでもあったらいいなと思っています。",
+    },
+  ],
+  pdfUrl: pdfJorikiso,
+};
+
+export const articleDetailMap: Record<string, ArticleDetail> = import.meta.env
+  .DEV
+  ? {
+      "debug-sample-personal": debugSampleArticleDetail,
+      "b1-1q-jorikiso": jorikisoArticleDetail,
+    }
+  : {
+      "b1-1q-jorikiso": jorikisoArticleDetail,
+    };
 
 export const profileLinks = [
   {

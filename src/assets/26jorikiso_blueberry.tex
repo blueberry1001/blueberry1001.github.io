@@ -1,0 +1,1315 @@
+
+\documentclass[a4paper,11pt]{ltjsarticle}
+
+
+\usepackage{luatexja-fontspec}
+\usepackage{fontspec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+% フォント
+\usepackage{luatexja-fontspec}
+
+% 本文
+\setmainfont{TeX Gyre Heros}   % 欧文
+\setmainjfont{LINE Seed JP}    % 日本語
+
+
+% コード
+\setmonofont{JetBrains Mono}
+% 数式
+\usepackage{amsmath,amssymb}
+
+% コード
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage[hidelinks]{hyperref}
+
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\bfseries\color{blue},
+    commentstyle=\itshape\color{gray},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\scriptsize,
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    columns=fullflexible
+}
+
+\title{C++における
+
+内包的定義に基づいた柔軟な集合データ構造の
+
+設計と実装}
+\author{26B blueberry}
+\date{}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage %
+
+\section*{要旨}
+\addcontentsline{toc}{section}{要旨}
+情報理工学基礎の授業で扱われた集合論の諸概念をC++上に実装・検証した結果をまとめた。さらに、実装したデータ構造をブラウザ上で実際に動かして試すことができるよう、独自言語（DSL）の構文解析器を含むWebデモを作成した過程についても述べている。
+
+まず、C++の標準ライブラリである std::set を用いた一般的な集合の表現について検討を行った。std::set や標準アルゴリズムを活用することで、要素の追加・削除や和集合・積集合・差集合といった基本的な有限集合の演算を簡潔に記述できることを確認した。しかし、std::set は内部で要素を保持する外延的定義に依存しているため、無限集合や補集合を扱えないという限界がある。また、プログラミング言語の型システムによる制約を受け、異なる型の要素を含む集合や集合族の柔軟な表現が困難である点も指摘している。
+
+これらの課題を克服するため、本レポートでは集合に含まれるかを判定する関数を内部で保持する「内包的定義」によるアプローチを採用した。これにより偶数全体などの無限集合を表現可能とし、和集合・積集合・補集合・差集合を論理演算（OR, AND, NOTなど）と対応付けて演算子オーバーロードで実装することで、直感的な集合演算を実現した。ただし、関数による表現ではプログラムの等価性判定が停止性問題に帰着されるため、数学的に完全な集合の一致判定が行えないという理論的限界についても考察している。 
+
+続いて、std::any による型消去を活用して任意の型を扱えるよう拡張したうえで、関数による「条件定義」と個別の要素を追加・削除する「有限集合」の機能を融合させたハイブリッドなデータ構造を設計・実装した。最後に、ユーザーが直感的に集合記述を行える簡易DSLのパーサーを構築し、Webサイト上で動作させる仕組みを実現した。本取り組みを通じて、std::set が扱えない無限集合などを扱えるようになり、データ構造・集合の概念両方への理解が深まった。今後は計算量の最適化や構文の拡張が課題である。
+\newpage
+
+\section{はじめに}
+\subsection{前提}
+このレポートは、情報理工学基礎の授業で扱われた概念がプログラミング言語でどのように実装できるかを述べるものである。どのプログラミング言語を選ぶかは自由だが、今回は筆者が書き慣れているC++で実装することにした。特に言及が無ければC++23を使用することを前提とする。
+\subsection{本レポートの目的}
+本レポートの目的は、C++上で集合論のさまざまな概念を出来るだけ包括的に扱えるような実装方法を考え、それを実際に実装して検証することである。作成したプログラムを何かに活用することを考えているわけではないが、できるだけ合理的で、納得感のある実装を目指す。
+
+しかし、レポートで実装内容を説明できる一方で、読者が実際にその動作を試すことが難しい。せっかくなら実際に動くものを作った方が楽しいので、実装したデータ構造の一部の機能を実際に動かすことができるWebサイトを作成することも目的とする。Web上で動作させるためには、ユーザーにC++プログラム記述させるのは望ましくない。そこで、集合論のみを記述できる簡潔な独自言語（以降DSL(Domain-Specific Language)と呼ぶ）を実装する。ユーザーが記述したDSLを入力として受け取り、C++上でDSLを解釈したうえで実行する形でWebサイトを作成する。
+
+また、集合論の概念をプログラムで表現することで、集合論を新たな視点から捉えることができるだろう。その方法について理解を深めることも目的の一つと言える。
+
+\section{\texttt{std::set}による集合の表現}
+この章ではC++の標準ライブラリに含まれている\texttt{std::set}を使った集合の表現方法について述べる。
+\subsection{基本的な集合操作}
+\subsubsection{初期化と代入}
+以下のようにして整数集合の初期化と代入を行うことができる。
+\begin{lstlisting}
+#include<set>
+int main(){
+    std::set<int> s = {1,2,3};
+    return 0;
+}
+\end{lstlisting}
+以降は\lstinline|set|がincludeされていることと\lstinline|std::set<int>s|が宣言されていることを前提とする。
+\subsubsection{値の追加、削除}
+\begin{lstlisting}
+//値の追加
+s.insert(4);
+//s = {1,2,3,4}
+
+//同じ値を追加しても重複は発生しない
+s.insert(3);
+//s = {1,2,3,4}
+
+//値の削除
+s.erase(1);
+//s = {2,3,4}
+\end{lstlisting}
+
+\subsubsection{存在判定,列挙}
+\begin{lstlisting}
+std::cout << s.contains(4) << std::endl;
+//1
+
+std::cout << s.contains(5) << std::endl;
+//0
+
+for(int:x:s){
+    std::cout << x << " ";
+}
+std::cout << std::endl;
+//1 2 3 4
+\end{lstlisting}
+
+\subsubsection{和集合、差集合、積集合}
+標準ライブラリにも和集合、差集合、積集合を求める関数が入っている。自分で実装する事も可能だが、標準ライブラリの関数で済ませられるならばそれを使った方が簡潔に書くことができるだろう。
+\begin{lstlisting}
+#include<set>
+#include<algorithm>
+int main(){
+    std::set<int> a = {3,6,9};
+    std::set<int> b = {2,4,6};
+
+    //和集合
+    std::set<int> union_set;
+    std::set_union(a.begin(),a.end(),
+                    b.begin(),b.end(),
+                    std::inserter(union_set,union_set.end()));    
+    //union_set = {2,3,4,6,9}
+
+    //差集合
+    std::set<int> diff_set;
+    std::set_difference(a.begin(),a.end(),
+                        b.begin(),b.end(),
+                        std::inserter(diff_set,diff_set.end()));
+    //diff_set = {3,9}
+
+    //積集合
+    std::set<int> inter_set;
+    std::set_intersection(a.begin(),a.end(),
+                        b.begin(),b.end(),
+                        std::inserter(inter_set,inter_set.end()));
+    //inter_set = {6}
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{整数以外の集合}
+これまで整数を例に集合演算を紹介してきたが、整数以外を元にもつ集合も型を指定することによって作成が可能である。
+\begin{lstlisting}
+
+//小数の集合
+std::set<float> float_set = {0.1,0.01,0.002};
+
+//文字の集合
+//#include<string>が必要
+std::set<char> char_set = {'I','S','C','T'};
+
+//文字列の集合
+std::set<std::string> string_set = {"Science","Tokyo"};
+\end{lstlisting}
+
+\subsection{集合族}
+同様にして、集合族を表すことも可能である。
+\begin{lstlisting}
+//集合族
+std::set<std::set<int>> s = {
+    {3,1},
+    {1,4},
+    {1,5}
+};
+\end{lstlisting}
+
+\subsection{\texttt{std::set}による集合表現の限界}
+前節で示したように、標準ライブラリに含まれるデータ構造と関数を使うだけでも集合に関するさまざまな演算を行うことができる。一見これらを示しただけでも「プログラミング言語で集合をどのように表現できるか」という問いに対する回答になっているかのようにも思える。
+
+しかし、\texttt{std::set}には表現できない集合がある。\texttt{std::set}は内部で集合に含まれる要素を保持しているため、有限個（正確に言えば、コンピュータのメモリに収まる程度の個数）の要素しか扱うことができないのである。\texttt{std::set}は有限集合を、実際に値を保持することで管理することしかできないのである。有限集合しか表現できないということは、「補集合」も表現することができないということになる。
+
+また、\texttt{std::set}はプログラミング言語特有の「型」というシステムに縛られている以上、異なる型の要素を含むような集合を表現することが難しい。「難しい」と言ったのは、不可能ではないからである。実際、以下のように記述すれば異なる型の要素を含むような集合を表現することが可能だからだ。
+\begin{lstlisting}
+#include <iostream>
+#include <set>
+#include <variant>
+#include <string>
+using namespace std;
+int main() {
+    set<std::variant<int, double, string>> mySet = {42,3.14,"Tokyo"};
+
+    for (const auto& elem : mySet) {
+        std::visit([](const auto& arg) {
+            std::cout << arg << " ";
+        }, elem);
+    }
+    //42 3.14 Tokyo 
+    return 0;
+}
+\end{lstlisting}
+このような実装を可能にしているのが\texttt{std::variant}である。\texttt{std::variant}と\texttt{std::visit}を組み合わせることで、異なる型の要素を含む集合を作成することは可能である。しかしこの方法の利用には制約が多い。
+
+まず、この方法では集合に入ってくる要素の型をあらかじめ列挙しておく必要がある。集合族を要素として扱うことも理論上は可能だが、「集合族の集合族」のようにネストが深くなっていくと、想定しておくべき要素の型が多くなってしまい、宣言が冗長であまり直感的ではない。また、含み得る型はコンパイル時に決定されてしまい、変更することができなくなる。新たな型を扱いたくなった場合は宣言自体を変更する必要があるのだ。
+
+また、このままでは\texttt{std::set\_intersection}などの標準ライブラリに含まれている関数を使うことができない。\texttt{std::variant}は強力だが、型システムによる制約を完全に回避できるわけではないのだ。
+
+以降の章では、ここで挙げた2つの問題点を克服することも意識しつつ、自分なりのデータ構造を実装することを目指す。
+\section{関数による集合の表現}
+\subsection{集合を関数で表現する}
+無限集合を扱えないという点を克服するため、「集合を関数で表現する」というアプローチをとることにする。\texttt{std::set}は集合に含まれる要素を列挙するという定義方法だった。集合の表し方には「外延的定義」と「内包的定義」があるが、\texttt{std::set}は外延的定義に対応していたことになる。それに対し、「集合を関数で表現する」というアプローチは内包的定義に対応していることになる。
+
+集合を関数で表現するとは具体的にどういうことかと言うと、含まれる要素を実際に内部で保持するのではなく、「その値が集合に含まれているか？」を判定する関数だけを内部で保持しておくということだ。
+
+以下にコードを示す。
+\begin{lstlisting}
+#include <iostream>
+#include <set>
+#include <variant>
+#include <string>
+#include <algorithm>
+#include <functional>
+
+template<class T>
+class SetByFunction{
+    std::function<bool(const T&)> pred;
+public:
+    SetByFunction(std::function<bool(const T&)> pred)
+        : pred(pred) {}
+    bool contains(const T& x) const{
+        return pred(x);
+    }
+};
+
+int main(){
+    //偶数全体の集合
+    SetByFunction<int> even_set([](int x){return x%2==0;});
+    
+    std::cout << even_set.contains(2) << "\n";
+    //1
+    
+    std::cout << even_set.contains(1) << "\n";
+    //0
+
+    std::cout << even_set.contains(999992) << "\n";
+    //1
+    return 0;
+}
+\end{lstlisting}
+厳密には偶数全体の集合ではなく、int型に収まる範囲での偶数全体の集合であることには注意しておきたい。しかし、範囲の問題に関しては無限の範囲を持つ型を使えばよいだけなので、あまり着目せずに以降の話を進める。
+
+とにかく、このようにして内包的定義に沿って集合をプログラミング言語上で表すことができた。上の例では単に割ったあまりが0であるかを返す関数を持たせることで偶数全体の集合を表現したが、もっと複雑な関数を持たせることもできる。例えば素数全体の集合なども実現可能である。
+\subsection{集合演算と論理演算の対応}
+しかし、このままでは存在判定しか行うことができない。これだけでは集合を実用的に扱えるとは言えないため、集合演算についても実装を考える必要がある。ひとまず集合演算のうち
+\begin{itemize}
+    \item 和集合
+    \item 積集合
+    \item 補集合
+    \item 差集合
+\end{itemize}
+の4つの実装方法を考えてみよう。
+
+結論から言えば、このような集合演算は論理演算と完全に対応している！和集合を最初の例として見ていってみよう。
+\subsubsection{和集合}
+
+集合 $A,B$ に対して、その和集合 $A\cup B$ を考える。
+
+\[
+A\cup B
+\]
+
+これは「$A$ に含まれる、または $B$ に含まれる要素全体からなる集合」である。
+
+ここで、集合への所属判定を行う関数を
+
+\[
+f_A(x)=
+\begin{cases}
+\texttt{true} & (x\in A)\\
+\texttt{false} & (x\notin A)
+\end{cases}
+\]
+
+と定義すると、和集合への所属判定は
+
+\[
+x\in A\cup B
+\iff
+f_A(x)\lor f_B(x)
+\]
+
+と表せる。
+\subsubsection{積集合}
+同様に集合 $A,B$ に対して、その積集合 $A\cap B$ を考える。
+
+\[
+x\in A\cap B
+\iff
+(x\in A)\land(x\in B)
+\]
+
+したがって、所属判定関数では
+
+\[
+f_{A\cap B}(x)
+=
+f_A(x)\land f_B(x)
+\]
+
+となる。
+\subsubsection{補集合}
+
+集合 $A$ に対して、その補集合 $\overline{A}$を考える。
+
+\[
+x\in\overline{A}
+\iff
+x\notin A
+\]
+
+したがって、所属判定関数では
+
+\[
+f_{\overline{A}}(x)
+=
+\lnot f_A(x)
+\]
+
+となる。
+
+\subsubsection{差集合}
+
+集合 $A,B$ に対して、その差集合 $A-B$ を考える。
+
+\[
+x\in A-B
+\iff
+(x\in A)\land(x\notin B)
+\]
+
+したがって、所属判定関数では
+
+\[
+f_{A-B}(x)
+=
+f_A(x)\land\lnot f_B(x)
+\]
+
+となる。
+
+
+
+このように、4つの集合演算と論理演算が対応していることがわかった。実際にC++で実装してみると、以下のようになる。
+\begin{lstlisting}
+#include <functional>
+#include <iostream>
+
+template<class T>
+class SetByFunction{
+    std::function<bool(const T&)> pred;
+
+public:
+    SetByFunction(std::function<bool(const T&)> pred)
+        : pred(pred){}
+
+    bool contains(const T& x) const{
+        return pred(x);
+    }
+
+    // 和集合
+    SetByFunction operator|(const SetByFunction& other) const{
+        auto f1 = pred;
+        auto f2 = other.pred;
+
+        return SetByFunction(
+            [f1, f2](const T& x){
+                return f1(x) || f2(x);
+            }
+        );
+    }
+
+    // 積集合
+    SetByFunction operator&(const SetByFunction& other) const{
+        auto f1 = pred;
+        auto f2 = other.pred;
+        return SetByFunction(
+            [f1, f2](const T& x){
+                return f1(x) && f2(x);
+            }
+        );
+    }
+
+    // 補集合
+    SetByFunction operator!() const{
+        auto f = pred;
+
+        return SetByFunction(
+            [f](const T& x){
+                return !f(x);
+            }
+        );
+    }
+
+    // 差集合
+    SetByFunction operator-(const SetByFunction& other) const{
+        auto f1 = pred;
+        auto f2 = other.pred;
+
+        return SetByFunction(
+            [f1, f2](const T& x){
+                return f1(x) && !f2(x);
+            }
+        );
+    }
+};
+
+int main(){
+
+    SetByFunction<int> even(
+        [](int x){ return x % 2 == 0; }
+    );
+
+    SetByFunction<int> multiple3(
+        [](int x){ return x % 3 == 0; }
+    );
+
+    auto A = even | multiple3;
+    auto B = even & multiple3;
+    auto C = !even;
+    auto D = even - multiple3;
+
+    std::cout << A.contains(6) << "\n";   // 1
+    std::cout << A.contains(4) << "\n";   // 1
+    std::cout << A.contains(5) << "\n";   // 0
+
+    std::cout << B.contains(6) << "\n";   // 1
+    std::cout << B.contains(4) << "\n";   // 0
+
+    std::cout << C.contains(5) << "\n";   // 1
+    std::cout << C.contains(4) << "\n";   // 0
+
+    std::cout << D.contains(4) << "\n";   // 1
+    std::cout << D.contains(6) << "\n";   // 0
+}
+\end{lstlisting}
+演算子オーバーロードを使って実装し、2つのラムダ式を論理演算で合成する形となっている。演算子オーバーロードを使うことで、式の評価をC++の標準機能に任せることができているのがポイントである。この実装であれば、
+$$A \cup B \cup C$$
+のようなシンプルな集合演算から、
+$$(A \cup B)\cap(C \cup D)$$
+のように括弧を使った演算にも対応できる。実際にコードを書いてみると、
+\begin{lstlisting}
+//偶数 かつ 3の倍数 かつ 5の倍数
+auto E = even & multiple3 & multiple5;
+std::cout << E.contains(4) << "\n";   // 0
+std::cout << E.contains(30) << "\n";   // 1
+
+//(偶数 かつ 5の倍数)または(3の倍数 または 3を含む数)
+auto F = (even & multiple5) | (multiple3 | contains3);
+
+std::cout << F.contains(4) << "\n";   // 0
+std::cout << F.contains(10) << "\n";   // 1
+std::cout << F.contains(30) << "\n";   // 1
+std::cout << F.contains(31) << "\n";   // 1
+std::cout << F.contains(41) << "\n";   // 0
+\end{lstlisting}
+このように、集合を関数で表現することで、簡潔に集合および集合演算を表現することができた。
+\subsection{集合の一致判定}
+しかしここで問題になるのが、集合の一致判定である。集合を関数で表現するのはさまざまな長所があるが、集合の一致判定ができなくなるという問題がある。
+
+その原因は、同じ集合を表す関数が一意に定まらないことである。実際に書いてみると、
+\begin{lstlisting}
+//2で割ったあまりが0
+auto A = SetByFunction<int>(
+    [](int x){
+        return x%2==0;
+    }
+);
+
+//4で割ったあまりが0または2
+auto B = SetByFunction<int>(
+    [](int x){
+        return x%4==0 || x%4==2;
+    }
+);
+\end{lstlisting}
+この2つの集合が同じ集合であることは明らかだろう。しかし、「式が一致しているか」というだけで集合の一致判定を行うとこのようなケースで破綻してしまう。
+
+したがって、「プログラムの構文」ではなく「プログラムが計算する関数の出力が一致しているか」を判定する必要がある。しかし計算可能性理論において、プログラムの計算する関数の入力と出力の振る舞い（意味的性質）に関する非自明な性質は一般に判定不能であることが知られている（ライスの定理\cite{Rice1953}）。プログラムの等価性判定問題は停止性問題から帰着され、ライスの定理からも導かれる代表的な決定不能問題の一つである。
+停止性問題を解くことが出来ないのは有名だが、停止性問題からさまざまな形の問題に帰着でき、プログラムの等価性判定も同様に解くことができないのだ。
+
+また、「すべての要素が等しいかどうか」を判定することは、有限集合でない限り無限に検証する必要が発生してしまうため不可能である。
+
+以上から、集合を関数で表現する方法で集合を実装すると集合の一致判定が出来ないということがわかる。プログラミングにおいて実用的に困らない範囲で表現することは難しくないが、数学的な意味で完全なものを作るのは難しいのである。
+
+\section{型の一般化}
+\subsection{任意の型への対応}
+次に、任意の型を集合に含めることができるようにすることを考える。前章で実装した通り集合を関数で表現するという方針で進めよう。すると、任意の型を引数に取れる関数を作り、渡された型が違ったらその時点でfalseを返し、渡された型が正しかったら関数による判定を行う、という形にすれば良いだろう。
+\subsection{型消去による実装}
+実装の上ではstd::anyを使って型を消去する。渡された関数の引数の型を推論してから初期化を行い、型の一致はstd::any\_castで行った。
+
+なお、出力内容が増えてきたため少し動作確認の出力の情報量を増やした。
+\begin{lstlisting}
+#include <any>
+#include <functional>
+#include <iostream>
+#include <type_traits>
+#include <memory>
+
+// ラムダ式を渡したときに引数の型を推論する
+template<class T>
+struct callable_traits : callable_traits<decltype(&T::operator())> {};
+//constを外す
+template<class C, class R, class Arg>
+struct callable_traits<R(C::*)(Arg) const> {
+    using arg_type = std::decay_t<Arg>;
+};
+//ポインタを外す
+template<class C, class R, class Arg>
+struct callable_traits<R(C::*)(Arg)> {
+    using arg_type = std::decay_t<Arg>;
+};
+//ラムダ式でない関数も渡せるように
+template<class R, class Arg>
+struct callable_traits<R(*)(Arg)> {
+    using arg_type = std::decay_t<Arg>;
+};
+
+class FunctionSetAnyType {
+    std::function<bool(const std::any&)> pred;
+
+    FunctionSetAnyType(std::function<bool(const std::any&)> p)
+        : pred(std::move(p)) {}
+
+public:
+    template<class T>
+    FunctionSetAnyType(std::function<bool(const T&)> p) {
+        pred = [p](const std::any& x) -> bool {
+            if (const T* ptr = std::any_cast<T>(&x)) {
+                return p(*ptr);
+            }
+            return false; // 型が違う要素はfalse
+        };
+    }
+
+    template<class F,
+             class = std::enable_if_t<!std::is_same_v<std::decay_t<F>, FunctionSetAnyType>>>
+    FunctionSetAnyType(F f) : FunctionSetAnyType(std::function<bool(const typename callable_traits<std::decay_t<F>>::arg_type&)>(f)) {}
+
+    bool contains(const std::any& x) const {
+        return pred(x);
+    }
+
+    FunctionSetAnyType operator|(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+        return FunctionSetAnyType([f1, f2](const std::any& x) { return f1(x) || f2(x); });
+    }
+    FunctionSetAnyType operator&(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+        return FunctionSetAnyType([f1, f2](const std::any& x) { return f1(x) && f2(x); });
+    }
+    FunctionSetAnyType operator!() const {
+        auto f = pred;
+        return FunctionSetAnyType([f](const std::any& x) { return !f(x); });
+    }
+    FunctionSetAnyType operator-(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+        return FunctionSetAnyType([f1, f2](const std::any& x) { return f1(x) && !f2(x); });
+    }
+};
+
+int main(){
+    FunctionSetAnyType even([](int x){ return x % 2 == 0; });
+    FunctionSetAnyType multiple3([](int x){ return x % 3 == 0; });
+    FunctionSetAnyType multiple5([](int x){ return x % 5 == 0; });
+
+    auto A = even | multiple3;
+    auto B = even & multiple3;
+    auto D = even - multiple3;
+
+    std::cout << "A(6)=" << A.contains(6) << " A(4)=" << A.contains(4) << " A(5)=" << A.contains(5) << "\n";
+    std::cout << "B(6)=" << B.contains(6) << " B(4)=" << B.contains(4) << "\n";
+    std::cout << "D(4)=" << D.contains(4) << " D(6)=" << D.contains(6) << "\n";
+    /*
+        A(6)=1 A(4)=1 A(5)=0
+        B(6)=1 B(4)=0
+        D(4)=1 D(6)=0
+    */
+    //任意の型への対応
+    std::cout << "----- 型が違う場合の挙動 -----\n";
+    std::cout << "even.contains(4)          = " << even.contains(4) << "\n";          // int, OK -> 1
+    std::cout << "even.contains(4.0)        = " << even.contains(4.0) << "\n";        // double, 型不一致 -> 0
+    std::cout << "even.contains(std::string(\"x\")) = " << even.contains(std::string("x")) << "\n"; // 0
+    /*
+        ----- 型が違う場合の挙動 -----
+        even.contains(4)          = 1
+        even.contains(4.0)        = 0
+        even.contains(std::string("x")) = 0
+    */
+
+    // 文字列の集合も同じ枠組みで扱える
+    FunctionSetAnyType startsWithA([](const std::string& s){ return !s.empty() && s[0] == 'A'; });
+    std::cout << "startsWithA(\"Apple\")   = " << startsWithA.contains(std::string("Apple")) << "\n"; // 1
+    std::cout << "startsWithA(5)          = " << startsWithA.contains(5) << "\n"; // 型不一致 -> 0
+    /*
+        startsWithA("Apple")   = 1
+        startsWithA(5)          = 0
+    */
+
+    // 異なる型の集合同士でも同じ演算子で組み合わせられる
+    auto mixed = even | startsWithA;
+    std::cout << "mixed.contains(4)          = " << mixed.contains(4) << "\n";                  // 1 (even)
+    std::cout << "mixed.contains(\"Apple\")   = " << mixed.contains(std::string("Apple")) << "\n"; // 1 (startsWithA)
+    std::cout << "mixed.contains(\"banana\")  = " << mixed.contains(std::string("banana")) << "\n"; // 0
+    std::cout << "mixed.contains(3)          = " << mixed.contains(3) << "\n";                  // 0
+    /*
+        mixed.contains(4)          = 1
+        mixed.contains("Apple")   = 1
+        mixed.contains("banana")  = 0
+        mixed.contains(3)          = 0
+    */
+
+    return 0;
+}
+\end{lstlisting}
+複数の型を含む集合に対応できていることがわかるだろう。もともと型システムに縛られたC++で書いているのでやや記述量は多く、コードが冗長になっているが、主に行っているのは前述の通り「任意の型を引数に受け取る関数」を使った集合の実装である。
+\subsection{集合族への拡張}
+しかし、このままでは複数の型を含むことはできるが、集合族を持つことはできない。一見同じように実装を拡張すれば集合族も実装できるように思えるが、実際には原理的な問題がある。仮に実装をしたとしても実用性のあるものを作ることができないのだ。具体的には、そもそも存在判定ができないのである。なぜ存在判定が出来ないのかというと単純で、集合族の中に特定の集合が存在するかどうかを判定するには集合同士の等価判定ができる必要があり、これは前述したとおり無限集合の一致判定なので不可能だからだ。
+\section{有限集合との融合}
+前章で述べたように、関数で集合を表現する方法では集合族を実装することができないし、集合同士の一致判定を行うこともできない。これを部分的に解決することを考えよう。
+
+集合同士の一致判定が出来ないのは、関数として表現された集合同士の比較が必要だからである。大まかに言えば、無限集合を扱うことによる困難さが原因である。関数で集合を表現する方法は無限集合の扱いには長けているが、有限集合の扱いはstd::setの方が上回る形になっている。では、有限集合も無限集合も一括で扱えるようにしてしまえばよいのではないだろうか？
+\subsection{実装}
+ということで、これまで実装してきた関数による集合表現に、有限集合を扱う機能を追加することを考える。
+基本的には関数によって集合を表現し、その判定結果に対する例外として、有限個の要素を追加・削除できるようにする。
+
+集合演算では関数の合成だけでなく有限集合も合成する必要があるため複雑になる。具体的には、集合を表す関数をpred、例外として含む要素をin、例外として含まない要素をoutとすると、それぞれの集合演算は以下のようになる。
+\subsubsection{和集合}
+
+\[
+\begin{array}{l}
+\mathrm{in}
+=
+(\mathrm{in}_1\setminus\mathrm{out}_2)
+\cup
+(\mathrm{in}_2\setminus\mathrm{out}_1)
+\\[2mm]
+\mathrm{out}
+=
+(\mathrm{out}_1\cap\lnot\mathrm{pred}_2)
+\cap
+(\mathrm{out}_2\cap\lnot\mathrm{pred}_1)
+\\[2mm]
+\mathrm{pred}
+=
+\mathrm{pred}_1\lor\mathrm{pred}_2
+\end{array}
+\]
+
+\subsubsection{積集合}
+
+\[
+\begin{array}{l}
+\mathrm{in}
+=
+(\mathrm{in}_1\cap\mathrm{pred}_2)
+\cup
+(\mathrm{in}_2\cap\mathrm{pred}_1)
+\\[2mm]
+\mathrm{out}
+=
+(\mathrm{out}_1\setminus\mathrm{in}_2)
+\cup
+(\mathrm{out}_2\setminus\mathrm{in}_1)
+\\[2mm]
+\mathrm{pred}
+=
+\mathrm{pred}_1\land\mathrm{pred}_2
+\end{array}
+\]
+
+\subsubsection{差集合}
+
+\[
+\begin{array}{l}
+\mathrm{in}
+=
+\mathrm{in}_1\cap\mathrm{out}_2
+\\[2mm]
+\mathrm{out}
+=
+\mathrm{out}_1\cup\mathrm{in}_2
+\\[2mm]
+\mathrm{pred}
+=
+\mathrm{pred}_1\land\lnot\mathrm{pred}_2
+\end{array}
+\]
+
+\subsubsection{補集合}
+
+\[
+\begin{array}{l}
+\mathrm{in}
+=
+\mathrm{out}
+\\[2mm]
+\mathrm{out}
+=
+\mathrm{in}
+\\[2mm]
+\mathrm{pred}
+=
+\lnot\mathrm{pred}
+\end{array}
+\]
+
+
+これらをすべて実装したものが以下になる。std::anyをそのまま使うと等式が判定できないので専用のラッパークラスで包んで使用している。有限集合を扱えるようにするためにコンストラクタを少し変更しつつ、デフォルトでは空の配列を指定しておくことでこれまでと同じ引数でも使えるようにしている。
+
+なお、実装の簡略化のため集合演算についてはやや計算量が悪い実装となっている。
+\begin{lstlisting}
+#include <any>
+#include <functional>
+#include <iostream>
+#include <type_traits>
+#include <memory>
+#include <typeindex>
+#include <vector>
+// ラムダ式を渡したときに引数の型を推論する
+template<class T>
+struct callable_traits : callable_traits<decltype(&T::operator())> {};
+//constを外す
+template<class C, class R, class Arg>
+struct callable_traits<R(C::*)(Arg) const> {
+    using arg_type = std::decay_t<Arg>;
+};
+//ポインタを外す
+template<class C, class R, class Arg>
+struct callable_traits<R(C::*)(Arg)> {
+    using arg_type = std::decay_t<Arg>;
+};
+//ラムダ式でない関数も渡せるように
+template<class R, class Arg>
+struct callable_traits<R(*)(Arg)> {
+    using arg_type = std::decay_t<Arg>;
+};
+
+//std::anyの代替（比較を可能にするためのラッパークラス）
+class AnyValue{
+    std::any value;
+    std::type_index type;
+    std::function<bool(const std::any&)> equal_;
+
+public:
+    template<class T>
+    AnyValue(T x)
+        : value(std::move(x))
+        , type(typeid(T))
+    {
+        equal_ = [v = std::any_cast<T>(value)](const std::any& other)->bool{
+            if(const T* p = std::any_cast<T>(&other)){
+                return *p == v;
+            }
+            return false;
+        };
+    }
+
+    const std::any& any() const{
+        return value;
+    }
+
+    template<class T>
+    const T* get_if() const{
+        return std::any_cast<T>(&value);
+    }
+
+    bool operator==(const AnyValue& rhs) const{
+        return type == rhs.type && equal_(rhs.value);
+    }
+
+    bool operator!=(const AnyValue& rhs) const{
+        return !(*this == rhs);
+    }
+};
+
+class FunctionSetAnyType {
+    std::function<bool(const std::any&)> pred;
+    std::vector<AnyValue>in_,out_;
+
+    FunctionSetAnyType(std::function<bool(const std::any&)> p,
+    std::vector<AnyValue>f_in = {},
+    std::vector<AnyValue>f_out = {})
+        : pred(std::move(p)),in_(std::move(f_in)),out_(std::move(f_out)) {}
+
+public:
+    template<class T>
+    FunctionSetAnyType(std::function<bool(const T&)> p,std::vector<AnyValue>f_in = {},std::vector<AnyValue>f_out = {}) {
+        pred = [p](const std::any& x) -> bool {
+            if (const T* ptr = std::any_cast<T>(&x)) {
+                return p(*ptr);
+            }
+            return false; // 型が違う要素はfalse
+        };
+        in_ = f_in;
+        out_ = f_out;
+    }
+
+    template<class F,
+             class = std::enable_if_t<!std::is_same_v<std::decay_t<F>, FunctionSetAnyType>>>
+    FunctionSetAnyType(F f,std::vector<AnyValue>f_in = {},std::vector<AnyValue>f_out = {}) : FunctionSetAnyType(std::function<bool(const typename callable_traits<std::decay_t<F>>::arg_type&)>(f),f_in,f_out) {}
+
+    bool contains(const AnyValue& x) const{
+        for(const auto& v:out_)
+            if(v==x) return false;
+
+        for(const auto& v:in_)
+            if(v==x) return true;
+
+        return pred(x.any());
+    }
+
+    FunctionSetAnyType operator|(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+
+        auto new_pred = [f1, f2](const std::any& x) {
+            return f1(x) || f2(x);
+        };
+
+        std::vector<AnyValue> cand = in_;
+        auto add = [&](const std::vector<AnyValue>& v){
+            for(const auto& x : v)
+                if(std::find(cand.begin(), cand.end(), x) == cand.end())
+                    cand.push_back(x);
+        };
+        add(out_);
+        add(other.in_);
+        add(other.out_);
+
+        std::vector<AnyValue> new_in, new_out;
+
+        for(const auto& x : cand){
+            bool ans = contains(x) || other.contains(x);
+            bool p = new_pred(x.any());
+
+            if(ans != p){
+                if(ans) new_in.push_back(x);
+                else    new_out.push_back(x);
+            }
+        }
+
+        return FunctionSetAnyType(new_pred, new_in, new_out);
+    }
+
+    FunctionSetAnyType operator&(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+
+        auto new_pred = [f1, f2](const std::any& x) {
+            return f1(x) && f2(x);
+        };
+
+        std::vector<AnyValue> cand = in_;
+        auto add = [&](const std::vector<AnyValue>& v){
+            for(const auto& x : v)
+                if(std::find(cand.begin(), cand.end(), x) == cand.end())
+                    cand.push_back(x);
+        };
+        add(out_);
+        add(other.in_);
+        add(other.out_);
+
+        std::vector<AnyValue> new_in, new_out;
+
+        for(const auto& x : cand){
+            bool ans = contains(x) && other.contains(x);
+            bool p = new_pred(x.any());
+
+            if(ans != p){
+                if(ans) new_in.push_back(x);
+                else    new_out.push_back(x);
+            }
+        }
+
+        return FunctionSetAnyType(new_pred, new_in, new_out);
+    }
+    FunctionSetAnyType operator!() const {
+        auto f = pred;
+        return FunctionSetAnyType([f](const std::any& x) { return !f(x); },out_,in_);
+    }
+    FunctionSetAnyType operator-(const FunctionSetAnyType& other) const {
+        auto f1 = pred, f2 = other.pred;
+        std::vector<AnyValue> new_in;
+        for(AnyValue x:in_){
+            auto it = std::find(other.out_.begin(),other.out_.end(),x);
+            if(it!=other.out_.end()){
+                new_in.push_back(x);
+            }
+        }
+        std::vector<AnyValue>new_out = out_;
+        for(AnyValue x:other.in_){
+            auto it = std::find(new_out.begin(),new_out.end(),x);
+            if(it==new_out.end()){
+                new_out.push_back(x);
+            }
+        }
+        return FunctionSetAnyType([f1, f2](const std::any& x) { return f1(x) && !f2(x); },new_in,new_out);
+    }
+};
+
+int main(){
+FunctionSetAnyType even([](int x){ return x % 2 == 0; }); FunctionSetAnyType multiple3([](int x){ return x % 3 == 0; }); FunctionSetAnyType multiple5([](int x){ return x % 5 == 0; });
+std::cout << "\n===== 有限集合のテスト =====\n";
+
+// 偶数集合だが 3 は例外として追加、2 は例外として削除
+FunctionSetAnyType specialEven(
+    [](int x){ return x % 2 == 0; },
+    {3},
+    {2}
+);
+
+std::cout << "specialEven.contains(2) = "
+          << specialEven.contains(2)
+          << " (expected 0)\n";
+
+std::cout << "specialEven.contains(3) = "
+          << specialEven.contains(3)
+          << " (expected 1)\n";
+
+std::cout << "specialEven.contains(4) = "
+          << specialEven.contains(4)
+          << " (expected 1)\n";
+
+std::cout << "specialEven.contains(5) = "
+          << specialEven.contains(5)
+          << " (expected 0)\n";
+
+std::cout << "\n===== 和集合 =====\n";
+
+auto U = specialEven | multiple3;
+
+std::cout << "U.contains(2) = "
+          << U.contains(2)
+          << " (expected 0)\n";   // out優先
+
+std::cout << "U.contains(3) = "
+          << U.contains(3)
+          << " (expected 1)\n";
+
+std::cout << "U.contains(9) = "
+          << U.contains(9)
+          << " (expected 1)\n";
+
+std::cout << "U.contains(4) = "
+          << U.contains(4)
+          << " (expected 1)\n";
+
+
+std::cout << "\n===== 積集合 =====\n";
+
+auto I = specialEven & multiple3;
+
+std::cout << "I.contains(3) = "
+          << I.contains(3)
+          << " (expected 1)\n";   // inに残るはず
+
+std::cout << "I.contains(6) = "
+          << I.contains(6)
+          << " (expected 1)\n";
+
+std::cout << "I.contains(4) = "
+          << I.contains(4)
+          << " (expected 0)\n";
+
+
+std::cout << "\n===== 差集合 =====\n";
+
+auto S = specialEven - multiple3;
+
+std::cout << "S.contains(3) = "
+          << S.contains(3)
+          << " (expected 0)\n";
+
+std::cout << "S.contains(4) = "
+          << S.contains(4)
+          << " (expected 1)\n";
+
+std::cout << "S.contains(6) = "
+          << S.contains(6)
+          << " (expected 0)\n";
+
+
+std::cout << "\n===== 補集合 =====\n";
+
+auto C = !specialEven;
+
+std::cout << "C.contains(2) = "
+          << C.contains(2)
+          << " (expected 1)\n";
+
+std::cout << "C.contains(3) = "
+          << C.contains(3)
+          << " (expected 0)\n";
+
+std::cout << "C.contains(4) = "
+          << C.contains(4)
+          << " (expected 0)\n";
+
+std::cout << "C.contains(5) = "
+          << C.contains(5)
+          << " (expected 1)\n";
+
+    return 0;
+}
+\end{lstlisting}
+実際に動かして想定通りの出力が得られることを確認できた。これにて当初実装したかったものを全部実装することができた！！
+
+\section{DSLによる集合記法}
+Web上で動かすために、集合の形で書いて先ほどのデータ構造を利用することができるようにする。
+\subsection{設計方針}
+全ての機能に対応させることは難しく、特に関数で表現する方法では様々な書き方ができてしまうため、ひとまず限定的な機能を実装した。具体的には、集合の初期化では有限集合と、x\%3=0のように割ったあまりを指定する関数のみに対応している。
+\subsection{記法の例}
+\begin{lstlisting}
+a = {x%2==0}
+b = {4,5}
+c = a | b
+d = a & b
+e = !a
+f = (a | b) & !d
+contains(a,4)
+contains(b,7)
+\end{lstlisting}
+\subsection{実装}
+構文解析をする都合上、コードはかなり長くなってしまっている。この実装を読む必要はないだろう。
+
+実際に\url{https://blueberry1001.github.io/#/wasmtest}にアクセスすることで動かすことができる。是非一度試してみてほしい。
+
+\begin{lstlisting}
+using It = std::string::const_iterator;
+
+void skip(It& it, It ed){
+    while(it!=ed && isspace(*it)) ++it;
+}
+
+bool consume(It& it, It ed, char c){
+    skip(it,ed);
+    if(it!=ed && *it==c){
+        ++it;
+        return true;
+    }
+    return false;
+}
+
+std::string parseIdentifier(It& it, It ed){
+    skip(it,ed);
+
+    std::string s;
+    while(it!=ed && (isalnum(*it)||*it=='_')){
+        s.push_back(*it++);
+    }
+
+    if(s.empty()) throw std::runtime_error("identifier expected");
+    return s;
+}
+
+bool isPredicate(It it, It ed){
+    int dep=0;
+    while(it!=ed){
+        if(*it=='{') dep++;
+        else if(*it=='}'){
+            dep--;
+            if(dep==0) break;
+        }
+        else if(dep==1 && *it=='%')
+            return true;
+        ++it;
+    }
+    return false;
+}
+
+FunctionSetAnyType parseFiniteSet(It& it, It ed){
+    consume(it,ed,'{');
+
+    std::vector<AnyValue> in;
+
+    while(true){
+        skip(it,ed);
+
+        std::string token;
+
+        while(it!=ed && *it!=',' && *it!='}')
+            token.push_back(*it++);
+
+        in.emplace_back(std::stoi(token));
+
+        skip(it,ed);
+
+        if(consume(it,ed,'}'))
+            break;
+
+        consume(it,ed,',');
+    }
+
+    return FunctionSetAnyType(
+        [](int){return false;},
+        in,
+        {}
+    );
+}
+
+
+FunctionSetAnyType parsePredicate(It& it, It ed){
+    consume(it,ed,'{');
+
+    skip(it,ed);
+
+    // x
+    if(!consume(it,ed,'x'))
+        throw std::runtime_error("expected x");
+
+    skip(it,ed);
+
+    // %
+    if(!consume(it,ed,'%'))
+        throw std::runtime_error("expected %");
+
+    skip(it,ed);
+
+    // divisor
+    std::string s;
+    while(it!=ed && isdigit(*it)){
+        s.push_back(*it++);
+    }
+    if(s.empty())
+        throw std::runtime_error("number expected");
+
+    int mod = std::stoi(s);
+
+    skip(it,ed);
+
+    // ==
+    if(!(consume(it,ed,'=') && consume(it,ed,'=')))
+        throw std::runtime_error("expected ==");
+
+    skip(it,ed);
+
+    s.clear();
+    while(it!=ed && isdigit(*it)){
+        s.push_back(*it++);
+    }
+    if(s.empty())
+        throw std::runtime_error("number expected");
+
+    int rem = std::stoi(s);
+
+    skip(it,ed);
+
+    if(!consume(it,ed,'}'))
+        throw std::runtime_error("expected }");
+
+    return FunctionSetAnyType(
+        [=](int x){
+            return x % mod == rem;
+        }
+    );
+}
+
+FunctionSetAnyType parseExpr(It&,It);
+std::unordered_map<std::string,FunctionSetAnyType> variables;
+
+FunctionSetAnyType parseFactor(It& it, It ed){
+
+    skip(it,ed);
+
+    if(consume(it,ed,'!'))
+        return !parseFactor(it,ed);
+
+    if(consume(it,ed,'(')){
+        auto t=parseExpr(it,ed);
+        consume(it,ed,')');
+        return t;
+    }
+
+    if(*it=='{'){
+        if(isPredicate(it,ed))
+            return parsePredicate(it,ed);
+        else
+            return parseFiniteSet(it,ed);
+    }
+
+    auto name=parseIdentifier(it,ed);
+    return variables.at(name);
+}
+FunctionSetAnyType parseTerm(It& it, It ed){
+
+    auto lhs=parseFactor(it,ed);
+
+    while(true){
+
+        skip(it,ed);
+
+        if(!consume(it,ed,'&'))
+            break;
+
+        lhs = lhs & parseFactor(it,ed);
+    }
+
+    return lhs;
+}
+FunctionSetAnyType parseExpr(It& it, It ed){
+
+    auto lhs=parseTerm(it,ed);
+
+    while(true){
+
+        skip(it,ed);
+
+        if(!consume(it,ed,'|'))
+            break;
+
+        lhs = lhs | parseTerm(it,ed);
+    }
+
+    return lhs;
+}
+void execute(std::string line){
+
+    It it=line.begin();
+
+    skip(it,line.end());
+
+    // contains(a,5)
+    if(line.find("contains") == 0){
+
+        consume(it,line.end(),'c');
+
+        std::string dummy;
+        while(it!=line.end() && *it!='(')
+            ++it;
+
+        consume(it,line.end(),'(');
+
+        auto name=parseIdentifier(it,line.end());
+
+        consume(it,line.end(),',');
+
+        std::string value;
+
+        while(it!=line.end() && *it!=')'){
+            value.push_back(*it++);
+        }
+
+        consume(it,line.end(),')');
+
+        int x=std::stoi(value);
+
+        // std::cout
+        //     << name << ".contains("
+        //     << x << ") = "
+        //     << variables.at(name).contains(x)
+        //     << "\n";
+
+        return;
+    }
+
+
+    // 通常の代入
+    auto name=parseIdentifier(it,line.end());
+
+    consume(it,line.end(),'=');
+
+    variables[name]=parseExpr(it,line.end());
+}
+\end{lstlisting}
+\newpage
+
+\section{まとめ}
+\subsection{本ライブラリの特徴}
+std::setと比較した本ライブラリの特徴は、無限集合を扱えることと、任意の型に対応していることである。集合を関数として表現するというアプローチにより、有限集合だけでなく条件によって定義される無限集合も扱うことを可能にした。また、関数による表現で生じる課題についても、有限集合との組み合わせによって対応した。
+\subsection{今後の課題}
+本ライブラリは機能面を重視して設計しており、速度面については十分な最適化を行っていない。そのため、計算量の改善や内部表現の工夫によって、さらなる高速化が期待できる。また、Web上で公開しているデモについても、現在は対応している構文や機能が限定的であり、今後さらに拡張する余地があるだろう。
+
+\section{アピール文}
+std::setでは扱うことができない「無限集合」「任意の型の集合」を扱えるように独自のデータ構造を設計・実装した。「集合を関数で表現する」というアプローチによって無限集合をスマートに表すことができたが、制作過程で関数設計をしていくうちに、関数で表現することによるデメリット（例えば集合の同一性が判定できないなど）にも気づくことができた。本レポートはstd::setから出発して、独自データ構造の設計・実装をし、最後にはWeb上で動くデモまで作成した過程をまとめたものとなっている。情報理工学基礎の授業で学んだ集合論をプログラミング言語上に実装するという課題に対して、単なる集合演算の実装に留まらず、データ構造の設計や表現方法について考察することで、発展的な内容を含むレポートとなった。
+
+なお、\url{https://blueberry1001.github.io/#/wasmtest}にアクセスすることでデモを動かすことができる。
+\begin{thebibliography}{99}
+
+\bibitem{cppreference}
+cppreference.com,
+\textit{C++ reference},
+\url{https://en.cppreference.com/}
+
+\bibitem{cpprefjp}
+cpprefjp,
+\textit{cpprefjp - C++日本語リファレンス},
+\url{https://cpprefjp.github.io/}
+
+\bibitem{cplusplus}
+Bjarne Stroustrup,
+\textit{The C++ Programming Language}, 4th Edition, Addison-Wesley, 2013.
+\url{https://www.stroustrup.com/4th.html}
+\newpage
+\bibitem{Rice1953}
+H. G. Rice,
+\textit{Classes of Recursively Enumerable Sets and Their Decision Problems},
+Trans. Amer. Math. Soc., Vol. 74, No. 2, pp. 358--366, 1953.
+\url{https://www.semanticscholar.org/paper/Classes-of-recursively-enumerable-sets-and-their-Rice/664a7d3c60b753a34f1601a7378ca952ea92e9a8}
+
+\bibitem{Equivalence}
+University of Rochester,
+\textit{CSC 173: Computability and Undecidability},
+\url{https://www.cs.rochester.edu/u/nelson/courses/csc_173/computability/undecidable.html}
+
+\end{thebibliography}
+
+\end{document}
