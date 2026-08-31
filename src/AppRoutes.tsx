@@ -32,6 +32,7 @@ const LegacyLayout = () => {
   return (
     <div>
       <Header />
+
       <div className="wrapper">
         <div className="mainelement">
           <Outlet />
@@ -45,61 +46,105 @@ const AppRoutes = () => {
   return (
     <HashRouter>
       <Routes>
+        {/* =====================================================
+            Root
+            ===================================================== */}
+
         <Route element={<Navigate replace to="/home" />} path="/" />
-        <Route
-          element={<Navigate replace to="/legacy/home" />}
-          path="/legacy"
-        />
+
+        {/* =====================================================
+            Point System
+            -----------------------------------------------------
+            PortfolioLayoutの外に置くことで、
+            Header / Footer / PortfolioLayoutを完全に回避する。
+            ===================================================== */}
+
+        <Route element={<PointSystem />} path="/pointsystem" />
+
+        {/* =====================================================
+            Portfolio
+            ===================================================== */}
 
         <Route element={<PortfolioLayout />}>
           <Route element={<PortfolioHome />} path="/home" />
+
           <Route element={<PortfolioWorks />} path="/works" />
+
           <Route element={<Navigate replace to="/works" />} path="/products" />
+
           <Route element={<PrimePage />} path="/prime" />
+
           <Route element={<WasmTest />} path="wasmtest" />
-          <Route element={<PointSystem />} path="pointsystem" />
+
           <Route element={<TimerPage />} path="/timer" />
+
           <Route element={<RandomPickerPage />} path="/randompicker" />
+
           <Route
             element={<AtCoderRatingVisualizer />}
             path="/atcoder-rating-visualizer"
           />
+
           <Route
             element={<DistanceFromPointPage />}
             path="/distance-from-point"
           />
+
           <Route element={<PublicEthicsPage />} path="/public_ethics" />
+
           <Route
             element={<PublicEthicsPage_final />}
             path="/public_ethics_final"
           />
+
           <Route element={<ThinkersListPage />} path="/thinkers" />
+
           <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
+
           <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
+
           <Route
             element={<ThinkersQuizPage_final />}
             path="/thinkers_quiz_final"
           />
+
           <Route element={<InvincibleTank />} path="/invincibletank" />
+
           <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
+
           <Route element={<IonPage />} path="/chemistry_ion" />
+
           <Route element={<PortfolioTimeline />} path="/timeline" />
+
           <Route element={<PortfolioArticles />} path="/articles" />
+
           <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
+
           <Route element={<PortfolioLinks />} path="/links" />
+
           <Route element={<Navigate replace to="/works" />} path="/about" />
+
           <Route element={<Navigate replace to="/works" />} path="/projects" />
+
           <Route element={<Navigate replace to="/links" />} path="/contact" />
+
           <Route element={<Page404 />} path="*" />
         </Route>
 
+        {/* =====================================================
+            Legacy
+            ===================================================== */}
+
         <Route element={<LegacyLayout />}>
           <Route element={<HomePage />} path="/legacy/home" />
+
           <Route
             element={<Navigate replace to="/works" />}
             path="/legacy/products"
           />
+
           <Route element={<LinksPage />} path="/legacy/links" />
+
           <Route element={<Page404 />} path="*" />
         </Route>
       </Routes>
