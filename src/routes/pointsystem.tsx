@@ -505,7 +505,7 @@ const PointSystem = () => {
         }
 
         .team-name {
-          color: #F1F0E8;
+          color: #272626;
         }
 
         /*
@@ -1385,6 +1385,7 @@ const PlayerScreen = ({
         <h1 className="title">
           <span className="team-name">{state.teamName}</span>
         </h1>
+        <p className="eyebrow">PRIZE MANAGEMENT</p>
       </header>
 
       <section className="summary">
