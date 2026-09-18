@@ -54,7 +54,7 @@ export default function PreviewLayout() {
         本文へ移動
       </a>
       <header className="preview-header">
-        <div className="preview-container preview-header-inner">
+        <div className="preview-container preview-header-inner portfolio-shell-enter">
           <Link
             aria-label="blueberry 新ホーム"
             className="preview-brand"

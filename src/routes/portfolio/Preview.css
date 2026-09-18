@@ -814,3 +814,40 @@
     font-size: 12px;
   }
 }
+
+/* Small interaction cues; entrance motion is shared through useScrollReveal. */
+@media (prefers-reduced-motion: no-preference) {
+  .blueberry-preview .preview-tool-links a,
+  .blueberry-preview .skills-domain-button,
+  .blueberry-preview .skills-topic-button {
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+  .blueberry-preview .preview-text-link svg,
+  .blueberry-preview .preview-work-arrow,
+  .blueberry-preview .preview-domain-list a > svg,
+  .blueberry-preview .skills-related a > svg {
+    transition: transform 180ms ease;
+  }
+  .blueberry-preview .preview-text-link:hover svg,
+  .blueberry-preview .preview-text-link:focus-visible svg {
+    transform: translateX(3px);
+  }
+  .blueberry-preview .preview-work-row:hover .preview-work-arrow,
+  .blueberry-preview .preview-work-row:focus-visible .preview-work-arrow,
+  .blueberry-preview .preview-domain-list a:hover > svg,
+  .blueberry-preview .skills-related a:hover > svg {
+    transform: translate(2px, -2px);
+  }
+  .blueberry-preview .preview-tool-links a:hover,
+  .blueberry-preview .preview-tool-links a:focus-visible {
+    transform: translateY(-2px);
+  }
+  .blueberry-preview .skills-domain-button:active,
+  .blueberry-preview .skills-topic-button:active {
+    transform: translateY(1px);
+  }
+}

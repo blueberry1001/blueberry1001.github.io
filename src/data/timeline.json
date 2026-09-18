@@ -1,0 +1,722 @@
+[
+  {
+    "id": "codex-fes-2026",
+    "year": 2026,
+    "dateLabel": "9月",
+    "category": "creation",
+    "visibility": "standard",
+    "title": "Codex 開発祭 本戦参加",
+    "summary": "大学生向けの開発イベントに参加。Codexを活用したプロダクト制作に取り組みました。",
+    "details": [
+      "OpenAI 大学生向け夏の Codex 開発祭 2026。9月15日、横浜で開催。"
+    ],
+    "sources": [
+      {
+        "label": "イベント公式",
+        "url": "https://codex-student-hack-fes.openai.chatgpt.site/"
+      }
+    ]
+  },
+  {
+    "id": "cpctf-2026",
+    "year": 2026,
+    "dateLabel": "4月",
+    "category": "competition",
+    "visibility": "featured",
+    "title": "CPCTF2026 新入生2位",
+    "summary": "競技プログラミングとCTFを組み合わせた48時間の大会で、新入生2位になりました。",
+    "details": [
+      "traP主催。4月17日〜19日に開催。",
+      "CTFのコンテストには初参加。解いた問題や取り組みを参加記にまとめました。"
+    ],
+    "sources": [
+      {
+        "label": "本人の参加記・writeup",
+        "url": "https://trap.jp/post/2922/"
+      }
+    ]
+  },
+  {
+    "id": "science-tokyo-2026",
+    "year": 2026,
+    "dateLabel": "4月",
+    "category": "education",
+    "visibility": "featured",
+    "title": "東京科学大学に入学・traPに加入",
+    "summary": "総合型選抜を経て東京科学大学へ進学。デジタル創作同好会traPで活動を始めました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "本人の合格体験記",
+        "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
+      },
+      {
+        "label": "大学入学後の自己紹介・活動",
+        "url": "https://trap.jp/post/2922/"
+      }
+    ]
+  },
+  {
+    "id": "graduation-video",
+    "year": 2026,
+    "dateLabel": "高校卒業時",
+    "category": "creation",
+    "visibility": "standard",
+    "title": "卒業式の動画編集",
+    "summary": "高校の卒業式に向けた動画編集を担当しました。",
+    "details": [],
+    "sources": []
+  },
+  {
+    "id": "pck-2025",
+    "year": 2025,
+    "dateLabel": "11月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "パソコン甲子園2025 本選出場",
+    "summary": "2人1組で問題を解くプログラミング部門の本選に出場しました。",
+    "details": ["11月8日〜9日、会津大学で開催。"],
+    "sources": [
+      {
+        "label": "大会公式・本選結果",
+        "url": "https://pckoshien.u-aizu.ac.jp/final/2025final.html"
+      }
+    ]
+  },
+  {
+    "id": "ajl-2025-summer",
+    "year": 2025,
+    "dateLabel": "4〜9月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "AJL 2025 Summer 個人13位・高校9位",
+    "summary": "Algorithm部門の高3個人スコアランキング13位、筑波大学附属高校として学校ランキング9位。",
+    "details": [
+      "学校順位はチームとしての実績です。",
+      "公式に掲載された最終結果を採用しています。"
+    ],
+    "sources": [
+      {
+        "label": "高3個人スコアランキング",
+        "url": "https://img.atcoder.jp/ajl2025summer/grade_6_rankings_A_score.html"
+      },
+      {
+        "label": "高校ランキング（Algorithm）",
+        "url": "https://img.atcoder.jp/ajl2025summer/school_rankings_grades_4to6_A.html"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-closing",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "creation",
+    "visibility": "standard",
+    "title": "桐陰祭 閉会式動画の制作",
+    "summary": "高校3年の桐陰祭で、閉会式の動画制作を担当しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-tca",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "creation",
+    "visibility": "detail",
+    "title": "TCA ゲーム・動画制作",
+    "summary": "TCAの活動として、文化祭に向けたゲームと動画を制作しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-ugou",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "community",
+    "visibility": "standard",
+    "title": "「烏合の衆」責任者",
+    "summary": "桐陰祭の企画「烏合の衆」で責任者を担当しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-food",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "creation",
+    "visibility": "featured",
+    "title": "食販システムの共同制作",
+    "summary": "情報Ⅱの取り組みとして、桐陰祭の食販システム制作にメンバーとして参加しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-asari",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "community",
+    "visibility": "detail",
+    "title": "あさりぐるーぷ Webサイト制作協力",
+    "summary": "あさりぐるーぷの活動に参加し、Webサイトの制作などに協力しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-music",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "creation",
+    "visibility": "detail",
+    "title": "3年音楽選択発表に出演",
+    "summary": "音楽選択の発表で、バイオリンとボーカルを担当しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "festival-69-digital",
+    "year": 2025,
+    "dateLabel": "9月・第69回桐陰祭",
+    "category": "community",
+    "visibility": "detail",
+    "title": "企画局 デジタル担当",
+    "summary": "桐陰祭の企画局でデジタル担当として活動しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/69th_toinsai_goannai/"
+      }
+    ]
+  },
+  {
+    "id": "programming-koshien-2025",
+    "year": 2025,
+    "dateLabel": "8月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "プログラミング甲子園2025 本選出場",
+    "summary": "制作したゲームAIで対戦する、クラウドエース主催の大会の本選に出場しました。",
+    "details": [
+      "8月23日、五反田で開催。予選を通過した9チームが競う大会。",
+      "会津大学の「パソコン甲子園」とは別の大会です。"
+    ],
+    "sources": [
+      {
+        "label": "主催者による開催発表",
+        "url": "https://prtimes.jp/main/html/rd/p/000000259.000032396.html"
+      }
+    ]
+  },
+  {
+    "id": "supercon-2025",
+    "year": 2025,
+    "dateLabel": "8月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "SuperCon2025 本選出場",
+    "summary": "スーパーコンピュータを使って課題に挑むチーム競技の本選に出場しました。",
+    "details": ["本選は8月18日〜22日。TSUBAME4.0を使用。"],
+    "sources": [
+      {
+        "label": "理化学研究所の開催案内",
+        "url": "https://www.r-ccs.riken.jp/outreach/events/20250818-22/index.html"
+      }
+    ]
+  },
+  {
+    "id": "qa4u3",
+    "year": 2025,
+    "dateLabel": "2025年",
+    "category": "learning",
+    "visibility": "featured",
+    "title": "QA4U3 修了・卒業優秀賞（アカデミア）",
+    "summary": "量子アニーリングの講座を修了。「スポーツ大会のチーム編成」で卒業優秀賞（アカデミア）に選ばれました。",
+    "details": [
+      "ぶるべり・でたまき・くろまめのチームで取り組みました。",
+      "7月4日の公式優秀賞発表会に、アカデミア5組のひとつとして掲載されています。"
+    ],
+    "sources": [
+      {
+        "label": "公式の優秀賞発表会・発表題目",
+        "url": "https://altema.is.tohoku.ac.jp/QA4U3/pg24.html"
+      },
+      {
+        "label": "東北大学の講座案内",
+        "url": "https://www.is.tohoku.ac.jp/jp/news/event/detail---id-1550.html"
+      }
+    ]
+  },
+  {
+    "id": "ajl-2024-winter",
+    "year": 2025,
+    "dateLabel": "2024年10月〜2025年3月",
+    "category": "competition",
+    "visibility": "featured",
+    "title": "AJL 2024 Winter 個人7位・高校4位",
+    "summary": "Algorithm部門の高2個人ランキング7位、筑波大学附属高校として学校ランキング4位。",
+    "details": [
+      "大会名は2024 Winterですが、集計期間は2025年3月まで。学校順位はチームとしての実績です。"
+    ],
+    "sources": [
+      {
+        "label": "高2個人ランキング",
+        "url": "https://img.atcoder.jp/ajl2024winter/grade_5_rankings_A_perf.html"
+      },
+      {
+        "label": "高校ランキング（Algorithm）",
+        "url": "https://img.atcoder.jp/ajl2024winter/school_rankings_grades_4to6_A.html"
+      }
+    ]
+  },
+  {
+    "id": "joi-2025-spring",
+    "year": 2025,
+    "dateLabel": "3月",
+    "category": "competition",
+    "visibility": "featured",
+    "title": "JOI 2024/2025 春季トレーニング参加",
+    "summary": "日本情報オリンピックの本選を通過し、春季トレーニング（春合宿）に参加しました。",
+    "details": [
+      "本選は2月、春季トレーニングは3月。参加記に競技や交流の様子を記録しています。"
+    ],
+    "sources": [
+      {
+        "label": "本人の春合宿参加記",
+        "url": "https://blueberry1001.hatenablog.com/entry/2025/03/24/200142"
+      },
+      {
+        "label": "本人の本選参加記",
+        "url": "https://blueberry1001.hatenablog.com/entry/2025/02/06/110742"
+      }
+    ]
+  },
+  {
+    "id": "pck-2024",
+    "year": 2024,
+    "dateLabel": "11月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "パソコン甲子園2024 本選出場",
+    "summary": "地方枠でプログラミング部門の本選に出場しました。",
+    "details": [
+      "11月2日〜3日、会津大学で開催。参加枠の記載は本人の記録に基づきます。"
+    ],
+    "sources": [
+      {
+        "label": "大会公式・本選結果",
+        "url": "https://pckoshien.u-aizu.ac.jp/final/2024final.html"
+      }
+    ]
+  },
+  {
+    "id": "ajl-2024-summer",
+    "year": 2024,
+    "dateLabel": "Summerシーズン",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "AJL 2024 Summer 個人7位・高校5位",
+    "summary": "Algorithm部門の高2個人ランキング7位、筑波大学附属高校として学校ランキング5位。",
+    "details": [
+      "AtCoderの継続的なコンテスト成績を、学校・学年別で集計するリーグ。学校順位はチームとしての実績です。"
+    ],
+    "sources": [
+      {
+        "label": "高2個人ランキング",
+        "url": "https://img.atcoder.jp/ajl2024summer/grade_5_rankings_A.html"
+      },
+      {
+        "label": "高校ランキング（Algorithm）",
+        "url": "https://img.atcoder.jp/ajl2024summer/school_rankings_grades_4to6_A.html"
+      }
+    ]
+  },
+  {
+    "id": "atcoder-yellow",
+    "year": 2024,
+    "dateLabel": "9月14日",
+    "category": "rating",
+    "visibility": "featured",
+    "title": "AtCoder Algorithm 黄色に到達",
+    "summary": "ABC371後のレーティングで初めて黄色に到達しました。",
+    "details": [
+      "更新後レーティング2030。過去の初到達記録であり、現在のレーティングを示すものではありません。"
+    ],
+    "sources": [
+      {
+        "label": "AtCoder レーティング履歴",
+        "url": "https://atcoder.jp/users/blueberry1001/history"
+      }
+    ]
+  },
+  {
+    "id": "festival-68",
+    "year": 2024,
+    "dateLabel": "9月・第68回桐陰祭",
+    "category": "creation",
+    "visibility": "standard",
+    "title": "桐陰祭 閉会式動画・TCA作品制作",
+    "summary": "高校2年の桐陰祭で、閉会式動画とTCAの動画・ゲーム制作に取り組みました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "学校の開催案内",
+        "url": "https://www.high-s.tsukuba.ac.jp/shs/wp/第68回桐陰祭のご案内/"
+      }
+    ]
+  },
+  {
+    "id": "supercon-2024",
+    "year": 2024,
+    "dateLabel": "8月",
+    "category": "competition",
+    "visibility": "featured",
+    "title": "SuperCon2024 本選2位",
+    "summary": "チームtcAtCaとして出場し、スーパーコンピューティングコンテスト本選で2位になりました。",
+    "details": [
+      "本選は8月19日〜23日。",
+      "探索・最適化に取り組み、MPIを使った焼きなまし法の並列化などを実装しました。"
+    ],
+    "sources": [
+      {
+        "label": "本人の参加記",
+        "url": "https://blueberry1001.hatenablog.com/entry/SuperCon2024"
+      },
+      {
+        "label": "理化学研究所の開催案内",
+        "url": "https://www.r-ccs.riken.jp/outreach/events/20240819-0823/"
+      }
+    ]
+  },
+  {
+    "id": "escape-koshien",
+    "year": 2024,
+    "dateLabel": "2024年",
+    "category": "creation",
+    "visibility": "standard",
+    "title": "リアル脱出ゲーム甲子園 本選出場",
+    "summary": "高校生が自作のリアル脱出ゲームを上演する大会の本選に出場しました。",
+    "details": ["参加実績は本人の記録に基づきます。"],
+    "sources": [
+      {
+        "label": "大会公式・2024年の記録",
+        "url": "https://realdgame.jp/s/koshien/2024/index.html"
+      }
+    ]
+  },
+  {
+    "id": "wandering-2024",
+    "year": 2024,
+    "dateLabel": "4〜5月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "ワンダリングチャレンジ 4位",
+    "summary": "横浜トリエンナーレで、街のミッションに取り組み成果を発表する高校生向け企画に参加し、4位になりました。",
+    "details": [
+      "開催は4月21日〜5月11日。3人チームで挑む企画。順位は本人の記録に基づきます。"
+    ],
+    "sources": [
+      {
+        "label": "横浜トリエンナーレの企画案内",
+        "url": "https://www.yokohamatriennale.jp/2024/events/3141/"
+      }
+    ]
+  },
+  {
+    "id": "tatsujin-5",
+    "year": 2024,
+    "dateLabel": "2024年度受講開始",
+    "category": "learning",
+    "visibility": "featured",
+    "title": "情報科学の達人 第5期 修了",
+    "summary": "国立情報学研究所の研究人材育成プログラムで、情報科学分野の学習・研究に取り組みました。",
+    "details": [
+      "第5期は2024年度受講生。修了の実績は本人の記録に基づきます。",
+      "年表では受講開始年度に掲載しています。"
+    ],
+    "sources": [
+      {
+        "label": "国立情報学研究所の第5期募集案内",
+        "url": "https://www.nii.ac.jp/tatsujin/information/notice/231122/"
+      }
+    ]
+  },
+  {
+    "id": "cyan-contest",
+    "year": 2024,
+    "dateLabel": "3月30日",
+    "category": "community",
+    "visibility": "detail",
+    "title": "水以下コンテスト テスター協力",
+    "summary": "有志の競技プログラミングコンテストで、テスターとして運営に協力しました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "大会ページ",
+        "url": "https://mofecoder.com/contests/cyan_or_less_01"
+      },
+      {
+        "label": "本人による有志コンテスト運営の記録",
+        "url": "https://qiita.com/bluebery1001/items/3253399ebf287e197346"
+      }
+    ]
+  },
+  {
+    "id": "joi-2024",
+    "year": 2024,
+    "dateLabel": "2月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "JOI 2023/2024 本選出場",
+    "summary": "日本情報オリンピックの予選を通過し、本選に出場しました。",
+    "details": ["2023/2024は大会の年度名。本選競技は2024年2月4日に開催。"],
+    "sources": [
+      {
+        "label": "大会公式",
+        "url": "https://www.ioi-jp.org/joi/2023/honsen"
+      },
+      {
+        "label": "前年の参加にも触れた本人の記事",
+        "url": "https://blueberry1001.hatenablog.com/entry/2025/02/06/110742"
+      }
+    ]
+  },
+  {
+    "id": "ajl-2023",
+    "year": 2023,
+    "dateLabel": "2023シーズン",
+    "category": "competition",
+    "visibility": "detail",
+    "title": "AJL 2023 個人14位・高校15位",
+    "summary": "高1個人ランキング14位、筑波大学附属高校として学校ランキング15位。",
+    "details": ["学校順位はチームとしての実績です。"],
+    "sources": [
+      {
+        "label": "高1個人ランキング",
+        "url": "https://img.atcoder.jp/ajl2023/output_personal_grade4.html"
+      },
+      {
+        "label": "高校ランキング",
+        "url": "https://img.atcoder.jp/ajl2023/output_high_school.html"
+      }
+    ]
+  },
+  {
+    "id": "green-contest-2",
+    "year": 2023,
+    "dateLabel": "12月2日",
+    "category": "community",
+    "visibility": "standard",
+    "title": "第2回緑以下コンテスト 作問・テスト協力",
+    "summary": "C問題「眩しい数直線」の作問を担当。ほかの問題のテストにも協力しました。",
+    "details": [
+      "yukicoderの問題ページにwriter・testerとして掲載されています。"
+    ],
+    "sources": [
+      {
+        "label": "大会ページ",
+        "url": "https://yukicoder.me/contests/471"
+      },
+      {
+        "label": "担当問題「眩しい数直線」",
+        "url": "https://yukicoder.me/problems/no/2559"
+      }
+    ]
+  },
+  {
+    "id": "atcoder-blue",
+    "year": 2023,
+    "dateLabel": "10月21日",
+    "category": "rating",
+    "visibility": "standard",
+    "title": "AtCoder Algorithm 青色に到達",
+    "summary": "ABC325後のレーティングで初めて青色に到達しました。",
+    "details": ["更新後レーティング1627。"],
+    "sources": [
+      {
+        "label": "AtCoder レーティング履歴",
+        "url": "https://atcoder.jp/users/blueberry1001/history"
+      }
+    ]
+  },
+  {
+    "id": "pck-2023",
+    "year": 2023,
+    "dateLabel": "9月",
+    "category": "competition",
+    "visibility": "detail",
+    "title": "パソコン甲子園2023 予選敢闘賞",
+    "summary": "プログラミング部門の予選に参加し、敢闘賞を受賞しました。",
+    "details": ["予選は9月9日開催。受賞内容は本人の記録に基づきます。"],
+    "sources": [
+      {
+        "label": "公式の予選開催案内",
+        "url": "https://pckoshien.u-aizu.ac.jp/news/2023/09/2023p-pre-asplanned.html"
+      }
+    ]
+  },
+  {
+    "id": "festival-67",
+    "year": 2023,
+    "dateLabel": "9月・第67回桐陰祭",
+    "category": "creation",
+    "visibility": "detail",
+    "title": "TCA ゲーム・動画制作",
+    "summary": "高校1年の桐陰祭で、TCAのゲーム・動画制作に取り組みました。",
+    "details": [],
+    "sources": []
+  },
+  {
+    "id": "supercon-2023",
+    "year": 2023,
+    "dateLabel": "8月",
+    "category": "competition",
+    "visibility": "standard",
+    "title": "SuperCon2023 本選出場",
+    "summary": "スーパーコンピュータを使い、チームで課題の解法を実装する大会の本選に出場しました。",
+    "details": ["競技は8月21日〜24日、閉会式は8月25日。"],
+    "sources": [
+      {
+        "label": "理化学研究所の開催報告",
+        "url": "https://www.r-ccs.riken.jp/outreach/topics/20230830-1/"
+      }
+    ]
+  },
+  {
+    "id": "atcoder-cyan",
+    "year": 2023,
+    "dateLabel": "5月27日",
+    "category": "rating",
+    "visibility": "detail",
+    "title": "AtCoder Algorithm 水色に到達",
+    "summary": "ABC303後のレーティングで初めて水色に到達しました。",
+    "details": ["更新後レーティング1257。"],
+    "sources": [
+      {
+        "label": "AtCoder レーティング履歴",
+        "url": "https://atcoder.jp/users/blueberry1001/history"
+      }
+    ]
+  },
+  {
+    "id": "high-school-2023",
+    "year": 2023,
+    "dateLabel": "4月",
+    "category": "education",
+    "visibility": "standard",
+    "title": "筑波大学附属高等学校に入学",
+    "summary": "高校での学びと並行して、競技プログラミング、ゲーム・映像制作、学校行事の活動を続けました。",
+    "details": [],
+    "sources": []
+  },
+  {
+    "id": "atcoder-green",
+    "year": 2023,
+    "dateLabel": "3月12日",
+    "category": "rating",
+    "visibility": "detail",
+    "title": "AtCoder Algorithm 緑色に到達",
+    "summary": "高校入学前、ARC158後のレーティングで初めて緑色に到達しました。",
+    "details": ["更新後レーティング941。"],
+    "sources": [
+      {
+        "label": "AtCoder レーティング履歴",
+        "url": "https://atcoder.jp/users/blueberry1001/history"
+      }
+    ]
+  },
+  {
+    "id": "atcoder-start",
+    "year": 2022,
+    "dateLabel": "2022年",
+    "category": "rating",
+    "visibility": "detail",
+    "title": "AtCoderでの競技プログラミングを開始",
+    "summary": "AtCoderへの参加を始め、アルゴリズムやデータ構造の学習を続けました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "AtCoder レーティング履歴",
+        "url": "https://atcoder.jp/users/blueberry1001/history"
+      }
+    ]
+  },
+  {
+    "id": "junior-high-2020",
+    "year": 2020,
+    "dateLabel": "4月",
+    "category": "education",
+    "visibility": "detail",
+    "title": "筑波大学附属中学校に入学",
+    "summary": "中学時代からUnityやAviUtlを使った制作に取り組みました。",
+    "details": [],
+    "sources": [
+      {
+        "label": "本人の合格体験記",
+        "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
+      }
+    ]
+  },
+  {
+    "id": "novisteps",
+    "year": null,
+    "dateLabel": "高校在学中から",
+    "category": "community",
+    "visibility": "standard",
+    "title": "AtCoder NoviSteps 制作協力",
+    "summary": "競技プログラミングの学習を支援するWebサイトの制作に協力しています。",
+    "details": [
+      "参加開始年月は未整理。大学入学後もミーティングへの参加を続けています。"
+    ],
+    "sources": [
+      {
+        "label": "開発者による活動紹介",
+        "url": "https://qiita.com/drken/items/c853184ad95b9e9fd45d"
+      },
+      {
+        "label": "本人の活動記録",
+        "url": "https://note.com/bluebery1001/n/n8b9fe8d6884d"
+      }
+    ]
+  },
+  {
+    "id": "paiza-s",
+    "year": null,
+    "dateLabel": "高校在学中",
+    "category": "rating",
+    "visibility": "detail",
+    "title": "paiza Sランク取得",
+    "summary": "paizaのプログラミングスキルチェックでSランクを取得しました。",
+    "details": [],
+    "sources": []
+  }
+]

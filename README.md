@@ -20,6 +20,7 @@ npm run preview
 
 - `/#/home`：現行ホーム
 - `/#/works`：作品一覧
+- `/#/timeline`：経歴・実績。代表／標準／すべてと分類で絞り込み（初期は標準）
 - `/#/preview`：既存ホームの雰囲気を引き継いだ改善案
 - `/#/skills`：言語・ツール → 取り組み → 作品・活動記事を探索する試作ページ
 - `/#/skills?domain=unity&topic=unity`：選択状態を直接共有する例
@@ -30,7 +31,8 @@ npm run preview
 
 ## 更新箇所
 
-- `src/routes/portfolio/portfolioData.ts`：既存の作品、記事、経歴、SNSリンク
+- `src/routes/portfolio/portfolioData.ts`：作品、記事、SNSリンク
+- `src/data/timeline.json`：経歴・実績と表示量。編集方法は `docs/editing-timeline.md`
 - `src/data/skills.json`：言語・ツール、取り組み、作品IDの手動関連付け
 - `docs/editing-skills.md`：スキルの編集例と作品ID一覧
 - `src/routes/portfolio/Preview*.tsx`、`Preview.css`：試作ホームと共通レイアウト
@@ -53,3 +55,5 @@ npm run preview
 
 既存ホームの濃紺・青・シアンを引き継ぎ、画像を使わず文字と作品一覧を中心に構成。
 技術名からスキル探索へ移動できます。本文の遅延読み込み中もヘッダーとフッターを維持します。
+スクロール時の一度だけの表示アニメーションと、選択・詳細展開の短い動きを追加しています。
+OSの「視差効果を減らす」設定（`prefers-reduced-motion`）では動きを抑えます。

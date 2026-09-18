@@ -3,10 +3,13 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 
+import { useScrollReveal } from "../../hooks/useScrollReveal";
+
 import { works } from "./portfolioData";
 import { resolveSkillSelection, skillDomains } from "./skillData";
 
 export default function PortfolioSkills() {
+  const revealRef = useScrollReveal();
   const [params, setParams] = useSearchParams();
   const { domain, topic } = resolveSkillSelection(
     params.get("domain"),
@@ -34,8 +37,8 @@ export default function PortfolioSkills() {
   }
 
   return (
-    <div className="preview-container skills-page">
-      <header className="skills-heading">
+    <div className="preview-container skills-page" ref={revealRef}>
+      <header className="skills-heading" data-reveal>
         <h1>興味から、作品へ。</h1>
         <p>使っている言語やツールから、取り組みと作品をたどれます。</p>
       </header>
@@ -51,7 +54,7 @@ export default function PortfolioSkills() {
         ) : null}
       </nav>
 
-      <div className="skills-explorer">
+      <div className="skills-explorer" data-reveal>
         <section
           aria-labelledby="skill-domains-heading"
           className="skills-column"
@@ -129,7 +132,10 @@ export default function PortfolioSkills() {
             03 <span>制作・記録</span>
           </h2>
           {topic ? (
-            <div className="skills-detail-content" key={topic.id}>
+            <div
+              className="skills-detail-content portfolio-detail-enter"
+              key={`${domain.id}-${topic.id}`}
+            >
               <h3>{topic.title}</h3>
               <p className="skills-summary">{topic.summary}</p>
               <ul className="skills-practices">

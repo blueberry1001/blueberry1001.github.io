@@ -1,172 +1,232 @@
-import { Calendar, Star } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+
+import { ArrowUpRight, ChevronDown, SlidersHorizontal } from "lucide-react";
+
+import { useScrollReveal } from "../../hooks/useScrollReveal";
 
 import {
-  timelineCategoryMeta,
-  timelineEventsByYear,
-  timelineYearStyles,
-} from "./portfolioData";
+  includesAtDensity,
+  timelineCategories,
+  timelineDensities,
+  timelineRecords,
+} from "./timelineData";
+import "./Timeline.css";
 
 export default function PortfolioTimeline() {
+  const [params, setParams] = useSearchParams();
+  const requestedDensity = params.get("density");
+  const density =
+    timelineDensities.find((item) => item.id === requestedDensity) ??
+    timelineDensities[1];
+  const requestedCategory = params.get("category") ?? "all";
+  const category = Object.prototype.hasOwnProperty.call(
+    timelineCategories,
+    requestedCategory
+  )
+    ? requestedCategory
+    : "all";
+  const revealRef = useScrollReveal<HTMLDivElement>(
+    `${density.id}:${category}`
+  );
+  const visible = timelineRecords.filter(
+    (event) =>
+      includesAtDensity(event, density.id) &&
+      (category === "all" || event.category === category)
+  );
+  const years = [...new Set(visible.map((event) => event.year))].sort(
+    (a, b) => (b ?? 0) - (a ?? 0)
+  );
+
+  function changeFilter(key: "density" | "category", value: string) {
+    setParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        if (
+          (key === "density" && value === "standard") ||
+          (key === "category" && value === "all")
+        )
+          next.delete(key);
+        else next.set(key, value);
+        return next;
+      },
+      { preventScrollReset: true }
+    );
+  }
+
   return (
-    <div className="min-h-screen">
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-24">
-        <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-yellow-500/20 blur-3xl" />
+    <div className="portfolio-timeline" ref={revealRef}>
+      <section className="timeline-hero">
+        <div className="timeline-container" data-reveal>
+          <h1>Timeline</h1>
+          <p>大会への挑戦、ものづくり、その周りの活動。</p>
+          <span>高校時代から、大学での取り組みまで。</span>
+        </div>
+      </section>
+      <section
+        aria-label="経歴の絞り込み"
+        className="timeline-filters timeline-container"
+      >
+        <div className="timeline-filter-heading">
+          <h2>
+            <SlidersHorizontal aria-hidden="true" size={19} />
+            表示する実績
+          </h2>
+          <p aria-atomic="true" aria-live="polite">
+            {visible.length}
+            <span> / {timelineRecords.length}件</span>
+          </p>
+        </div>
         <div
-          className="absolute bottom-0 right-1/4 h-96 w-96 animate-pulse rounded-full bg-blue-500/20 blur-3xl"
-          style={{ animationDelay: "1s" }}
-        />
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <h1 className="bg-gradient-to-r from-yellow-300 to-blue-300 bg-clip-text text-6xl font-black tracking-tight text-transparent">
-            Timeline
-          </h1>
-        </div>
-      </section>
-
-      <section className="bg-amber-50 px-6 py-6">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-amber-200 bg-white/80 p-4 text-sm leading-relaxed text-amber-900">
-          このタイムラインの内容は、現時点ではAI生成の情報をもとに構成しているため、事実関係に誤りが含まれる可能性があります。
-          今後、一次情報を確認しながら順次手作業で修正・更新していく予定です。
-        </div>
-      </section>
-
-      <div className="pb-0">
-        {Object.entries(timelineEventsByYear).map(([year, events]) => {
-          const style = timelineYearStyles[year] ?? timelineYearStyles["2020"];
-          return (
-            <section
-              className={`border-y border-slate-200 px-6 py-16 ${style.bg}`}
-              key={year}
+          aria-label="表示の詳しさ"
+          className="timeline-density"
+          role="group"
+        >
+          {timelineDensities.map((item) => (
+            <button
+              aria-pressed={density.id === item.id}
+              key={item.id}
+              onClick={() => changeFilter("density", item.id)}
+              type="button"
             >
-              <div className="mx-auto max-w-5xl">
-                <div className="mb-16 flex items-center gap-6">
-                  <div
-                    className={`inline-flex items-center justify-center rounded-2xl bg-gradient-to-r ${style.gradient} px-8 py-4 shadow-xl`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Calendar
-                        className="text-white"
-                        size={32}
-                        strokeWidth={2.5}
-                      />
-                      <h2 className="text-5xl font-black text-white">{year}</h2>
-                    </div>
-                  </div>
-                  <div
-                    className="h-1 flex-1 rounded-full"
-                    style={{ backgroundColor: style.line }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div
-                    className="absolute bottom-0 left-8 top-0 w-1 md:left-1/2"
-                    style={{ backgroundColor: style.line }}
-                  />
-                  {events.map((event, index) => {
-                    const category = timelineCategoryMeta[event.category];
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <p className="timeline-filter-description">{density.description}</p>
+        <div
+          aria-label="実績の分類"
+          className="timeline-categories"
+          role="group"
+        >
+          <button
+            aria-pressed={category === "all"}
+            onClick={() => changeFilter("category", "all")}
+            type="button"
+          >
+            全分野
+          </button>
+          {Object.entries(timelineCategories).map(([id, item]) => (
+            <button
+              aria-pressed={category === id}
+              key={id}
+              onClick={() => changeFilter("category", id)}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </section>
+      <div
+        className="timeline-container timeline-results"
+        id="timeline-results"
+      >
+        {visible.length === 0 ? (
+          <div className="timeline-empty">
+            <h2>この条件に該当する実績はありません。</h2>
+            <p>
+              表示の詳しさを「すべて」にすると、この分野の活動も確認できます。
+            </p>
+            <button
+              onClick={() => changeFilter("density", "all")}
+              type="button"
+            >
+              すべての詳しさで表示
+            </button>
+          </div>
+        ) : (
+          years.map((year) => (
+            <section
+              aria-labelledby={`timeline-year-${year ?? "undated"}`}
+              className="timeline-year"
+              key={year ?? "undated"}
+            >
+              <div className="timeline-year-label">
+                <h2 id={`timeline-year-${year ?? "undated"}`}>
+                  {year ?? "高校在学中"}
+                </h2>
+                <p>
+                  {year === null
+                    ? "時期未整理"
+                    : year >= 2026
+                      ? "高校卒業・大学へ"
+                      : year === 2023
+                        ? "高校入学"
+                        : year >= 2024
+                          ? "高校時代"
+                          : "高校入学前"}
+                </p>
+              </div>
+              <ol className="timeline-event-list">
+                {visible
+                  .filter((event) => event.year === year)
+                  .map((event) => {
+                    const meta = timelineCategories[event.category];
                     return (
-                      <div
-                        className={`relative mb-12 last:mb-0 ${
-                          index % 2 === 0
-                            ? "md:pr-[50%] md:text-right"
-                            : "md:ml-auto md:pl-[50%]"
-                        }`}
-                        key={`${year}-${event.month}-${event.title}`}
-                      >
-                        <div
-                          className={`absolute left-0 flex items-center justify-center md:left-1/2 ${index % 2 === 0 ? "md:-translate-x-1/2" : ""}`}
-                        >
-                          <div
-                            className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-white shadow-lg"
-                            style={{ backgroundColor: event.color }}
-                          >
-                            <event.icon
-                              className="text-white"
-                              size={28}
-                              strokeWidth={2}
-                            />
-                          </div>
-                        </div>
-                        <div
-                          className={`ml-24 md:ml-0 ${index % 2 === 0 ? "md:mr-28" : "md:ml-28"}`}
-                        >
-                          <div
-                            className={`group rounded-2xl p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${
-                              event.isHighlight
-                                ? "border-2 bg-white shadow-xl"
-                                : "border-2 border-slate-200 bg-white/90 shadow-md backdrop-blur-sm"
-                            }`}
-                            style={{
-                              borderColor: event.isHighlight
-                                ? style.accent
-                                : undefined,
-                            }}
-                          >
-                            <div className="mb-3 flex flex-wrap items-center gap-3">
-                              <span
-                                className="rounded-lg px-3 py-1 text-xs font-semibold"
-                                style={{
-                                  backgroundColor: `${category.color}20`,
-                                  color: category.color,
-                                  border: `1px solid ${category.color}40`,
-                                }}
-                              >
-                                {category.label}
+                      <li className="timeline-event" data-reveal key={event.id}>
+                        <article>
+                          <div className="timeline-event-meta">
+                            <span>{event.dateLabel}</span>
+                            <span
+                              className="timeline-category"
+                              style={{ color: meta?.color }}
+                            >
+                              {meta?.label ?? event.category}
+                            </span>
+                            {event.visibility === "featured" ? (
+                              <span className="timeline-featured">
+                                主な実績
                               </span>
-                              <div className="flex items-center gap-2 text-sm text-slate-600">
-                                <Calendar size={14} />
-                                <span className="font-medium">
-                                  {year}年 {event.month}
-                                </span>
-                              </div>
-                            </div>
-                            <h3 className="mb-3 text-xl font-bold text-slate-900">
-                              {event.title}
-                            </h3>
-                            <p className="mb-4 leading-relaxed text-slate-600">
-                              {event.description}
-                            </p>
-                            <ul className="space-y-2">
-                              {event.details.map((detail) => (
-                                <li
-                                  className="flex items-start gap-3 text-sm text-slate-600"
-                                  key={detail}
-                                >
-                                  <span
-                                    className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                                    style={{ backgroundColor: event.color }}
-                                  />
-                                  <span>{detail}</span>
-                                </li>
-                              ))}
-                            </ul>
-                            {event.isHighlight ? (
-                              <div className="mt-4 border-t border-slate-200 pt-4">
-                                <div className="flex items-center gap-2">
-                                  <Star
-                                    fill={style.accent}
-                                    size={16}
-                                    style={{ color: style.accent }}
-                                  />
-                                  <span
-                                    className="text-xs font-semibold"
-                                    style={{ color: style.accent }}
-                                  >
-                                    ハイライト
-                                  </span>
-                                </div>
-                              </div>
                             ) : null}
                           </div>
-                        </div>
-                      </div>
+                          <h3>{event.title}</h3>
+                          <p className="timeline-summary">{event.summary}</p>
+                          {event.details.length || event.sources.length ? (
+                            <details className="timeline-details">
+                              <summary>
+                                詳細・参考リンク
+                                <ChevronDown aria-hidden="true" size={16} />
+                              </summary>
+                              <div className="timeline-detail-body">
+                                {event.details.length ? (
+                                  <ul>
+                                    {event.details.map((detail) => (
+                                      <li key={detail}>{detail}</li>
+                                    ))}
+                                  </ul>
+                                ) : null}
+                                {event.sources.length ? (
+                                  <div className="timeline-sources">
+                                    {event.sources.map((source) => (
+                                      <a
+                                        href={source.url}
+                                        key={source.url}
+                                        rel="noreferrer"
+                                        target="_blank"
+                                      >
+                                        {source.label}
+                                        <ArrowUpRight
+                                          aria-hidden="true"
+                                          size={14}
+                                        />
+                                      </a>
+                                    ))}
+                                  </div>
+                                ) : null}
+                              </div>
+                            </details>
+                          ) : null}
+                        </article>
+                      </li>
                     );
                   })}
-                </div>
-              </div>
+              </ol>
             </section>
-          );
-        })}
+          ))
+        )}
+        <p className="timeline-editorial-note">
+          本人の記録をもとに、公開されている大会情報・参加記とあわせて整理しています。日付が確定していない活動は、分かる範囲の時期で掲載しています。
+        </p>
       </div>
     </div>
   );

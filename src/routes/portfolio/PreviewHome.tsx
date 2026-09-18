@@ -2,20 +2,23 @@ import { Link } from "react-router-dom";
 
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
+import { useScrollReveal } from "../../hooks/useScrollReveal";
+
 import { profileLinks, works } from "./portfolioData";
 import { skillDomains } from "./skillData";
 
 const selectedIds = ["lumen-trace", "cucumvivor", "distance-from-point"];
 
 export default function PreviewHome() {
+  const revealRef = useScrollReveal();
   const selectedWorks = selectedIds.flatMap((id) =>
     works.filter((work) => work.id === id)
   );
 
   return (
-    <>
+    <div ref={revealRef}>
       <section className="preview-hero">
-        <div className="preview-hero-copy preview-container">
+        <div className="preview-hero-copy preview-container" data-reveal>
           <h1>Blueberry</h1>
           <p>
             競技プログラミングをメインに、
@@ -49,6 +52,7 @@ export default function PreviewHome() {
       <section
         aria-labelledby="selected-works-title"
         className="preview-works preview-container"
+        data-reveal
       >
         <div className="preview-section-heading">
           <h2 id="selected-works-title">Works</h2>
@@ -82,6 +86,7 @@ export default function PreviewHome() {
       <section
         aria-labelledby="preview-skills-title"
         className="preview-skills-band"
+        data-reveal
       >
         <div className="preview-container preview-skills-intro">
           <div>
@@ -115,6 +120,7 @@ export default function PreviewHome() {
       <section
         aria-labelledby="preview-about-title"
         className="preview-about preview-container"
+        data-reveal
         id="preview-about"
       >
         <h2 id="preview-about-title">About blueberry</h2>
@@ -150,6 +156,6 @@ export default function PreviewHome() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
