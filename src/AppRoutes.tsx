@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import Header from "./Header";
+import Analytics from "./components/Analytics";
 import PageLoading from "./components/PageLoading";
 import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
 import PreviewLayout from "./routes/portfolio/PreviewLayout";
@@ -86,6 +87,7 @@ const AppRoutes = () => {
   return (
     <HashRouter>
       <RoutePosition />
+      <Analytics />
       <Routes>
         {/* =====================================================
             Root
