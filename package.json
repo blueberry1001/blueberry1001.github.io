@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write \"./src/**/*.{ts,tsx}\"",
     "preview": "vite preview"
   },

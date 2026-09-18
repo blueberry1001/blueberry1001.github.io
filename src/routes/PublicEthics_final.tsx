@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { BookOpen, PenSquare } from "lucide-react";
 
 const PublicEthicsPage_final = () => {

@@ -14,30 +14,69 @@ f=!a
 `;
 
 export default function WasmTest() {
-  const [module, setModule] = useState<any>();
+  const [module, setModule] =
+    useState<Awaited<ReturnType<typeof ModuleFactory>>>();
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [input, setInput] = useState(DEFAULT_SAMPLE);
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
 
   useEffect(() => {
-    ModuleFactory().then(setModule);
-  }, []);
+    let active = true;
+    setLoadError(false);
+    void ModuleFactory().then(
+      (loaded) => {
+        if (active) setModule(loaded);
+      },
+      () => {
+        if (active) setLoadError(true);
+      }
+    );
+    return () => {
+      active = false;
+    };
+  }, [loadAttempt]);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), 2000);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+
+  useEffect(() => {
+    setCopied(false);
+    setCopyError(false);
+  }, [output]);
 
   const run = () => {
     if (!module) return;
     try {
-      const result = module.ccall("solve_c", "string", ["string"], [input]);
+      const result: unknown = module.ccall(
+        "solve_c",
+        "string",
+        ["string"],
+        [input]
+      );
+      if (typeof result !== "string")
+        throw new Error("実行結果の形式が不正です。");
       setOutput(result);
     } catch (err) {
       setOutput(`[Error] 構文エラーまたは実行エラーが発生しました:\n${err}`);
     }
   };
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!output) return;
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopyError(false);
+    try {
+      await navigator.clipboard.writeText(output);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+      setCopyError(true);
+    }
   };
 
   return (
@@ -112,6 +151,7 @@ export default function WasmTest() {
           </div>
 
           <textarea
+            aria-label="入力スクリプト"
             className="h-56 w-full rounded-lg border border-slate-300 p-3 font-mono text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             onChange={(e) => setInput(e.target.value)}
             placeholder="ここにスクリプトを入力..."
@@ -125,9 +165,22 @@ export default function WasmTest() {
             className="w-full sm:w-auto rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white shadow-sm hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
             disabled={!module}
             onClick={run}
+            type="button"
           >
-            {module ? "実行" : "読み込み中..."}
+            {module ? "実行" : loadError ? "読み込み失敗" : "読み込み中..."}
           </button>
+          {loadError && (
+            <div className="mt-3 text-sm text-red-700" role="alert">
+              実行環境を読み込めませんでした。接続を確認してください。
+              <button
+                className="ml-2 underline"
+                onClick={() => setLoadAttempt((value) => value + 1)}
+                type="button"
+              >
+                再試行
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 出力結果エリア */}
@@ -146,11 +199,17 @@ export default function WasmTest() {
           </div>
 
           <textarea
+            aria-label="出力結果"
             className="h-48 w-full rounded-lg border border-slate-300 bg-slate-900 p-3 font-mono text-sm text-green-400 focus:outline-none"
             placeholder="実行結果がここに表示されます"
             readOnly
             value={output}
           />
+          {copyError && (
+            <p className="text-sm text-red-700" role="alert">
+              コピーできませんでした。出力結果を選択してコピーしてください。
+            </p>
+          )}
         </div>
       </div>
     </section>

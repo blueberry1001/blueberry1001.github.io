@@ -75,6 +75,60 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "lumen-trace",
+    title: "灯の回廊 — LUMEN TRACE",
+    shortDescription: "光片を集めて回廊を探索する2Dアクションゲーム",
+    fullDescription:
+      "光片を集めながら回廊を探索する、Unityで制作した2Dアクションゲームです。WebGL版を公開しており、ブラウザから遊べます。",
+    features: [
+      "2Dアクション",
+      "回廊の探索",
+      "光片の収集",
+      "WebGLブラウザプレイ",
+    ],
+    technologies: ["Unity", "C#", "WebGL"],
+    date: "2026年9月",
+    url: "/lumen-trace",
+    color: "#0F766E",
+    gradient: "from-teal-700 to-slate-800",
+  },
+  {
+    id: "set-expression",
+    title: "関数による集合表現",
+    shortDescription: "集合の定義と演算を試せるWebAssemblyデモ",
+    fullDescription:
+      "C++で実装した、内包的定義に基づく集合データ構造のインタラクティブデモです。有限集合や剰余の述語で集合を定義し、和・積・補集合と要素の包含判定をブラウザで試せます。",
+    features: [
+      "有限集合・述語による集合定義",
+      "和・積・補集合",
+      "包含判定",
+      "ブラウザ上でC++を実行",
+    ],
+    technologies: ["C++", "WebAssembly", "React", "TypeScript"],
+    date: "2026年7月",
+    url: "/wasmtest",
+    color: "#6366F1",
+    gradient: "from-indigo-500 to-violet-700",
+  },
+  {
+    id: "cucumvivor",
+    title: "Cucumvivor",
+    shortDescription: "きゅうりの武器で戦う2Dローグライクシューティング",
+    fullDescription:
+      "traPの2026年春ハッカソン22班で共同制作したゲームです。きゅうりにまつわる武器やアイテムを選び、野菜の敵と弾を避けながらステージを攻略します。プログラマーとして参加し、ダメージ処理などの実装を担当しました。",
+    features: [
+      "2Dシューティング",
+      "ランダムな武器・アイテム選択",
+      "チーム制作",
+      "WebGLブラウザプレイ",
+    ],
+    technologies: ["Unity", "C#", "WebGL"],
+    date: "2026年6月",
+    url: "/cucumvivor",
+    color: "#4D7C0F",
+    gradient: "from-lime-600 to-emerald-700",
+  },
+  {
     id: "3d-rogue-action",
     title: "3DRougeAction",
     shortDescription: "Unityで制作した3Dローグライクアクションゲーム",

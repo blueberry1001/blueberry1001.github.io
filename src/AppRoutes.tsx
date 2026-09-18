@@ -1,32 +1,56 @@
-import { HashRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
-import Header from "./Header";
-import AtCoderRatingVisualizer from "./routes/AtCoderRatingVisualizer";
-import IonPage from "./routes/Chemistry_ion";
-import DistanceFromPointPage from "./routes/DistanceFromPoint";
-import HomePage from "./routes/Home";
-import InvincibleTank from "./routes/InvincibleTank";
-import LinksPage from "./routes/Links";
-import Page404 from "./routes/Page404";
-import PrimePage from "./routes/Prime";
-import PublicEthicsPage from "./routes/PublicEthics";
-import PublicEthicsPage_final from "./routes/PublicEthics_final";
-import RandomPickerPage from "./routes/RandomPicker";
-import ThinkersListPage from "./routes/ThinkersList";
-import ThinkersListPage_final from "./routes/ThinkersList_final";
-import ThinkersQuizPage from "./routes/ThinkersQuiz.tsx";
-import ThinkersQuizPage_final from "./routes/ThinkersQuiz_final";
-import ThreeDRougeAction from "./routes/ThreeDRougeAction";
-import TimerPage from "./routes/Timer";
-import WasmTest from "./routes/WasmTest.tsx";
-import PointSystem from "./routes/pointsystem.tsx";
-import PortfolioArticleDetail from "./routes/portfolio/PortfolioArticleDetail";
-import PortfolioArticles from "./routes/portfolio/PortfolioArticles";
-import PortfolioHome from "./routes/portfolio/PortfolioHome";
-import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
-import PortfolioLinks from "./routes/portfolio/PortfolioLinks";
-import PortfolioTimeline from "./routes/portfolio/PortfolioTimeline.tsx";
-import PortfolioWorks from "./routes/portfolio/PortfolioWorks";
+const Header = lazy(() => import("./Header"));
+const AtCoderRatingVisualizer = lazy(
+  () => import("./routes/AtCoderRatingVisualizer")
+);
+const IonPage = lazy(() => import("./routes/Chemistry_ion"));
+const DistanceFromPointPage = lazy(() => import("./routes/DistanceFromPoint"));
+const HomePage = lazy(() => import("./routes/Home"));
+const InvincibleTank = lazy(() => import("./routes/InvincibleTank"));
+const LinksPage = lazy(() => import("./routes/Links"));
+const Page404 = lazy(() => import("./routes/Page404"));
+const PrimePage = lazy(() => import("./routes/Prime"));
+const PublicEthicsPage = lazy(() => import("./routes/PublicEthics"));
+const PublicEthicsPage_final = lazy(
+  () => import("./routes/PublicEthics_final")
+);
+const RandomPickerPage = lazy(() => import("./routes/RandomPicker"));
+const ThinkersListPage = lazy(() => import("./routes/ThinkersList"));
+const ThinkersListPage_final = lazy(
+  () => import("./routes/ThinkersList_final")
+);
+const ThinkersQuizPage = lazy(() => import("./routes/ThinkersQuiz.tsx"));
+const ThinkersQuizPage_final = lazy(
+  () => import("./routes/ThinkersQuiz_final")
+);
+const ThreeDRougeAction = lazy(() => import("./routes/ThreeDRougeAction"));
+const TimerPage = lazy(() => import("./routes/Timer"));
+const WasmTest = lazy(() => import("./routes/WasmTest.tsx"));
+const PointSystem = lazy(() => import("./routes/pointsystem.tsx"));
+const PortfolioArticleDetail = lazy(
+  () => import("./routes/portfolio/PortfolioArticleDetail")
+);
+const PortfolioArticles = lazy(
+  () => import("./routes/portfolio/PortfolioArticles")
+);
+const PortfolioHome = lazy(() => import("./routes/portfolio/PortfolioHome"));
+const PortfolioLayout = lazy(
+  () => import("./routes/portfolio/PortfolioLayout")
+);
+const PortfolioLinks = lazy(() => import("./routes/portfolio/PortfolioLinks"));
+const PortfolioTimeline = lazy(
+  () => import("./routes/portfolio/PortfolioTimeline.tsx")
+);
+const PortfolioWorks = lazy(() => import("./routes/portfolio/PortfolioWorks"));
+const Cucumvivor = lazy(() => import("./routes/Cucumvivor"));
+const LumenTrace = lazy(() => import("./routes/LumenTrace"));
+const PreviewLayout = lazy(() => import("./routes/portfolio/PreviewLayout"));
+const PreviewHome = lazy(() => import("./routes/portfolio/PreviewHome"));
+const PortfolioSkills = lazy(
+  () => import("./routes/portfolio/PortfolioSkills")
+);
 
 const LegacyLayout = () => {
   return (
@@ -42,112 +66,143 @@ const LegacyLayout = () => {
   );
 };
 
+function RoutePosition() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 const AppRoutes = () => {
   return (
     <HashRouter>
-      <Routes>
-        {/* =====================================================
+      <RoutePosition />
+      <Suspense
+        fallback={
+          <p className="p-8 text-center" role="status">
+            読み込み中…
+          </p>
+        }
+      >
+        <Routes>
+          {/* =====================================================
             Root
             ===================================================== */}
 
-        <Route element={<Navigate replace to="/home" />} path="/" />
+          <Route element={<Navigate replace to="/home" />} path="/" />
 
-        {/* =====================================================
+          {/* =====================================================
             Point System
             -----------------------------------------------------
             PortfolioLayoutの外に置くことで、
             Header / Footer / PortfolioLayoutを完全に回避する。
             ===================================================== */}
 
-        <Route element={<PointSystem />} path="/pointsystem" />
+          <Route element={<PointSystem />} path="/pointsystem" />
 
-        {/* =====================================================
+          <Route element={<PreviewLayout />}>
+            <Route element={<PreviewHome />} path="/preview" />
+            <Route element={<PortfolioSkills />} path="/skills" />
+          </Route>
+
+          {/* =====================================================
             Portfolio
             ===================================================== */}
 
-        <Route element={<PortfolioLayout />}>
-          <Route element={<PortfolioHome />} path="/home" />
+          <Route element={<PortfolioLayout />}>
+            <Route element={<PortfolioHome />} path="/home" />
 
-          <Route element={<PortfolioWorks />} path="/works" />
+            <Route element={<PortfolioWorks />} path="/works" />
+            <Route element={<Cucumvivor />} path="/cucumvivor" />
+            <Route element={<LumenTrace />} path="/lumen-trace" />
 
-          <Route element={<Navigate replace to="/works" />} path="/products" />
+            <Route
+              element={<Navigate replace to="/works" />}
+              path="/products"
+            />
 
-          <Route element={<PrimePage />} path="/prime" />
+            <Route element={<PrimePage />} path="/prime" />
 
-          <Route element={<WasmTest />} path="wasmtest" />
+            <Route element={<WasmTest />} path="wasmtest" />
 
-          <Route element={<TimerPage />} path="/timer" />
+            <Route element={<TimerPage />} path="/timer" />
 
-          <Route element={<RandomPickerPage />} path="/randompicker" />
+            <Route element={<RandomPickerPage />} path="/randompicker" />
 
-          <Route
-            element={<AtCoderRatingVisualizer />}
-            path="/atcoder-rating-visualizer"
-          />
+            <Route
+              element={<AtCoderRatingVisualizer />}
+              path="/atcoder-rating-visualizer"
+            />
 
-          <Route
-            element={<DistanceFromPointPage />}
-            path="/distance-from-point"
-          />
+            <Route
+              element={<DistanceFromPointPage />}
+              path="/distance-from-point"
+            />
 
-          <Route element={<PublicEthicsPage />} path="/public_ethics" />
+            <Route element={<PublicEthicsPage />} path="/public_ethics" />
 
-          <Route
-            element={<PublicEthicsPage_final />}
-            path="/public_ethics_final"
-          />
+            <Route
+              element={<PublicEthicsPage_final />}
+              path="/public_ethics_final"
+            />
 
-          <Route element={<ThinkersListPage />} path="/thinkers" />
+            <Route element={<ThinkersListPage />} path="/thinkers" />
 
-          <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
+            <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
 
-          <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
+            <Route
+              element={<ThinkersListPage_final />}
+              path="/thinkers_final"
+            />
 
-          <Route
-            element={<ThinkersQuizPage_final />}
-            path="/thinkers_quiz_final"
-          />
+            <Route
+              element={<ThinkersQuizPage_final />}
+              path="/thinkers_quiz_final"
+            />
 
-          <Route element={<InvincibleTank />} path="/invincibletank" />
+            <Route element={<InvincibleTank />} path="/invincibletank" />
 
-          <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
+            <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
 
-          <Route element={<IonPage />} path="/chemistry_ion" />
+            <Route element={<IonPage />} path="/chemistry_ion" />
 
-          <Route element={<PortfolioTimeline />} path="/timeline" />
+            <Route element={<PortfolioTimeline />} path="/timeline" />
 
-          <Route element={<PortfolioArticles />} path="/articles" />
+            <Route element={<PortfolioArticles />} path="/articles" />
 
-          <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
+            <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
 
-          <Route element={<PortfolioLinks />} path="/links" />
+            <Route element={<PortfolioLinks />} path="/links" />
 
-          <Route element={<Navigate replace to="/works" />} path="/about" />
+            <Route element={<Navigate replace to="/works" />} path="/about" />
 
-          <Route element={<Navigate replace to="/works" />} path="/projects" />
+            <Route
+              element={<Navigate replace to="/works" />}
+              path="/projects"
+            />
 
-          <Route element={<Navigate replace to="/links" />} path="/contact" />
+            <Route element={<Navigate replace to="/links" />} path="/contact" />
 
-          <Route element={<Page404 />} path="*" />
-        </Route>
+            <Route element={<Page404 />} path="*" />
+          </Route>
 
-        {/* =====================================================
+          {/* =====================================================
             Legacy
             ===================================================== */}
 
-        <Route element={<LegacyLayout />}>
-          <Route element={<HomePage />} path="/legacy/home" />
+          <Route element={<LegacyLayout />}>
+            <Route element={<HomePage />} path="/legacy/home" />
 
-          <Route
-            element={<Navigate replace to="/works" />}
-            path="/legacy/products"
-          />
+            <Route
+              element={<Navigate replace to="/works" />}
+              path="/legacy/products"
+            />
 
-          <Route element={<LinksPage />} path="/legacy/links" />
+            <Route element={<LinksPage />} path="/legacy/links" />
 
-          <Route element={<Page404 />} path="*" />
-        </Route>
-      </Routes>
+            <Route element={<Page404 />} path="*" />
+          </Route>
+        </Routes>
+      </Suspense>
     </HashRouter>
   );
 };
