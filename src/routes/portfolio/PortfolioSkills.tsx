@@ -156,11 +156,7 @@ export default function PortfolioSkills() {
                     </Link>
                   ))}
                 </div>
-              ) : (
-                <p className="skills-hint">
-                  関連作品はまだ登録されていません。
-                </p>
-              )}
+              ) : null}
               <div className="skills-sources">
                 {topic.sources.length ? <h4>活動を読む</h4> : null}
                 {topic.sources.map((source) => (
@@ -189,9 +185,7 @@ export default function PortfolioSkills() {
           )}
         </section>
       </div>
-      <p className="skills-evidence-note">
-        公開作品・本人の記事をもとに整理しています。各項目の「活動を読む」から、取り組みの背景を確認できます。
-      </p>
+
       <Link className="preview-text-link" to="/preview">
         新ホームへ <ArrowRight aria-hidden="true" size={18} />
       </Link>

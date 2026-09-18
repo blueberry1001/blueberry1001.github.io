@@ -1,6 +1,6 @@
 import pdfJorikiso from "../../assets/26jorikiso_blueberry.pdf";
 
-export { homeTimelineEvents as timelineEvents } from "./timelineData";
+
 
 export type WorkItem = {
   id: string;

@@ -31,7 +31,7 @@
     ],
     "sources": [
       {
-        "label": "本人の参加記・writeup",
+        "label": "参加記・writeup",
         "url": "https://trap.jp/post/2922/"
       }
     ]
@@ -47,7 +47,7 @@
     "details": [],
     "sources": [
       {
-        "label": "本人の合格体験記",
+        "label": "合格体験記",
         "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
       },
       {
@@ -75,7 +75,9 @@
     "visibility": "standard",
     "title": "パソコン甲子園2025 本選出場",
     "summary": "2人1組で問題を解くプログラミング部門の本選に出場しました。",
-    "details": ["11月8日〜9日、会津大学で開催。"],
+    "details": [
+      "11月8日〜9日、会津大学で開催。"
+    ],
     "sources": [
       {
         "label": "大会公式・本選結果",
@@ -91,10 +93,7 @@
     "visibility": "standard",
     "title": "AJL 2025 Summer 個人13位・高校9位",
     "summary": "Algorithm部門の高3個人スコアランキング13位、筑波大学附属高校として学校ランキング9位。",
-    "details": [
-      "学校順位はチームとしての実績です。",
-      "公式に掲載された最終結果を採用しています。"
-    ],
+    "details": [],
     "sources": [
       {
         "label": "高3個人スコアランキング",
@@ -245,7 +244,9 @@
     "visibility": "standard",
     "title": "SuperCon2025 本選出場",
     "summary": "スーパーコンピュータを使って課題に挑むチーム競技の本選に出場しました。",
-    "details": ["本選は8月18日〜22日。TSUBAME4.0を使用。"],
+    "details": [
+      "本選は8月18日〜22日。TSUBAME4.0を使用。"
+    ],
     "sources": [
       {
         "label": "理化学研究所の開催案内",
@@ -284,9 +285,7 @@
     "visibility": "featured",
     "title": "AJL 2024 Winter 個人7位・高校4位",
     "summary": "Algorithm部門の高2個人ランキング7位、筑波大学附属高校として学校ランキング4位。",
-    "details": [
-      "大会名は2024 Winterですが、集計期間は2025年3月まで。学校順位はチームとしての実績です。"
-    ],
+    "details": [],
     "sources": [
       {
         "label": "高2個人ランキング",
@@ -311,11 +310,11 @@
     ],
     "sources": [
       {
-        "label": "本人の春合宿参加記",
+        "label": "春合宿参加記",
         "url": "https://blueberry1001.hatenablog.com/entry/2025/03/24/200142"
       },
       {
-        "label": "本人の本選参加記",
+        "label": "本選参加記",
         "url": "https://blueberry1001.hatenablog.com/entry/2025/02/06/110742"
       }
     ]
@@ -329,7 +328,7 @@
     "title": "パソコン甲子園2024 本選出場",
     "summary": "地方枠でプログラミング部門の本選に出場しました。",
     "details": [
-      "11月2日〜3日、会津大学で開催。参加枠の記載は本人の記録に基づきます。"
+      "11月2日〜3日、会津大学で開催。"
     ],
     "sources": [
       {
@@ -347,7 +346,7 @@
     "title": "AJL 2024 Summer 個人7位・高校5位",
     "summary": "Algorithm部門の高2個人ランキング7位、筑波大学附属高校として学校ランキング5位。",
     "details": [
-      "AtCoderの継続的なコンテスト成績を、学校・学年別で集計するリーグ。学校順位はチームとしての実績です。"
+      "AtCoderのコンテスト成績を学校・学年別で集計するリーグ。"
     ],
     "sources": [
       {
@@ -369,7 +368,7 @@
     "title": "AtCoder Algorithm 黄色に到達",
     "summary": "ABC371後のレーティングで初めて黄色に到達しました。",
     "details": [
-      "更新後レーティング2030。過去の初到達記録であり、現在のレーティングを示すものではありません。"
+      "更新後レーティング2030。"
     ],
     "sources": [
       {
@@ -408,7 +407,7 @@
     ],
     "sources": [
       {
-        "label": "本人の参加記",
+        "label": "参加記",
         "url": "https://blueberry1001.hatenablog.com/entry/SuperCon2024"
       },
       {
@@ -425,7 +424,7 @@
     "visibility": "standard",
     "title": "リアル脱出ゲーム甲子園 本選出場",
     "summary": "高校生が自作のリアル脱出ゲームを上演する大会の本選に出場しました。",
-    "details": ["参加実績は本人の記録に基づきます。"],
+    "details": [],
     "sources": [
       {
         "label": "大会公式・2024年の記録",
@@ -442,7 +441,7 @@
     "title": "ワンダリングチャレンジ 4位",
     "summary": "横浜トリエンナーレで、街のミッションに取り組み成果を発表する高校生向け企画に参加し、4位になりました。",
     "details": [
-      "開催は4月21日〜5月11日。3人チームで挑む企画。順位は本人の記録に基づきます。"
+      "4月21日〜5月11日に開催。3人チームで挑む企画。"
     ],
     "sources": [
       {
@@ -460,8 +459,7 @@
     "title": "情報科学の達人 第5期 修了",
     "summary": "国立情報学研究所の研究人材育成プログラムで、情報科学分野の学習・研究に取り組みました。",
     "details": [
-      "第5期は2024年度受講生。修了の実績は本人の記録に基づきます。",
-      "年表では受講開始年度に掲載しています。"
+      "2024年度に受講開始。"
     ],
     "sources": [
       {
@@ -485,7 +483,7 @@
         "url": "https://mofecoder.com/contests/cyan_or_less_01"
       },
       {
-        "label": "本人による有志コンテスト運営の記録",
+        "label": "コンテスト運営の記録",
         "url": "https://qiita.com/bluebery1001/items/3253399ebf287e197346"
       }
     ]
@@ -498,14 +496,16 @@
     "visibility": "standard",
     "title": "JOI 2023/2024 本選出場",
     "summary": "日本情報オリンピックの予選を通過し、本選に出場しました。",
-    "details": ["2023/2024は大会の年度名。本選競技は2024年2月4日に開催。"],
+    "details": [
+      "本選競技は2024年2月4日に開催。"
+    ],
     "sources": [
       {
         "label": "大会公式",
         "url": "https://www.ioi-jp.org/joi/2023/honsen"
       },
       {
-        "label": "前年の参加にも触れた本人の記事",
+        "label": "JOI参加記",
         "url": "https://blueberry1001.hatenablog.com/entry/2025/02/06/110742"
       }
     ]
@@ -518,7 +518,7 @@
     "visibility": "detail",
     "title": "AJL 2023 個人14位・高校15位",
     "summary": "高1個人ランキング14位、筑波大学附属高校として学校ランキング15位。",
-    "details": ["学校順位はチームとしての実績です。"],
+    "details": [],
     "sources": [
       {
         "label": "高1個人ランキング",
@@ -560,7 +560,9 @@
     "visibility": "standard",
     "title": "AtCoder Algorithm 青色に到達",
     "summary": "ABC325後のレーティングで初めて青色に到達しました。",
-    "details": ["更新後レーティング1627。"],
+    "details": [
+      "更新後レーティング1627。"
+    ],
     "sources": [
       {
         "label": "AtCoder レーティング履歴",
@@ -576,7 +578,9 @@
     "visibility": "detail",
     "title": "パソコン甲子園2023 予選敢闘賞",
     "summary": "プログラミング部門の予選に参加し、敢闘賞を受賞しました。",
-    "details": ["予選は9月9日開催。受賞内容は本人の記録に基づきます。"],
+    "details": [
+      "予選は9月9日開催。"
+    ],
     "sources": [
       {
         "label": "公式の予選開催案内",
@@ -603,7 +607,9 @@
     "visibility": "standard",
     "title": "SuperCon2023 本選出場",
     "summary": "スーパーコンピュータを使い、チームで課題の解法を実装する大会の本選に出場しました。",
-    "details": ["競技は8月21日〜24日、閉会式は8月25日。"],
+    "details": [
+      "競技は8月21日〜24日、閉会式は8月25日。"
+    ],
     "sources": [
       {
         "label": "理化学研究所の開催報告",
@@ -619,7 +625,9 @@
     "visibility": "detail",
     "title": "AtCoder Algorithm 水色に到達",
     "summary": "ABC303後のレーティングで初めて水色に到達しました。",
-    "details": ["更新後レーティング1257。"],
+    "details": [
+      "更新後レーティング1257。"
+    ],
     "sources": [
       {
         "label": "AtCoder レーティング履歴",
@@ -646,7 +654,9 @@
     "visibility": "detail",
     "title": "AtCoder Algorithm 緑色に到達",
     "summary": "高校入学前、ARC158後のレーティングで初めて緑色に到達しました。",
-    "details": ["更新後レーティング941。"],
+    "details": [
+      "更新後レーティング941。"
+    ],
     "sources": [
       {
         "label": "AtCoder レーティング履歴",
@@ -681,10 +691,21 @@
     "details": [],
     "sources": [
       {
-        "label": "本人の合格体験記",
+        "label": "合格体験記",
         "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
       }
     ]
+  },
+  {
+    "id": "birth-2007",
+    "year": 2007,
+    "dateLabel": "",
+    "category": "education",
+    "visibility": "featured",
+    "title": "誕生",
+    "summary": "",
+    "details": [],
+    "sources": []
   },
   {
     "id": "novisteps",
@@ -695,7 +716,7 @@
     "title": "AtCoder NoviSteps 制作協力",
     "summary": "競技プログラミングの学習を支援するWebサイトの制作に協力しています。",
     "details": [
-      "参加開始年月は未整理。大学入学後もミーティングへの参加を続けています。"
+      "大学入学後もミーティングへの参加を続けています。"
     ],
     "sources": [
       {
@@ -703,7 +724,7 @@
         "url": "https://qiita.com/drken/items/c853184ad95b9e9fd45d"
       },
       {
-        "label": "本人の活動記録",
+        "label": "活動記録",
         "url": "https://note.com/bluebery1001/n/n8b9fe8d6884d"
       }
     ]

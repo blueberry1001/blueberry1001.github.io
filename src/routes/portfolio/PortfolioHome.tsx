@@ -5,16 +5,19 @@ import { ArrowRight, Calendar, Clock, ExternalLink } from "lucide-react";
 
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 
+import TimelineList from "./TimelineList";
 import {
   articleSourceMeta,
   articles,
   getArticles,
   profileLinks,
   techStack,
-  timelineEvents,
   works,
   type ArticleItem,
 } from "./portfolioData";
+import { featuredTimelineRecords } from "./timelineData";
+
+const selectedWorks = works.slice(0, 3);
 
 export default function PortfolioHome() {
   const revealRef = useScrollReveal();
@@ -143,7 +146,7 @@ export default function PortfolioHome() {
             </button>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {works.map((work) => (
+            {selectedWorks.map((work) => (
               <NavLink
                 className="group relative z-0 flex h-full flex-col overflow-hidden rounded-2xl border-2 border-slate-200 transition-all duration-500 hover:z-10 hover:scale-105 hover:border-slate-300 hover:shadow-2xl"
                 key={work.id}
@@ -182,90 +185,15 @@ export default function PortfolioHome() {
         </div>
       </section>
 
-      <section
-        className="w-full bg-slate-50 px-6 py-20"
-        data-reveal
-        id="timeline"
-      >
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 flex items-center justify-between">
-            <h2 className="text-5xl font-bold tracking-tight text-slate-900">
-              Timeline
-            </h2>
-            <button
-              className="group flex items-center gap-2 rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-600"
-              onClick={() => navigate("/timeline")}
-              type="button"
-            >
-              <span>詳しく見る</span>
-              <ArrowRight
-                className="transition-transform group-hover:translate-x-1"
-                size={20}
-              />
-            </button>
+      <section className="portfolio-timeline home-timeline" id="timeline">
+        <div className="timeline-container">
+          <div className="home-timeline-heading" data-reveal>
+            <h2>Timeline</h2>
+            <NavLink to="/timeline">
+              すべて見る <ArrowRight aria-hidden="true" size={18} />
+            </NavLink>
           </div>
-          <div className="relative">
-            <div className="absolute bottom-0 left-8 top-0 w-0.5 bg-gradient-to-b from-blue-500 via-cyan-500 to-yellow-400 md:left-1/2" />
-            {timelineEvents.map((event, index) => (
-              <div
-                className={`relative mb-16 last:mb-0 ${
-                  index % 2 === 0
-                    ? "md:pr-[50%] md:text-right"
-                    : "md:ml-auto md:pl-[50%]"
-                }`}
-                key={event.year}
-              >
-                <div
-                  className={`absolute left-0 flex items-center justify-center md:left-1/2 ${
-                    index % 2 === 0 ? "md:-translate-x-1/2" : ""
-                  }`}
-                >
-                  <div
-                    className={`flex h-20 w-20 items-center justify-center rounded-2xl border-2 font-bold shadow-lg backdrop-blur-sm transition-all duration-500 hover:scale-110 ${
-                      event.isHighlight
-                        ? "border-yellow-300 bg-gradient-to-br from-yellow-400 to-yellow-500 text-slate-900 shadow-yellow-200"
-                        : "border-blue-400 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-blue-200"
-                    }`}
-                  >
-                    <span className="text-lg">{event.year}</span>
-                  </div>
-                </div>
-                <div
-                  className={`ml-28 md:ml-0 ${index % 2 === 0 ? "md:mr-32" : "md:ml-32"}`}
-                >
-                  <div
-                    className={`group rounded-2xl p-6 transition-all duration-500 hover:scale-105 hover:shadow-xl ${
-                      event.isHighlight
-                        ? "border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-amber-50 shadow-lg shadow-yellow-100"
-                        : "border-2 border-slate-200 bg-white shadow-md"
-                    }`}
-                  >
-                    <ul className="space-y-3">
-                      {event.items.map((item) => (
-                        <li
-                          className={`flex items-start gap-3 ${
-                            event.isHighlight
-                              ? "font-semibold text-slate-800"
-                              : "text-slate-700"
-                          }`}
-                          key={item}
-                        >
-                          <span
-                            className={`mt-2 h-2 w-2 flex-shrink-0 rounded-full ${
-                              event.isHighlight
-                                ? "bg-yellow-500"
-                                : "bg-blue-500"
-                            }`}
-                          />
-                          <span className="leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TimelineList compact records={featuredTimelineRecords} />
         </div>
       </section>
 

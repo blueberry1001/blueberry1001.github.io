@@ -17,7 +17,7 @@
         "workIds": [],
         "sources": [
           {
-            "label": "AtCoder プロフィール・現在の成績",
+            "label": "AtCoder プロフィール",
             "url": "https://atcoder.jp/users/blueberry1001"
           },
           {
@@ -35,7 +35,9 @@
           "和・積・補集合と包含判定",
           "ReactのUIとWebAssemblyの連携"
         ],
-        "workIds": ["set-expression"],
+        "workIds": [
+          "set-expression"
+        ],
         "sources": [
           {
             "label": "集合表現デモのソースコード",
@@ -55,7 +57,7 @@
         "workIds": [],
         "sources": [
           {
-            "label": "本人の合格体験記・制作活動について",
+            "label": "合格体験記・制作活動",
             "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
           }
         ]
@@ -71,12 +73,12 @@
       {
         "id": "python",
         "title": "Python",
-        "summary": "Pythonの使用経験があります。具体的な制作物は今後追加します。",
+        "summary": "Pythonの使用経験があります。",
         "practices": [],
         "workIds": [],
         "sources": [
           {
-            "label": "本人の合格体験記・制作活動について",
+            "label": "合格体験記・制作活動",
             "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
           }
         ]
@@ -120,7 +122,10 @@
           "Cucumvivorのダメージクラス実装",
           "ローグライクのあるゲームづくり"
         ],
-        "workIds": ["cucumvivor", "invincible-tank"],
+        "workIds": [
+          "cucumvivor",
+          "invincible-tank"
+        ],
         "sources": [
           {
             "label": "担当内容を読む（traP）",
@@ -140,11 +145,14 @@
         "id": "video",
         "title": "AviUtl / 動画編集",
         "summary": "ゲーム制作とあわせて、映像でも表現する。",
-        "practices": ["AviUtlを使った動画編集", "制作や学びの記録・発信"],
+        "practices": [
+          "AviUtlを使った動画編集",
+          "制作や学びの記録・発信"
+        ],
         "workIds": [],
         "sources": [
           {
-            "label": "本人の合格体験記・制作活動について",
+            "label": "合格体験記・制作活動",
             "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
           },
           {
@@ -172,7 +180,7 @@
         "workIds": [],
         "sources": [
           {
-            "label": "本人の合格体験記・制作活動について",
+            "label": "合格体験記・制作活動",
             "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
           }
         ]
@@ -188,12 +196,12 @@
       {
         "id": "figma",
         "title": "Figma",
-        "summary": "Figmaの使用経験があります。具体的な制作物は今後追加します。",
+        "summary": "Figmaの使用経験があります。",
         "practices": [],
         "workIds": [],
         "sources": [
           {
-            "label": "本人の合格体験記・制作活動について",
+            "label": "合格体験記・制作活動",
             "url": "https://note.com/bluebery1001/n/n9cd291e9a0bc"
           }
         ]
@@ -237,10 +245,14 @@
           "ドラッグ操作による学習ゲーム",
           "利用者の声をもとにした改善"
         ],
-        "workIds": ["public-ethics-tool", "ion-order-game", "exam-timer"],
+        "workIds": [
+          "public-ethics-tool",
+          "ion-order-game",
+          "exam-timer"
+        ],
         "sources": [
           {
-            "label": "本人による学習ツールの紹介",
+            "label": "学習ツールの紹介",
             "url": "https://note.com/bluebery1001/n/nc3fd9f71bab4"
           }
         ]
