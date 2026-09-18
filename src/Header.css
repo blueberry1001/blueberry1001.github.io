@@ -1,5 +1,5 @@
 /* ヘッダー全体のスタイル */
-header {
+.header {
   border-bottom: #333 1.5px solid;
   background-color: #f6f4eb; /* 背景色 */
 }

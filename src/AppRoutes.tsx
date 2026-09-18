@@ -1,7 +1,17 @@
 import { lazy, Suspense, useEffect } from "react";
-import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import {
+  HashRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 
-const Header = lazy(() => import("./Header"));
+import Header from "./Header";
+import PageLoading from "./components/PageLoading";
+import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
+import PreviewLayout from "./routes/portfolio/PreviewLayout";
 const AtCoderRatingVisualizer = lazy(
   () => import("./routes/AtCoderRatingVisualizer")
 );
@@ -36,9 +46,6 @@ const PortfolioArticles = lazy(
   () => import("./routes/portfolio/PortfolioArticles")
 );
 const PortfolioHome = lazy(() => import("./routes/portfolio/PortfolioHome"));
-const PortfolioLayout = lazy(
-  () => import("./routes/portfolio/PortfolioLayout")
-);
 const PortfolioLinks = lazy(() => import("./routes/portfolio/PortfolioLinks"));
 const PortfolioTimeline = lazy(
   () => import("./routes/portfolio/PortfolioTimeline.tsx")
@@ -46,7 +53,6 @@ const PortfolioTimeline = lazy(
 const PortfolioWorks = lazy(() => import("./routes/portfolio/PortfolioWorks"));
 const Cucumvivor = lazy(() => import("./routes/Cucumvivor"));
 const LumenTrace = lazy(() => import("./routes/LumenTrace"));
-const PreviewLayout = lazy(() => import("./routes/portfolio/PreviewLayout"));
 const PreviewHome = lazy(() => import("./routes/portfolio/PreviewHome"));
 const PortfolioSkills = lazy(
   () => import("./routes/portfolio/PortfolioSkills")
@@ -59,7 +65,9 @@ const LegacyLayout = () => {
 
       <div className="wrapper">
         <div className="mainelement">
-          <Outlet />
+          <Suspense fallback={<PageLoading appearance="legacy" />}>
+            <Outlet />
+          </Suspense>
         </div>
       </div>
     </div>
@@ -68,7 +76,9 @@ const LegacyLayout = () => {
 
 function RoutePosition() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return null;
 }
 
@@ -76,133 +86,123 @@ const AppRoutes = () => {
   return (
     <HashRouter>
       <RoutePosition />
-      <Suspense
-        fallback={
-          <p className="p-8 text-center" role="status">
-            読み込み中…
-          </p>
-        }
-      >
-        <Routes>
-          {/* =====================================================
+      <Routes>
+        {/* =====================================================
             Root
             ===================================================== */}
 
-          <Route element={<Navigate replace to="/home" />} path="/" />
+        <Route element={<Navigate replace to="/home" />} path="/" />
 
-          {/* =====================================================
+        {/* =====================================================
             Point System
             -----------------------------------------------------
             PortfolioLayoutの外に置くことで、
             Header / Footer / PortfolioLayoutを完全に回避する。
             ===================================================== */}
 
-          <Route element={<PointSystem />} path="/pointsystem" />
+        <Route
+          element={
+            <Suspense fallback={<PageLoading appearance="standalone" />}>
+              <PointSystem />
+            </Suspense>
+          }
+          path="/pointsystem"
+        />
 
-          <Route element={<PreviewLayout />}>
-            <Route element={<PreviewHome />} path="/preview" />
-            <Route element={<PortfolioSkills />} path="/skills" />
-          </Route>
+        <Route element={<PreviewLayout />}>
+          <Route element={<PreviewHome />} path="/preview" />
+          <Route element={<PortfolioSkills />} path="/skills" />
+        </Route>
 
-          {/* =====================================================
+        {/* =====================================================
             Portfolio
             ===================================================== */}
 
-          <Route element={<PortfolioLayout />}>
-            <Route element={<PortfolioHome />} path="/home" />
+        <Route element={<PortfolioLayout />}>
+          <Route element={<PortfolioHome />} path="/home" />
 
-            <Route element={<PortfolioWorks />} path="/works" />
-            <Route element={<Cucumvivor />} path="/cucumvivor" />
-            <Route element={<LumenTrace />} path="/lumen-trace" />
+          <Route element={<PortfolioWorks />} path="/works" />
+          <Route element={<Cucumvivor />} path="/cucumvivor" />
+          <Route element={<LumenTrace />} path="/lumen-trace" />
 
-            <Route
-              element={<Navigate replace to="/works" />}
-              path="/products"
-            />
+          <Route element={<Navigate replace to="/works" />} path="/products" />
 
-            <Route element={<PrimePage />} path="/prime" />
+          <Route element={<PrimePage />} path="/prime" />
 
-            <Route element={<WasmTest />} path="wasmtest" />
+          <Route element={<WasmTest />} path="wasmtest" />
 
-            <Route element={<TimerPage />} path="/timer" />
+          <Route element={<TimerPage />} path="/timer" />
 
-            <Route element={<RandomPickerPage />} path="/randompicker" />
+          <Route element={<RandomPickerPage />} path="/randompicker" />
 
-            <Route
-              element={<AtCoderRatingVisualizer />}
-              path="/atcoder-rating-visualizer"
-            />
+          <Route
+            element={<AtCoderRatingVisualizer />}
+            path="/atcoder-rating-visualizer"
+          />
 
-            <Route
-              element={<DistanceFromPointPage />}
-              path="/distance-from-point"
-            />
+          <Route
+            element={<DistanceFromPointPage />}
+            path="/distance-from-point"
+          />
 
-            <Route element={<PublicEthicsPage />} path="/public_ethics" />
+          <Route element={<PublicEthicsPage />} path="/public_ethics" />
 
-            <Route
-              element={<PublicEthicsPage_final />}
-              path="/public_ethics_final"
-            />
+          <Route
+            element={<PublicEthicsPage_final />}
+            path="/public_ethics_final"
+          />
 
-            <Route element={<ThinkersListPage />} path="/thinkers" />
+          <Route element={<ThinkersListPage />} path="/thinkers" />
 
-            <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
+          <Route element={<ThinkersQuizPage />} path="/thinkers_quiz" />
 
-            <Route
-              element={<ThinkersListPage_final />}
-              path="/thinkers_final"
-            />
+          <Route element={<ThinkersListPage_final />} path="/thinkers_final" />
 
-            <Route
-              element={<ThinkersQuizPage_final />}
-              path="/thinkers_quiz_final"
-            />
+          <Route
+            element={<ThinkersQuizPage_final />}
+            path="/thinkers_quiz_final"
+          />
 
-            <Route element={<InvincibleTank />} path="/invincibletank" />
+          <Route element={<InvincibleTank />} path="/invincibletank" />
 
-            <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
+          <Route element={<ThreeDRougeAction />} path="/3d-rogue-action" />
 
-            <Route element={<IonPage />} path="/chemistry_ion" />
+          <Route element={<IonPage />} path="/chemistry_ion" />
 
-            <Route element={<PortfolioTimeline />} path="/timeline" />
+          <Route element={<PortfolioTimeline />} path="/timeline" />
 
-            <Route element={<PortfolioArticles />} path="/articles" />
+          <Route element={<PortfolioArticles />} path="/articles" />
 
-            <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
+          <Route element={<PortfolioArticleDetail />} path="/articles/:id" />
 
-            <Route element={<PortfolioLinks />} path="/links" />
+          <Route element={<PortfolioLinks />} path="/links" />
 
-            <Route element={<Navigate replace to="/works" />} path="/about" />
+          <Route element={<Navigate replace to="/works" />} path="/about" />
 
-            <Route
-              element={<Navigate replace to="/works" />}
-              path="/projects"
-            />
+          <Route element={<Navigate replace to="/works" />} path="/projects" />
 
-            <Route element={<Navigate replace to="/links" />} path="/contact" />
+          <Route element={<Navigate replace to="/links" />} path="/contact" />
 
-            <Route element={<Page404 />} path="*" />
-          </Route>
+          <Route element={<Page404 />} path="*" />
+        </Route>
 
-          {/* =====================================================
+        {/* =====================================================
             Legacy
             ===================================================== */}
 
-          <Route element={<LegacyLayout />}>
-            <Route element={<HomePage />} path="/legacy/home" />
+        <Route element={<LegacyLayout />}>
+          <Route element={<HomePage />} path="/legacy/home" />
 
-            <Route
-              element={<Navigate replace to="/works" />}
-              path="/legacy/products"
-            />
+          <Route
+            element={<Navigate replace to="/works" />}
+            path="/legacy/products"
+          />
 
-            <Route element={<LinksPage />} path="/legacy/links" />
+          <Route element={<LinksPage />} path="/legacy/links" />
 
-            <Route element={<Page404 />} path="*" />
-          </Route>
-        </Routes>
-      </Suspense>
+          <Route element={<Page404 />} path="*" />
+        </Route>
+      </Routes>
     </HashRouter>
   );
 };

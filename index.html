@@ -4,6 +4,45 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html {
+        background: #ffffff;
+      }
+      body {
+        margin: 0;
+      }
+      #site-bootstrap {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: var(--initial-paper, #ffffff);
+        color: var(--initial-ink, #475569);
+        font:
+          14px/1.7 system-ui,
+          sans-serif;
+        letter-spacing: 0.04em;
+      }
+    </style>
+    <script>
+      // Match the destination before the application and its styles arrive.
+      const initialPath = location.hash.slice(1).split("?")[0];
+      const initialPaper =
+        initialPath === "/preview" || initialPath === "/skills"
+          ? "#ffffff"
+          : initialPath.startsWith("/legacy/")
+            ? "#f6f4eb"
+            : initialPath === "/pointsystem"
+              ? "#006b16"
+              : "#ffffff";
+      document.documentElement.style.setProperty(
+        "--initial-paper",
+        initialPaper
+      );
+      document.documentElement.style.backgroundColor = initialPaper;
+      if (initialPath === "/pointsystem") {
+        document.documentElement.style.setProperty("--initial-ink", "#ffffff");
+      }
+    </script>
     <title>Blueberry's site</title>
     <meta name="theme-color" content="#0099ff" />
     <meta name="description" content="Blueberry1001's playground" />
@@ -29,7 +68,9 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="site-bootstrap" role="status">読み込み中…</div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

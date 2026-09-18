@@ -20,9 +20,9 @@ npm run preview
 
 - `/#/home`：現行ホーム
 - `/#/works`：作品一覧
-- `/#/preview`：新ホームの試作。現行ホームとは独立したデザイン
-- `/#/skills`：分野 → 技術 → 作品・活動記事を探索する試作ページ
-- `/#/skills?domain=games&topic=unity`：選択状態を直接共有する例
+- `/#/preview`：既存ホームの雰囲気を引き継いだ改善案
+- `/#/skills`：言語・ツール → 取り組み → 作品・活動記事を探索する試作ページ
+- `/#/skills?domain=unity&topic=unity`：選択状態を直接共有する例
 - `/#/lumen-trace`、`/#/cucumvivor`：公開WebGLゲームの紹介ページ
 
 現行ホームへの新デザイン／スキル探索の目立つ導線は、試作確認後に追加する想定です。
@@ -31,7 +31,8 @@ npm run preview
 ## 更新箇所
 
 - `src/routes/portfolio/portfolioData.ts`：既存の作品、記事、経歴、SNSリンク
-- `src/routes/portfolio/skillData.ts`：分野と技術、作品IDの関連付け、公開情報の根拠
+- `src/data/skills.json`：言語・ツール、取り組み、作品IDの手動関連付け
+- `docs/editing-skills.md`：スキルの編集例と作品ID一覧
 - `src/routes/portfolio/Preview*.tsx`、`Preview.css`：試作ホームと共通レイアウト
 - `src/routes/portfolio/PortfolioSkills.tsx`：スキルの選択UI
 - `src/components/UnityPlayer.tsx`：ローカルWebGLの起動・進捗・再試行・終了処理
@@ -50,6 +51,5 @@ npm run preview
 
 [Figma：ホームとスキル探索（PC・スマホ）](https://www.figma.com/design/Ffbu9OJBipxinHdzHJzFeS?node-id=2-2)
 
-ホームは淡い背景、濃紺の文字、罫線で区切る作品一覧を中心に構成。
-`public/images/blueberry-sculpture.webp`はこの試作用にImageGenで生成したグラフィックです。
-本文と操作は画像化せずHTMLで実装しています。
+既存ホームの濃紺・青・シアンを引き継ぎ、画像を使わず文字と作品一覧を中心に構成。
+技術名からスキル探索へ移動できます。本文の遅延読み込み中もヘッダーとフッターを維持します。

@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { Menu, X } from "lucide-react";
+
+import PageLoading from "../../components/PageLoading";
 
 const navItems = [
   { label: "Home", action: "hero" },
@@ -171,7 +173,9 @@ const PortfolioLayout = () => {
       </header>
 
       <main className="pt-16">
-        <Outlet />
+        <Suspense fallback={<PageLoading appearance="portfolio" />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       <footer className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-300">

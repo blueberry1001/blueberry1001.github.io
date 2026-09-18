@@ -14,18 +14,27 @@ export default function PreviewHome() {
 
   return (
     <>
-      <section className="preview-hero preview-container">
-        <div className="preview-hero-copy">
-          <h1>
-            つくる。考える。
-            <br />
-            <span>そのあいだを、遊ぶ。</span>
-          </h1>
+      <section className="preview-hero">
+        <div className="preview-hero-copy preview-container">
+          <h1>Blueberry</h1>
           <p>
-            blueberryの制作と学びの記録。
+            競技プログラミングをメインに、
             <br />
-            ゲーム、Webツール、競技プログラミング。
+            ゲーム制作や動画編集など幅広く活動中。
           </p>
+          <p className="preview-affiliation">
+            東京科学大学 / デジタル創作同好会traP
+          </p>
+          <div
+            aria-label="技術・ツールからスキルを見る"
+            className="preview-tool-links"
+          >
+            {skillDomains.map((domain) => (
+              <Link key={domain.id} to={`/skills?domain=${domain.id}`}>
+                {domain.title}
+              </Link>
+            ))}
+          </div>
           <div className="preview-actions">
             <Link className="preview-text-link" to="/works">
               作品を見る <ArrowRight aria-hidden="true" size={19} />
@@ -35,13 +44,6 @@ export default function PreviewHome() {
             </Link>
           </div>
         </div>
-        <img
-          alt=""
-          className="preview-sculpture"
-          height="1024"
-          src="/images/blueberry-sculpture.webp"
-          width="1536"
-        />
       </section>
 
       <section
@@ -49,7 +51,7 @@ export default function PreviewHome() {
         className="preview-works preview-container"
       >
         <div className="preview-section-heading">
-          <h2 id="selected-works-title">Selected works</h2>
+          <h2 id="selected-works-title">Works</h2>
           <Link className="preview-small-link" to="/works">
             すべての作品 <ArrowRight aria-hidden="true" size={18} />
           </Link>
@@ -83,11 +85,11 @@ export default function PreviewHome() {
       >
         <div className="preview-container preview-skills-intro">
           <div>
-            <h2 id="preview-skills-title">Explore skills</h2>
+            <h2 id="preview-skills-title">Skills</h2>
             <p>
-              ひとつの興味から、
+              使っている技術から、
               <br />
-              次のものづくりへ。
+              つくったものへ。
             </p>
             <Link className="preview-text-link" to="/skills">
               スキルをたどる <ArrowRight aria-hidden="true" size={19} />
@@ -96,7 +98,9 @@ export default function PreviewHome() {
           <div className="preview-domain-list">
             {skillDomains.map((domain, index) => (
               <Link key={domain.id} to={`/skills?domain=${domain.id}`}>
-                <span className="preview-domain-index">0{index + 1}</span>
+                <span className="preview-domain-index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span>
                   <strong>{domain.title}</strong>
                   <small>{domain.english}</small>
@@ -116,13 +120,9 @@ export default function PreviewHome() {
         <h2 id="preview-about-title">About blueberry</h2>
         <div>
           <p className="preview-about-lead">
-            ゲームをつくる。道具をつくる。
-            <br />
-            考えたことを、かたちにする。
+            東京科学大学で学び、デジタル創作同好会traPで活動。
           </p>
           <p>
-            東京科学大学で学び、デジタル創作同好会traPで活動。
-            <br />
             競技プログラミングを軸に、ゲーム、Web、映像へと興味を広げています。
           </p>
           <div className="preview-about-links">

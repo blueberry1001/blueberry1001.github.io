@@ -4,19 +4,22 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 
 import { works } from "./portfolioData";
-import { skillDomains } from "./skillData";
+import { resolveSkillSelection, skillDomains } from "./skillData";
 
 export default function PortfolioSkills() {
   const [params, setParams] = useSearchParams();
-  const domain =
-    skillDomains.find((item) => item.id === params.get("domain")) ??
-    skillDomains[0];
-  const topic = domain.topics.find((item) => item.id === params.get("topic"));
+  const { domain, topic } = resolveSkillSelection(
+    params.get("domain"),
+    params.get("topic")
+  );
   const topicsHeading = useRef<HTMLHeadingElement>(null);
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const relatedWorks =
     topic?.workIds.flatMap((id) => works.filter((work) => work.id === id)) ??
     [];
+
+  if (!domain)
+    return <p className="skills-empty">スキルはまだ登録されていません。</p>;
 
   function selectDomain(id: string) {
     setParams({ domain: id }, { preventScrollReset: true });
@@ -34,7 +37,7 @@ export default function PortfolioSkills() {
     <div className="preview-container skills-page">
       <header className="skills-heading">
         <h1>興味から、作品へ。</h1>
-        <p>分野をひらくと、技術と制作のつながりが見えてきます。</p>
+        <p>使っている言語やツールから、取り組みと作品をたどれます。</p>
       </header>
       <nav aria-label="選択中のスキル" className="skills-breadcrumb">
         <Link to="/skills">Skills</Link>
@@ -54,7 +57,7 @@ export default function PortfolioSkills() {
           className="skills-column"
         >
           <h2 className="skills-column-label" id="skill-domains-heading">
-            01 <span>分野</span>
+            01 <span>言語・ツール</span>
           </h2>
           <div className="skills-options">
             {skillDomains.map((item) => (
@@ -147,9 +150,13 @@ export default function PortfolioSkills() {
                     </Link>
                   ))}
                 </div>
-              ) : null}
+              ) : (
+                <p className="skills-hint">
+                  関連作品はまだ登録されていません。
+                </p>
+              )}
               <div className="skills-sources">
-                <h4>活動を読む</h4>
+                {topic.sources.length ? <h4>活動を読む</h4> : null}
                 {topic.sources.map((source) => (
                   <a
                     href={source.url}
@@ -166,15 +173,11 @@ export default function PortfolioSkills() {
           ) : (
             <div className="skills-empty">
               <ArrowRight aria-hidden="true" size={30} />
-              <h3>
-                つくったものが、
-                <br />
-                できることを語る。
-              </h3>
+              <h3>取り組みを選んでください</h3>
               <p>
                 「できること」からひとつ選んで、
                 <br />
-                作品や活動の記録をのぞいてみてください。
+                関連する作品や活動の記録を確認できます。
               </p>
             </div>
           )}
