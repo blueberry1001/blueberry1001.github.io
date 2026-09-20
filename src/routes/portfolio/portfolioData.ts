@@ -147,6 +147,24 @@ export const works: WorkItem[] = [
     gradient: "from-violet-500 to-purple-600",
   },
   {
+    id: "blueberry-library",
+    title: "Blueberry Library",
+    shortDescription: "C++20向けの競技プログラミングライブラリ",
+    fullDescription:
+      "データ構造・グラフ・数学・文字列アルゴリズムをまとめた、自作のC++ライブラリです。各実装の使い方や計算量を公開し、用途や操作から必要なアルゴリズムを探せます。",
+    features: [
+      "C++20対応のアルゴリズム・データ構造",
+      "使い方・計算量のドキュメント",
+      "日本語検索・操作からの絞り込み",
+      "Library Checkerのテストケースによる継続的な検証",
+    ],
+    technologies: ["C++20", "GitHub Actions", "verification-helper"],
+    date: "2024年〜",
+    url: "https://blueberry1001.github.io/Blueberry-library/",
+    color: "#2563EB",
+    gradient: "from-blue-600 to-indigo-700",
+  },
+  {
     id: "invincible-tank",
     title: "InvincibleTank",
     shortDescription: "戦車を操作して敵を倒すシューティングゲーム",

@@ -27,6 +27,7 @@ const PortfolioWorks = () => {
               <NavLink
                 className="group relative z-0 block overflow-hidden rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500 hover:z-10 hover:scale-[1.02] hover:border-slate-300 hover:shadow-2xl"
                 key={work.id}
+                reloadDocument={/^https?:\/\//.test(work.url)}
                 to={work.url}
               >
                 <div
