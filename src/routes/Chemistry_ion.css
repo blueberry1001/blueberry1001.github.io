@@ -1,0 +1,227 @@
+.ion-game {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 48px 32px 64px;
+  color: #0f172a;
+}
+.ion-game-heading h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.ion-game-heading h1 span {
+  display: inline-block;
+}
+.ion-game-heading p {
+  margin: 12px 0 28px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.ion-game-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.ion-game-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ion-game-actions button {
+  min-height: 44px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ion-game-actions .ion-start {
+  background: #2563eb;
+  color: #fff;
+}
+.ion-game-actions .ion-start:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+.ion-game-actions .ion-start:disabled {
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: default;
+}
+.ion-game-actions .ion-answer {
+  border-color: #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+.ion-game-actions .ion-answer:hover {
+  background: #f1f5f9;
+}
+.ion-game-actions button:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}
+.ion-game-time {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  white-space: nowrap;
+}
+.ion-game-time > span {
+  font-size: 12px;
+  color: #64748b;
+}
+.ion-game-time strong {
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.ion-game-time small {
+  font-size: 12px;
+  font-weight: 400;
+}
+.ion-game-board {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 24px;
+}
+.ion-game-guide {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 16px;
+  margin-bottom: 20px;
+  color: #64748b;
+  font-size: 12px;
+}
+.ion-game-guide > span:first-child {
+  font-weight: 600;
+  color: #334155;
+}
+.ion-game-cards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ion-game-slot {
+  position: relative;
+  min-width: 0;
+}
+.ion-game-slot::after {
+  content: ">";
+  position: absolute;
+  right: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 17px;
+}
+.ion-game-slot:nth-child(6n)::after,
+.ion-game-slot:last-child::after {
+  display: none;
+}
+.ion-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 86px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 2px 3px #0f172a08;
+  cursor: grab;
+  user-select: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.ion-card:active {
+  cursor: grabbing;
+}
+.ion-card:hover {
+  border-color: #60a5fa;
+}
+.ion-card-position {
+  position: absolute;
+  top: 6px;
+  left: 9px;
+  color: #64748b;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.ion-card-symbol {
+  font-size: 28px;
+  font-weight: 600;
+}
+.ion-card-correct {
+  background: #dcfce7;
+  border-color: #86cda1;
+  color: #166534;
+}
+.ion-game-message {
+  min-height: 24px;
+  margin: 20px 0 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.8;
+}
+@media (max-width: 760px) {
+  .ion-game {
+    padding: 32px 20px 40px;
+  }
+  .ion-game-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .ion-game-slot:nth-child(6n)::after {
+    display: block;
+  }
+  .ion-game-slot:nth-child(4n)::after,
+  .ion-game-slot:last-child::after {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .ion-game {
+    padding-inline: 16px;
+  }
+  .ion-game-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ion-game-board {
+    padding: 16px;
+  }
+  .ion-game-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 22px;
+  }
+  .ion-game-slot:nth-child(4n)::after {
+    display: block;
+  }
+  .ion-game-slot:nth-child(3n)::after,
+  .ion-game-slot:last-child::after {
+    display: none;
+  }
+  .ion-card {
+    min-height: 72px;
+  }
+  .ion-card-symbol {
+    font-size: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ion-card,
+  .ion-game-actions button {
+    transition: none;
+  }
+}

@@ -3,6 +3,8 @@ import React, { useRef, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+import "./Chemistry_ion.css";
+
 const ions = [
   "Li",
   "K",
@@ -51,25 +53,12 @@ const Card: React.FC<CardProps> = ({ name, index, moveCard, isCorrect }) => {
   drag(drop(ref));
   return (
     <div
+      className={`ion-card${isCorrect ? " ion-card-correct" : ""}`}
       ref={ref}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        background: isCorrect ? "#aaffaa" : "#fff",
-        border: "1px solid #333",
-        borderRadius: 8,
-        width: 60,
-        height: 60,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        margin: 8,
-        fontSize: 24,
-        cursor: "grab",
-        boxShadow: "2px 2px 6px #ccc",
-        transition: "background 0.2s",
-      }}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      {name}
+      <span className="ion-card-position">{index + 1}</span>
+      <span className="ion-card-symbol">{name}</span>
     </div>
   );
 };
@@ -133,56 +122,63 @@ const IonPage = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={{ padding: 32 }}>
-        <h2>イオン化傾向 並べ替えゲーム</h2>
-        <button disabled={started && !allCorrect} onClick={handleStart}>
-          スタート
-        </button>
-        <button onClick={handleShowAnswer} style={{ marginLeft: 8 }}>
-          答えを見る
-        </button>
-        <div style={{ margin: "16px 0" }}>
-          {started && (
-            <span>
-              経過時間: {(elapsed / 1000).toFixed(2)} 秒
-              {allCorrect && (
-                <span style={{ color: "green", marginLeft: 16 }}>クリア！</span>
-              )}
-            </span>
-          )}
+      <section aria-labelledby="ion-game-title" className="ion-game">
+        <div className="ion-game-heading">
+          <h1 id="ion-game-title">
+            イオン化傾向 <span>並べ替えゲーム</span>
+          </h1>
+          <p>イオン化傾向が大きい順に、左から右・上から下へ並べよう。</p>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            maxWidth: 1100,
-          }}
-        >
-          {cards.map((name, idx) => (
-            <React.Fragment key={name}>
-              <Card
-                index={idx}
-                isCorrect={isCorrect(name, idx)}
-                moveCard={moveCard}
-                name={name}
-              />
-              {idx < cards.length - 1 && (
-                <span
-                  style={{
-                    fontSize: 32,
-                    margin: "0 4px",
-                    display: "flex",
-                    alignItems: "center",
-                    height: 80, // カードと同じ高さ
-                  }}
-                >
-                  {">"}
-                </span>
-              )}
-            </React.Fragment>
-          ))}
+        <div className="ion-game-toolbar">
+          <div className="ion-game-actions">
+            <button
+              className="ion-start"
+              disabled={started && !allCorrect}
+              onClick={handleStart}
+              type="button"
+            >
+              {allCorrect && started ? "もう一度遊ぶ" : "スタート"}
+            </button>
+            <button
+              className="ion-answer"
+              onClick={handleShowAnswer}
+              type="button"
+            >
+              答えを見る
+            </button>
+          </div>
+          <div className="ion-game-time">
+            <span>経過時間</span>
+            <strong>
+              {(elapsed / 1000).toFixed(1)}
+              <small> 秒</small>
+            </strong>
+          </div>
         </div>
-      </div>
+        <div className="ion-game-board">
+          <div className="ion-game-guide">
+            <span>大きい → 小さい</span>
+            <span>正しい位置のカードは緑色</span>
+          </div>
+          <ol aria-label="イオン化傾向の並び順" className="ion-game-cards">
+            {cards.map((name, idx) => (
+              <li className="ion-game-slot" key={name}>
+                <Card
+                  index={idx}
+                  isCorrect={isCorrect(name, idx)}
+                  moveCard={moveCard}
+                  name={name}
+                />
+              </li>
+            ))}
+          </ol>
+          <p className="ion-game-message" role="status">
+            {started && allCorrect
+              ? "クリア！すべて正しい順番です。"
+              : "カードをドラッグして並べ替えてください。"}
+          </p>
+        </div>
+      </section>
     </DndProvider>
   );
 };
