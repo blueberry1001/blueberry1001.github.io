@@ -19,9 +19,23 @@
     transform: translateY(0);
   }
 }
+@keyframes portfolio-glow {
+  from {
+    opacity: 0.35;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
+  /* Animate the decorative light, leaving the heading and LCP text fully visible. */
+  .hero-glow {
+    animation: portfolio-glow 650ms ease-out both;
+  }
   [data-reveal].reveal-entered {
-    animation: portfolio-reveal 420ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+    animation: portfolio-reveal 280ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
   }
   .portfolio-detail-enter {
     animation: portfolio-detail-enter 240ms ease-out both;

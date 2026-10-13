@@ -11,7 +11,13 @@ export default function PageLoading({
       aria-live="polite"
       role="status"
       style={{
-        minHeight: appearance === "standalone" ? "100vh" : "55vh",
+        // Keep the footer below the initial viewport while route content loads.
+        minHeight:
+          appearance === "standalone"
+            ? "100vh"
+            : appearance === "portfolio"
+              ? "calc(100vh - 4rem)"
+              : "55vh",
         display: "grid",
         placeItems: "center",
         padding: "3rem 1.5rem",

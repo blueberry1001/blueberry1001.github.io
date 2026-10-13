@@ -12,7 +12,7 @@ import Header from "./Header";
 import Analytics from "./components/Analytics";
 import PageLoading from "./components/PageLoading";
 import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
-import PreviewLayout from "./routes/portfolio/PreviewLayout";
+const PreviewLayout = lazy(() => import("./routes/portfolio/PreviewLayout"));
 const AtCoderRatingVisualizer = lazy(
   () => import("./routes/AtCoderRatingVisualizer")
 );
@@ -55,7 +55,6 @@ const PortfolioTimeline = lazy(
 const PortfolioWorks = lazy(() => import("./routes/portfolio/PortfolioWorks"));
 const Cucumvivor = lazy(() => import("./routes/Cucumvivor"));
 const LumenTrace = lazy(() => import("./routes/LumenTrace"));
-const PreviewHome = lazy(() => import("./routes/portfolio/PreviewHome"));
 const PortfolioSkills = lazy(
   () => import("./routes/portfolio/PortfolioSkills")
 );
@@ -112,8 +111,15 @@ const AppRoutes = () => {
           path="/pointsystem"
         />
 
-        <Route element={<PreviewLayout />}>
-          <Route element={<PreviewHome />} path="/preview" />
+        {/* Retired prototype URL remains usable; skill selection URLs are preserved. */}
+        <Route element={<Navigate replace to="/home" />} path="/preview" />
+        <Route
+          element={
+            <Suspense fallback={<PageLoading appearance="portfolio" />}>
+              <PreviewLayout />
+            </Suspense>
+          }
+        >
           <Route element={<PortfolioSkills />} path="/skills" />
         </Route>
 
@@ -137,7 +143,10 @@ const AppRoutes = () => {
           <Route element={<TimerPage />} path="/timer" />
 
           <Route element={<RandomPickerPage />} path="/randompicker" />
-          <Route element={<AtCoderProblemLink />} path="/atcoder-problem-link" />
+          <Route
+            element={<AtCoderProblemLink />}
+            path="/atcoder-problem-link"
+          />
 
           <Route
             element={<AtCoderRatingVisualizer />}

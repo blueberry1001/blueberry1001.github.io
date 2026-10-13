@@ -22,12 +22,12 @@ npm run preview
 - `/#/works`：作品一覧
 - `/#/atcoder-problem-link`：AtCoderの再出題URLを元のコンテストの問題URLに変換
 - `/#/timeline`：経歴・実績。代表／標準／すべてと分類で絞り込み（初期は標準）
-- `/#/preview`：既存ホームの雰囲気を引き継いだ改善案
-- `/#/skills`：言語・ツール → 取り組み → 作品・活動記事を探索する試作ページ
+- `/#/preview`：試作ホームは終了し、現行ホームへ転送
+- `/#/skills`：言語・ツール → 取り組み → 作品・活動記事を探索（選択URLを維持）
 - `/#/skills?domain=unity&topic=unity`：選択状態を直接共有する例
 - `/#/lumen-trace`、`/#/cucumvivor`：公開WebGLゲームの紹介ページ
 
-現行ホームへの新デザイン／スキル探索の目立つ導線は、試作確認後に追加する想定です。
+試作ホームはルーティングから外しています。スキル探索のレイアウトとCSSは、そのページを開くときだけ読み込みます。
 既存ページのURLと`Gamedata/`の配置は維持しています。
 
 ## 更新箇所
@@ -36,7 +36,8 @@ npm run preview
 - `src/data/timeline.json`：経歴・実績と表示量。編集方法は `docs/editing-timeline.md`
 - `src/data/skills.json`：言語・ツール、取り組み、作品IDの手動関連付け
 - `docs/editing-skills.md`：スキルの編集例と作品ID一覧
-- `src/routes/portfolio/Preview*.tsx`、`Preview.css`：試作ホームと共通レイアウト
+- `src/routes/portfolio/PreviewLayout.tsx`、`Preview.css`：スキル探索用レイアウト（遅延読み込み）
+- `src/routes/portfolio/PreviewHome.tsx`：未使用の試作ソース。復元用に保持し、本番には含めません
 - `src/routes/portfolio/PortfolioSkills.tsx`：スキルの選択UI
 - `src/components/UnityPlayer.tsx`：ローカルWebGLの起動・進捗・再試行・終了処理
 - `vite.config.ts`：Gamedata配信、Brotli展開、ビルド時のアセットコピー
@@ -55,8 +56,9 @@ npm run preview
 [Figma：ホームとスキル探索（PC・スマホ）](https://www.figma.com/design/Ffbu9OJBipxinHdzHJzFeS?node-id=2-2)
 
 既存ホームの濃紺・青・シアンを引き継ぎ、画像を使わず文字と作品一覧を中心に構成。
-技術名からスキル探索へ移動できます。本文の遅延読み込み中もヘッダーとフッターを維持します。
-スクロール時の一度だけの表示アニメーションと、選択・詳細展開の短い動きを追加しています。
+スキル探索は選択URLから直接開けます。本文の遅延読み込み中もヘッダーとフッターを維持します。
+初期画面の本文はすぐ表示し、画面外の要素に短い表示アニメーションを使います。ヒーローは背景の光だけが動きます。
+Webフォントは初期描画を待たせずに読み込み、低速回線では代替フォントを使います。ホームの外部記事は記事欄に近づいたときに取得します。
 OSの「視差効果を減らす」設定（`prefers-reduced-motion`）では動きを抑えます。
 
 ## AtCoder問題リンク変換

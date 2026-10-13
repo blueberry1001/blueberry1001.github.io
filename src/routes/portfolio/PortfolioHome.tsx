@@ -26,11 +26,30 @@ export default function PortfolioHome() {
 
   useEffect(() => {
     let active = true;
-    void getArticles().then((items) => {
-      if (active) setArticleItems(items);
-    });
+    const loadArticles = () => {
+      void getArticles().then((items) => {
+        if (active) setArticleItems(items);
+      });
+    };
+    const section = document.getElementById("articles");
+    let observer: IntersectionObserver | undefined;
+    // Keep external feed downloads and JSON processing off the initial render path.
+    if (section && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer?.disconnect();
+          loadArticles();
+        },
+        { rootMargin: "400px" }
+      );
+      observer.observe(section);
+    } else {
+      loadArticles();
+    }
     return () => {
       active = false;
+      observer?.disconnect();
     };
   }, []);
 
@@ -38,13 +57,12 @@ export default function PortfolioHome() {
     <div className="portfolio-motion" ref={revealRef}>
       <section
         className="relative w-full overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-32"
-        data-reveal
         id="hero"
       >
-        <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-blue-500/20 blur-3xl" />
+        <div className="absolute left-1/4 top-0 hero-glow h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
         <div
-          className="absolute bottom-0 right-1/4 h-96 w-96 animate-pulse rounded-full bg-yellow-400/20 blur-3xl"
-          style={{ animationDelay: "1s" }}
+          className="absolute bottom-0 right-1/4 hero-glow h-96 w-96 rounded-full bg-yellow-400/20 blur-3xl"
+          style={{ animationDelay: "100ms" }}
         />
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <div className="mb-4 inline-block rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-1.5">
@@ -134,7 +152,7 @@ export default function PortfolioHome() {
               Works
             </h2>
             <button
-              className="group flex items-center gap-2 rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-600"
+              className="group flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-700"
               onClick={() => navigate("/works")}
               type="button"
             >
@@ -204,7 +222,7 @@ export default function PortfolioHome() {
               Articles
             </h2>
             <button
-              className="group flex items-center gap-2 rounded-xl bg-purple-500 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-purple-600"
+              className="group flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-purple-700"
               onClick={() => navigate("/articles")}
               type="button"
             >

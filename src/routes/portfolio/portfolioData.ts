@@ -301,10 +301,10 @@ export const articleSourceMeta: Record<
   ArticleItem["source"],
   { label: string; color: string }
 > = {
-  hatena: { label: "はてなブログ", color: "#00A4DE" },
-  qiita: { label: "Qiita", color: "#55C500" },
-  note: { label: "note", color: "#41C9B4" },
-  personal: { label: "個人サイト", color: "#6366F1" },
+  hatena: { label: "はてなブログ", color: "#0075A0" },
+  qiita: { label: "Qiita", color: "#287A00" },
+  note: { label: "note", color: "#157D6D" },
+  personal: { label: "個人サイト", color: "#4F46E5" },
 };
 
 type Rss2JsonItem = {

@@ -23,8 +23,18 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
       { threshold: 0.08 }
     );
     root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
-      if (!element.classList.contains("reveal-entered"))
-        observer.observe(element);
+      if (
+        element.classList.contains("reveal-entered") ||
+        element.classList.contains("reveal-visible")
+      )
+        return;
+      const bounds = element.getBoundingClientRect();
+      // Initial content paints immediately. Only offscreen content gets an entrance.
+      if (bounds.top < window.innerHeight && bounds.bottom > 0) {
+        element.classList.add("reveal-visible");
+        return;
+      }
+      observer.observe(element);
     });
     return () => observer.disconnect();
   }, [refreshKey]);

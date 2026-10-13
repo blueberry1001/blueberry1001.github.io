@@ -186,8 +186,8 @@ export default function PortfolioSkills() {
         </section>
       </div>
 
-      <Link className="preview-text-link" to="/preview">
-        新ホームへ <ArrowRight aria-hidden="true" size={18} />
+      <Link className="preview-text-link" to="/home">
+        ホームへ <ArrowRight aria-hidden="true" size={18} />
       </Link>
     </div>
   );
