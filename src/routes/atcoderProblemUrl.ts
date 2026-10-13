@@ -1,7 +1,3 @@
-import data from "../data/atcoder-problem-origins.json";
-
-const origins: Readonly<Record<string, string>> = data.origins;
-
 export function convertAtCoderProblemUrl(input: string): string {
   const trimmed = input.trim();
   let url: URL;
@@ -26,14 +22,11 @@ export function convertAtCoderProblemUrl(input: string): string {
   );
   if (!match) throw new Error("問題ページのURLを入力してください。");
   const problem = match[1];
-  const contest = Object.prototype.hasOwnProperty.call(origins, problem)
-    ? origins[problem]
-    : undefined;
-  if (!contest) {
-    throw new Error(
-      "この問題は対応表に登録されていません。新しい問題は更新後に利用できます。"
-    );
+  const separator = problem.lastIndexOf("_");
+  if (separator <= 0 || separator === problem.length - 1) {
+    throw new Error("問題IDからコンテスト名を取得できませんでした。");
   }
+  const contest = problem.slice(0, separator).replace(/_/g, "-");
   const result = new URL(
     `https://atcoder.jp/contests/${contest}/tasks/${problem}`
   );
@@ -42,5 +35,3 @@ export function convertAtCoderProblemUrl(input: string): string {
     result.searchParams.set("lang", language);
   return result.href;
 }
-
-export const problemOriginsUpdatedAt = data.updatedAt;

@@ -48,7 +48,7 @@ export const works: WorkItem[] = [
     title: "AtCoder問題リンク変換",
     shortDescription: "再出題された問題を元のコンテストのURLに変換",
     fullDescription: "AtCoder Daily Trainingなどの問題URLから、元のコンテストの問題URLを調べるツールです。変換したURLをコピーしたり、問題ページを新しいタブで開いたりできます。",
-    features: ["元コンテストの問題URLに変換", "出題履歴に基づく対応表", "URLのコピー", "言語指定の引き継ぎ"],
+    features: ["元コンテストの問題URLに変換", "問題IDからURLを生成", "URLのコピー", "言語指定の引き継ぎ"],
     technologies: ["React", "TypeScript"],
     date: "2026年10月",
     url: "/atcoder-problem-link",

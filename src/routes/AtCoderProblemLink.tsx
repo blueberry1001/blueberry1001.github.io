@@ -3,10 +3,7 @@ import type { FormEvent } from "react";
 
 import { ArrowRight, ExternalLink, Link2 } from "lucide-react";
 
-import {
-  convertAtCoderProblemUrl,
-  problemOriginsUpdatedAt,
-} from "./atcoderProblemUrl";
+import { convertAtCoderProblemUrl } from "./atcoderProblemUrl";
 
 const example = "https://atcoder.jp/contests/adt_all_20231226_2/tasks/abc273_c";
 
@@ -60,7 +57,6 @@ export default function AtCoderProblemLink() {
         <p className="mb-8 leading-relaxed text-slate-600">
           AtCoder Daily
           Trainingなどの問題URLを、元のコンテストの問題URLに変換します。
-          変換したリンクから問題や解説を開けます。
         </p>
         <form noValidate onSubmit={convert}>
           <label
@@ -70,21 +66,18 @@ export default function AtCoderProblemLink() {
             AtCoderの問題URL
           </label>
           <input
-            aria-describedby={error ? "url-help url-error" : "url-help"}
+            aria-describedby={error ? "url-error" : undefined}
             aria-invalid={Boolean(error)}
             autoCapitalize="none"
             autoComplete="off"
             className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             id="problem-url"
             onChange={(event) => updateInput(event.target.value)}
-            placeholder={example}
+            placeholder="https://atcoder.jp/contests/…/tasks/…"
             spellCheck={false}
             type="text"
             value={input}
           />
-          <p className="mt-2 text-sm text-slate-500" id="url-help">
-            https://atcoder.jp/contests/…/tasks/… の形式で入力してください。
-          </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <button
               className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
@@ -147,27 +140,6 @@ export default function AtCoderProblemLink() {
               )}
             </div>
           )}
-        </div>
-        <div className="mt-8 border-t border-slate-200 pt-5 text-sm leading-relaxed text-slate-500">
-          <p>
-            元の問題URLを入力した場合も、そのまま利用できます。言語指定（ja /
-            en）は引き継ぎます。
-          </p>
-          <p className="mt-2">
-            対応表の更新日: {problemOriginsUpdatedAt}。
-            出題履歴に基づくため、新しい問題や未収録の問題には対応していない場合があります。
-          </p>
-          <p className="mt-2">
-            データ提供:{" "}
-            <a
-              className="text-blue-600 underline"
-              href="https://github.com/kenkoooo/AtCoderProblems"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              AtCoder Problems
-            </a>
-          </p>
         </div>
       </div>
     </section>

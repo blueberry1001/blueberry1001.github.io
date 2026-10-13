@@ -59,13 +59,8 @@ npm run preview
 スクロール時の一度だけの表示アニメーションと、選択・詳細展開の短い動きを追加しています。
 OSの「視差効果を減らす」設定（`prefers-reduced-motion`）では動きを抑えます。
 
-## AtCoder問題リンク変換の対応表
+## AtCoder問題リンク変換
 
-出題履歴は[AtCoder Problems](https://github.com/kenkoooo/AtCoderProblems)の
-`contests.json`と`contest-problem.json`から生成します。
-問題IDの接頭辞と一致する出題元があれば優先し、それ以外はADTを除いた最初の出題先を使います。
-同時開催のABC/ARCでは、同じ問題が両方のコンテストに掲載される場合があります。
-
-対応表の更新は`node scripts/update-atcoder-problem-origins.mjs`を実行してください。
-生成される`src/data/atcoder-problem-origins.json`をコミットして公開します。
-利用時は外部APIに接続しません。未収録の問題はエラーを表示し、推測したリンクには誘導しません。
+問題IDの末尾の「_問題番号」を取り除き、残りのアンダースコアをハイフンに置き換えてコンテスト名を生成します。
+例えば、`abc273_c`は`https://atcoder.jp/contests/abc273/tasks/abc273_c`に変換します。
+対応表や外部APIは使用しません。
