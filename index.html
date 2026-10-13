@@ -11,6 +11,9 @@
       body {
         margin: 0;
       }
+      html[data-initial-route="other"] #root[data-prerender="home"] {
+        display: none;
+      }
       #site-bootstrap {
         min-height: 100vh;
         display: grid;
@@ -26,6 +29,10 @@
     <script>
       // Match the destination before the application and its styles arrive.
       const initialPath = location.hash.slice(1).split("?")[0];
+      document.documentElement.dataset.initialRoute =
+        !initialPath || initialPath === "/" || initialPath === "/home"
+          ? "home"
+          : "other";
       const initialPaper =
         initialPath === "/preview" || initialPath === "/skills"
           ? "#ffffff"
@@ -60,20 +67,34 @@
     <meta property="twitter:creator" content="@bluebery1001" />
     <meta property="twitter:domain" content="blueberry1001.github.io" />
     <!-- <link rel="icon" type="image/svg+xml" href="/logo.svg"> -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Paint with the fallback font first; optional avoids a late layout shift. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;900&display=optional"
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
+      rel="preload"
+      href="/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/noto-sans-jp-hero.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
   </head>
   <body>
     <div id="root">
       <div id="site-bootstrap" role="status">読み込み中…</div>
     </div>
+    <script>
+      // Deep links keep their own loading screen, rather than flashing the home page.
+      if (document.documentElement.dataset.initialRoute === "other") {
+        const root = document.getElementById("root");
+        root.innerHTML =
+          '<div id="site-bootstrap" role="status">読み込み中…</div>';
+        root.removeAttribute("data-prerender");
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

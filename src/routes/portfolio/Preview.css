@@ -1,3 +1,5 @@
+@import "@fontsource-variable/noto-sans-jp";
+
 .blueberry-preview {
   --preview-paper: #ffffff;
   --preview-ink: #0f172a;
@@ -10,7 +12,7 @@
   background: var(--preview-paper);
   color: var(--preview-ink);
   font-family:
-    "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+    "Noto Sans JP Variable", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }

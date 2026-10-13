@@ -219,7 +219,9 @@ const PortfolioLayout = () => {
           </div>
           <div className="border-t border-slate-700/50 pt-8">
             <p className="text-sm text-slate-500">
-              © {new Date().getFullYear()} Blueberry. All rights reserved.
+              ©{" "}
+              <span suppressHydrationWarning>{new Date().getFullYear()}</span>{" "}
+              Blueberry. All rights reserved.
             </p>
           </div>
         </div>

@@ -11,6 +11,7 @@ import {
 import Header from "./Header";
 import Analytics from "./components/Analytics";
 import PageLoading from "./components/PageLoading";
+import PortfolioHome from "./routes/portfolio/PortfolioHome";
 import PortfolioLayout from "./routes/portfolio/PortfolioLayout";
 const PreviewLayout = lazy(() => import("./routes/portfolio/PreviewLayout"));
 const AtCoderRatingVisualizer = lazy(
@@ -47,7 +48,6 @@ const PortfolioArticleDetail = lazy(
 const PortfolioArticles = lazy(
   () => import("./routes/portfolio/PortfolioArticles")
 );
-const PortfolioHome = lazy(() => import("./routes/portfolio/PortfolioHome"));
 const PortfolioLinks = lazy(() => import("./routes/portfolio/PortfolioLinks"));
 const PortfolioTimeline = lazy(
   () => import("./routes/portfolio/PortfolioTimeline.tsx")
