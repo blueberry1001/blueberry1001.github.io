@@ -5,8 +5,6 @@ import { ArrowRight, ExternalLink, Link2 } from "lucide-react";
 
 import { convertAtCoderProblemUrl } from "./atcoderProblemUrl";
 
-const example = "https://atcoder.jp/contests/adt_all_20231226_2/tasks/abc273_c";
-
 export default function AtCoderProblemLink() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
@@ -85,13 +83,6 @@ export default function AtCoderProblemLink() {
             >
               リンクを変換 <ArrowRight aria-hidden="true" size={18} />
             </button>
-            <button
-              className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50"
-              onClick={() => updateInput(example)}
-              type="button"
-            >
-              入力例を使う
-            </button>
           </div>
         </form>
         {error && (
@@ -112,8 +103,6 @@ export default function AtCoderProblemLink() {
               <a
                 className="break-all text-blue-700 underline underline-offset-4"
                 href={result}
-                rel="noopener noreferrer"
-                target="_blank"
               >
                 {result}
               </a>
@@ -121,11 +110,8 @@ export default function AtCoderProblemLink() {
                 <a
                   className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
                   href={result}
-                  rel="noopener noreferrer"
-                  target="_blank"
                 >
                   問題を開く <ExternalLink aria-hidden="true" size={18} />
-                  <span className="sr-only">（新しいタブ）</span>
                 </a>
                 <button
                   className="rounded-xl border border-blue-200 bg-white px-5 py-3 font-semibold text-blue-700 hover:bg-blue-100"
