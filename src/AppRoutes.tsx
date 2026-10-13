@@ -16,6 +16,7 @@ import PreviewLayout from "./routes/portfolio/PreviewLayout";
 const AtCoderRatingVisualizer = lazy(
   () => import("./routes/AtCoderRatingVisualizer")
 );
+const AtCoderProblemLink = lazy(() => import("./routes/AtCoderProblemLink"));
 const IonPage = lazy(() => import("./routes/Chemistry_ion"));
 const DistanceFromPointPage = lazy(() => import("./routes/DistanceFromPoint"));
 const HomePage = lazy(() => import("./routes/Home"));
@@ -136,6 +137,7 @@ const AppRoutes = () => {
           <Route element={<TimerPage />} path="/timer" />
 
           <Route element={<RandomPickerPage />} path="/randompicker" />
+          <Route element={<AtCoderProblemLink />} path="/atcoder-problem-link" />
 
           <Route
             element={<AtCoderRatingVisualizer />}

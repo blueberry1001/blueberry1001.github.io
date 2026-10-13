@@ -44,6 +44,18 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "atcoder-problem-link",
+    title: "AtCoder問題リンク変換",
+    shortDescription: "再出題された問題を元のコンテストのURLに変換",
+    fullDescription: "AtCoder Daily Trainingなどの問題URLから、元のコンテストの問題URLを調べるツールです。変換したURLをコピーしたり、問題ページを新しいタブで開いたりできます。",
+    features: ["元コンテストの問題URLに変換", "出題履歴に基づく対応表", "URLのコピー", "言語指定の引き継ぎ"],
+    technologies: ["React", "TypeScript"],
+    date: "2026年10月",
+    url: "/atcoder-problem-link",
+    color: "#2563EB",
+    gradient: "from-blue-500 to-cyan-600",
+  },
+  {
     id: "lumen-trace",
     title: "灯の回廊 — LUMEN TRACE",
     shortDescription: "光片を集めて回廊を探索する2Dアクションゲーム",

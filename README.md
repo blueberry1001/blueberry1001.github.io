@@ -20,6 +20,7 @@ npm run preview
 
 - `/#/home`：現行ホーム
 - `/#/works`：作品一覧
+- `/#/atcoder-problem-link`：AtCoderの再出題URLを元のコンテストの問題URLに変換
 - `/#/timeline`：経歴・実績。代表／標準／すべてと分類で絞り込み（初期は標準）
 - `/#/preview`：既存ホームの雰囲気を引き継いだ改善案
 - `/#/skills`：言語・ツール → 取り組み → 作品・活動記事を探索する試作ページ
@@ -57,3 +58,14 @@ npm run preview
 技術名からスキル探索へ移動できます。本文の遅延読み込み中もヘッダーとフッターを維持します。
 スクロール時の一度だけの表示アニメーションと、選択・詳細展開の短い動きを追加しています。
 OSの「視差効果を減らす」設定（`prefers-reduced-motion`）では動きを抑えます。
+
+## AtCoder問題リンク変換の対応表
+
+出題履歴は[AtCoder Problems](https://github.com/kenkoooo/AtCoderProblems)の
+`contests.json`と`contest-problem.json`から生成します。
+問題IDの接頭辞と一致する出題元があれば優先し、それ以外はADTを除いた最初の出題先を使います。
+同時開催のABC/ARCでは、同じ問題が両方のコンテストに掲載される場合があります。
+
+対応表の更新は`node scripts/update-atcoder-problem-origins.mjs`を実行してください。
+生成される`src/data/atcoder-problem-origins.json`をコミットして公開します。
+利用時は外部APIに接続しません。未収録の問題はエラーを表示し、推測したリンクには誘導しません。
