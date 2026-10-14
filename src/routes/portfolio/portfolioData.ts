@@ -44,6 +44,18 @@ export const techStack = ["C++", "Python", "C#", "Unity", "AviUtl", "Blender"];
 
 export const works: WorkItem[] = [
   {
+    id: "neon-reclaimer",
+    title: "NEON RECLAIMER",
+    shortDescription: "装備を育てて次の挑戦へ進む3Dアクション",
+    fullDescription: "近接武器と自動射撃を組み合わせて戦う3Dアクション×インクリメンタルゲームです。コインで装備を強化し、コア強化を次の挑戦へ持ち越します。PC・スマートフォンのブラウザから遊べます。",
+    features: ["武器分岐と専用強化", "コア強化を引き継ぐ再挑戦", "全12区画の装備ドラフト", "PC・タッチ操作"],
+    technologies: ["Unity", "C#", "Blender", "WebGL"],
+    date: "2026年9月",
+    url: "/neon-reclaimer",
+    color: "#155A91",
+    gradient: "from-blue-800 to-cyan-700",
+  },
+  {
     id: "atcoder-problem-link",
     title: "AtCoder問題リンク変換",
     shortDescription: "再出題された問題を元のコンテストのURLに変換",

@@ -55,6 +55,9 @@ const PortfolioTimeline = lazy(
 const PortfolioWorks = lazy(() => import("./routes/portfolio/PortfolioWorks"));
 const Cucumvivor = lazy(() => import("./routes/Cucumvivor"));
 const LumenTrace = lazy(() => import("./routes/LumenTrace"));
+const NeonReclaimer = lazy(() => import("./routes/NeonReclaimer"));
+const NeonUpdates = lazy(() => import("./routes/NeonReclaimer").then(module => ({ default: module.NeonUpdates })));
+const NeonUpdateDetail = lazy(() => import("./routes/NeonReclaimer").then(module => ({ default: module.NeonUpdateDetail })));
 const PortfolioSkills = lazy(
   () => import("./routes/portfolio/PortfolioSkills")
 );
@@ -133,6 +136,9 @@ const AppRoutes = () => {
           <Route element={<PortfolioWorks />} path="/works" />
           <Route element={<Cucumvivor />} path="/cucumvivor" />
           <Route element={<LumenTrace />} path="/lumen-trace" />
+          <Route element={<NeonReclaimer />} path="/neon-reclaimer" />
+          <Route element={<NeonUpdates />} path="/neon-reclaimer/updates" />
+          <Route element={<NeonUpdateDetail />} path="/neon-reclaimer/updates/:releaseId" />
 
           <Route element={<Navigate replace to="/works" />} path="/products" />
 
