@@ -7,7 +7,7 @@ import releases from "../data/neon-reclaimer/releases.json";
 import "./NeonReclaimer.css";
 
 export const NEON_GAME_URL =
-  "https://blueberry1001.github.io/neon-reclaimer-play/";
+  "https://blueberry1001.github.io/neon-reclaimer-play/?v=threat-weapons-oct18-1";
 const base = "/neon-reclaimer";
 const media = `${import.meta.env.BASE_URL}images/neon-reclaimer/`;
 const dateLabel = (date: string) => date.replace(/-/g, ".");
